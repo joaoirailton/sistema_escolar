@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Sistema - Termo de Desistência</title>
+  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>-->
+  <style>
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background-color: #eef2f7;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    header {
+      width: 100%;
+      background: linear-gradient(90deg, #002366, #c62828);
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .container {
+      display: flex;
+      width: 95%;
+      max-width: 1200px;
+      margin: 25px auto;
+      gap: 25px;
+    }
+    .form-card {
+      flex: 1;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .form-card h3 {
+      margin-top: 0;
+      color: #002366;
+      border-bottom: 2px solid #c62828;
+      padding-bottom: 10px;
+    }
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+      color: #444;
+    }
+    input, select {
+      width: 95%;
+      padding: 10px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: 0.2s;
+    }
+    input:focus, select:focus {
+      border-color: #002366;
+      outline: none;
+      box-shadow: 0 0 5px rgba(0,35,102,0.3);
+    }
+    .buttons {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .buttons button {
+      flex: 1;
+      min-width: 130px;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    .btn-gerar { background-color: #1976d2; color: #fff; }
+    .btn-novo { background-color: #e0e0e0; color: #333; }
+    .btn-imprimir { background-color: #43a047; color: #fff; }
+    .btn-salvar { background-color: #c62828; color: #fff; }
+    .buttons button:hover { opacity: 0.85; }
+    #documento {
+      flex: 2;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      min-height: 400px;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    #documento h2 {
+      text-align: center;
+      font-weight: bold;
+      font-size: 18px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      color: #002366;
+    }
+    #documento p {
+      text-align: justify;
+    }
+    .assinatura {
+      text-align: center;
+      margin-top: 50px;
+      font-weight: bold;
+    }
+    .data {
+      text-align: center;
+      margin-top: 25px;
+      font-style: italic;
+    }
+    #timbre{
+      display: block;
+      max-width: 100%;
+    }
+    
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+  <header>
+    Sistema de Geração de Termo de Desistência
+  </header>
+
+  <div class="container">
+    <!-- Formulário -->
+    <div class="form-card">
+      <h3>Preencher Dados</h3>
+      <form id="formulario">
+        <label>Nome do Aluno:</label>
+        <input type="text" id="aluno" required>
+
+        <label>Nome do Responsável:</label>
+        <input type="text" id="responsavel" required>
+
+        <label>RG do Responsável:</label>
+        <input type="text" id="rg" required>
+
+        <label>CPF do Responsável:</label>
+        <input type="text" id="cpf" required onblur="formatarCPF(this)">
+
+        <label>Parentesco:</label>
+        <select id="parentesco" required>
+          <option value="">Selecione</option>
+          <option>Pai</option>
+          <option>Mãe</option>
+          <option>Padrasto</option>
+          <option>Madrasta</option>
+          <option>Avô</option>
+          <option>Avó</option>
+          <option>Tio</option>
+          <option>Tia</option>
+          <option>Irmão</option>
+          <option>Irmã</option>
+          <option>Primo</option>
+          <option>Prima</option>
+          <option>Responsável Legal</option>
+          <option>Outro</option>
+        </select>
+
+
+        <label>Série/Turma:</label>
+        <select id="serie" required>
+          <option value="">Selecione</option>
+          <option>Pré I</option>
+          <option>Pré II</option>
+          <option>1º ANO</option>
+          <option>2º ANO</option>
+          <option>3º ANO</option>
+          <option>4º ANO</option>
+          <option>5º ANO</option>
+          <option>6º ANO</option>
+          <option>7º ANO</option>
+          <option>8º ANO</option>
+          <option>9º ANO</option>
+        </select>
+
+        <label>Data do Documento:</label>
+        <input type="date" id="dataDoc" required>
+
+        <div class="buttons">
+          <button type="button" class="btn-gerar" onclick="gerarDocumento()">Gerar Termo</button>
+          <button type="button" onclick="novo()">Novo</button>
+          <button type="button" class="btn-imprimir" onclick="imprimir()">Imprimir</button>
+          <button type="button" class="btn-salvar" onclick="salvar()">Salvar</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Documento-->
+    <div id="documento">
+      <img id="timbre" src="timbre.png" alt="Timbre">
+      <h2>TERMO DE RESPONSABILIDADE DE DESISTÊNCIA</h2>
+      <p>Preencha os dados ao lado e clique em <b>Gerar Termo</b> para visualizar aqui o documento.</p>
+    </div>
+  </div>
+
+  <script>
+    function formatarCPF(campo) {
+      let cpf = campo.value.replace(/\D/g, ""); // remove tudo que não for número
+      if (cpf.length === 11) {
+        campo.value = cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+      }
+    }
+
+    function gerarDocumento() {
+      const aluno = document.getElementById("aluno").value;
+      const responsavel = document.getElementById("responsavel").value;
+      const rg = document.getElementById("rg").value;
+      const cpf = document.getElementById("cpf").value;
+      const parentesco = document.getElementById("parentesco").value;
+      const serie = document.getElementById("serie").value;
+      const dataDoc = document.getElementById("dataDoc").value;
+
+      if (!aluno || !responsavel || !rg || !cpf || !parentesco || !serie || !dataDoc) {
+        alert("Por favor, preencha todos os campos!");
+        return;
+      }
+        const partes = dataDoc.split("-");
+        const ano = partes[0];
+        const mes = partes[1];
+        const dia = partes[2];
+
+        // meses por extenso
+        const meses = [
+          "janeiro","fevereiro","março","abril","maio","junho",
+          "julho","agosto","setembro","outubro","novembro","dezembro"
+        ];
+
+const dataFormatada = `${dia} de ${meses[parseInt(mes)-1]} de ${ano}`;
+
+      const documento = `
+      <img id="timbre" src="timbre.png" alt="Timbre">
+      <h2><b>TERMO DE RESPONSABILIDADE DE DESISTÊNCIA</b></h2>
+      <p>Pelo presente termo, Eu, <b>${responsavel}</b>, RG nº ${rg}, CPF nº ${cpf}, na condição de ${parentesco} do(a) aluno(a) <b>${aluno}</b>, regularmente matriculado(a) na série/turma ${serie}, DECLARO, para os devidos fins, que estou ciente e assumo integralmente a responsabilidade pela <b>desistência escolar</b> do(a) referido(a) aluno(a).</p>
+      <p>Estou ciente de que a decisão foi tomada por motivos pessoais e que compete exclusivamente à família a responsabilidade pelas consequências decorrentes desta desistência, eximindo a escola e a Secretaria Municipal de Educação de quaisquer responsabilidades adicionais.</p>
+      <div class="data">Óbidos/PA, ${dataFormatada}.</div>
+      <div class="assinatura">_______________________________________<br><b>${responsavel}</b></div>
+      `;
+
+      document.getElementById("documento").innerHTML = documento;
+    }
+    // Pré-preenche o campo data com hoje
+    window.onload = function() {
+      const hoje = new Date();
+      const ano = hoje.getFullYear();
+      const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+      const dia = String(hoje.getDate()).padStart(2, "0");
+      document.getElementById("dataDoc").value = `${ano}-${mes}-${dia}`;
+    };
+
+
+    function imprimir() {
+      const conteudo = document.getElementById("documento").innerHTML;
+      const estilos = `
+        <style>
+          body { font-family: Arial, sans-serif; margin: 30px; }
+          h2 { text-align: center; font-weight: bold; font-size: 18px; text-transform: uppercase; }
+          p { text-align: justify; line-height: 1.6; font-size: 15px; }
+          .data { text-align: center; margin-top: 20px; font-style: italic; }
+          .assinatura { text-align: center; margin-top: 40px; }
+          img { display:block; margin:0 auto 25px auto; max-width:100%; }
+          #documento { 
+            border: 2px solid #c62828;
+            border-radius: 8px;
+            background-color: #fafafa;
+            padding: 20px;
+          }
+        </style>
+      `;
+
+      const janela = window.open("", "_blank");
+      janela.document.write("<html><head><title>Imprimir</title>");
+      janela.document.write(estilos);
+      janela.document.write("</head><body>");
+      janela.document.write('<div id="documento">' + conteudo + "</div>");
+      janela.document.write("</body></html>");
+      janela.document.close();
+      janela.print();
+    }
+
+
+    function salvar() {
+      const documento = document.getElementById("documento");
+
+      if (!documento.innerHTML.trim()) {
+        alert("Gere o documento antes de salvar!");
+        return;
+      }
+
+      const opcoes = {
+        margin:       10,
+        filename:     'termo_desistencia.pdf',
+        image:        { type: 'jpeg', quality: 1 },
+        html2canvas:  { scale: 2, useCORS: true, allowTaint: true },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      html2pdf().set(opcoes).from(documento).save();
+    }
+
+  </script>
+</body>
+</html>
+

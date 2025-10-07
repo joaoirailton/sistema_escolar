@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Requerimento de Transferência</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f9fafc;
+      margin: 0;
+      padding: 0;
+    }
+
+    h2 {
+      text-align: center;
+      margin: 0;
+      padding: 25px 0;
+      background-color: #37474f;
+      color: #ffffff;
+      font-size: 24px;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+
+    form {
+      max-width: 700px;
+      margin: 30px auto;
+      background-color: #ffffff;
+      padding: 30px 35px;
+      border-radius: 15px;
+      border: 1px solid #d1d9e0;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 500;
+      color: #37474f;
+      font-size: 15px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px 15px;
+      margin-top: 6px;
+      border-radius: 10px;
+      border: 1px solid #cfd8dc;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    input:focus, select:focus {
+      border-color: #546e7a;
+      box-shadow: 0 0 5px rgba(84,110,122,0.4);
+      outline: none;
+    }
+
+    button {
+      margin-top: 25px;
+      padding: 14px 20px;
+      background-color: #546e7a;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #37474f;
+    }
+
+    #resultado {
+      max-width: 700px;
+      margin: 30px auto;
+      border-left: 6px solid #546e7a;
+      border-radius: 12px;
+      padding: 25px 30px;
+      background-color: #ffffff;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+      line-height: 1.7;
+      font-size: 15px;
+      color: #000000; /* texto preto */
+    }
+    #resultado p {
+      text-align: justify;
+    }
+
+
+    #resultado h3 {
+      text-align: center;
+      color: #37474f;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+
+    #acoes {
+      max-width: 700px;
+      margin: 20px auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    #acoes button {
+      flex: 1;
+      padding: 12px 0;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+
+    #acoes button:nth-child(1) { background-color: #43a047; }
+    #acoes button:nth-child(1):hover { background-color: #2e7d32; }
+
+    #acoes button:nth-child(2) { background-color: #1976d2; }
+    #acoes button:nth-child(2):hover { background-color: #0d47a1; }
+
+    #acoes button:nth-child(3) { background-color: #c62828; }
+    #acoes button:nth-child(3):hover { background-color: #8e0000; }
+
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <h2>Requerimento de Transferência</h2>
+  
+  <form id="formRequerimento">
+    <label>Nome do Aluno:</label>
+    <input type="text" id="aluno" required>
+
+    <label>Data de Nascimento:</label>
+    <input type="date" id="nascimento" required>
+
+    <label>ANO:</label>
+    <select id="ano" required>
+      <option value="">Selecione</option>
+      <option>PRE I</option>
+      <option>PRE II</option>
+      <option>1º ANO</option>
+      <option>2º ANO</option>
+      <option>3º ANO</option>
+      <option>4º ANO</option>
+      <option>5º ANO</option>
+      <option>6º ANO</option>
+      <option>7º ANO</option>
+      <option>8º ANO</option>
+      <option>9º ANO</option>
+    </select>
+
+    <label>Escola Atual:</label>
+    <select id="escola" required>
+      <option value="">Selecione</option>
+      <option>MESTRE PACÍFICO</option>
+      <option>JOÃO FERNANDES</option>
+      <option>MARILDA CARVALHO</option>
+    </select>
+
+    <label>Nome do Responsável:</label>
+    <input type="text" id="responsavel" required>
+
+    <label>CPF do Responsável:</label>
+    <input type="text" id="cpf" maxlength="14" required>
+
+    <label>Telefone:</label>
+    <input type="text" id="telefone" maxlength="15" required>
+
+    <label>Data do Documento:</label>
+    <input type="date" id="dataDoc" required>
+
+    <button type="submit">Gerar Requerimento</button>
+  </form>
+
+  <div id="resultado"></div>
+
+  <div id="acoes" style="display:none;">
+    <button onclick="imprimirRequerimento()">Imprimir</button>
+    <button onclick="salvarRequerimento()">Salvar</button>
+    <button onclick="novoRequerimento()">Novo Requerimento</button>
+  </div>
+
+  <script>
+    function formatCPF(cpf) {
+      cpf = cpf.replace(/\D/g, "");
+      if (cpf.length === 11) return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+      return cpf;
+    }
+
+    function formatTelefone(tel) {
+      tel = tel.replace(/\D/g, "");
+      if (tel.length === 11) return tel.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
+      return tel;
+    }
+
+    function formatarDataPorExtenso(data) {
+      if (!data) return "";
+      const [ano, mes, dia] = data.split("-");
+      const meses = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+      return `${parseInt(dia)} de ${meses[parseInt(mes)-1]} de ${ano}`;
+    }
+
+    function identificarGenero(nome) {
+      let feminino = ["maria","ana","joana","marcia","beatriz","fernanda","luana","camila","julia","marina","lara","aline","francimara"];
+      let primeiroNome = nome.trim().split(" ")[0].toLowerCase();
+      return feminino.includes(primeiroNome) ? "F" : "M";
+    }
+
+    document.getElementById("cpf").addEventListener("blur", function() { this.value = formatCPF(this.value); });
+    document.getElementById("telefone").addEventListener("blur", function() { this.value = formatTelefone(this.value); });
+
+    document.getElementById("formRequerimento").addEventListener("submit", function(e) {
+      e.preventDefault();
+      let aluno = document.getElementById("aluno").value;
+      let nasc = document.getElementById("nascimento").value;
+      let ano = document.getElementById("ano").value;
+      let escola = document.getElementById("escola").value;
+      let responsavel = document.getElementById("responsavel").value;
+      let cpf = document.getElementById("cpf").value;
+      let telefone = document.getElementById("telefone").value;
+      let dataDoc = document.getElementById("dataDoc").value;
+
+      let nascFormatada = formatarDataPorExtenso(nasc);
+      let dataDocFormatada = formatarDataPorExtenso(dataDoc);
+      let genero = identificarGenero(aluno);
+      let artigo = genero === "F" ? "pela aluna" : "pelo aluno";
+
+      //===========================================
+      let texto = `
+        <img src="timbre.png" alt="Timbre" style="display:block; margin:0 auto 20px auto; max-width:100%;">
+        <h3>Requerimento de Transferência</h3>
+        <p>Eu, <strong>${responsavel}</strong>, CPF <strong>${cpf}</strong>, telefone <strong>${telefone}</strong>, responsável ${artigo} <strong>${aluno}</strong>, nascid${genero==="F"?"a":"o"} em <strong>${nascFormatada}</strong>, regularmente matriculad${genero==="F"?"a":"o"} no <strong>${ano}</strong>, na escola <strong>${escola}</strong>, venho por meio deste requerer a transferência para outra instituição de ensino.</p>
+        <p style="text-align:center; margin-top:20px;">Óbidos/PA, ${dataDocFormatada}</p>
+        <p style="text-align:center; margin-top:80px;">_________________________________<br>Assinatura do Responsável</p>
+      `;
+
+      document.getElementById("resultado").innerHTML = texto;
+      document.getElementById("acoes").style.display = "flex";
+    });
+
+    function imprimirRequerimento() {
+      const conteudo = document.getElementById("resultado").innerHTML;
+      const janela = window.open('', '', 'width=800,height=600');
+      janela.document.write('<html><head><title>Requerimento</title><style>body{font-family:Roboto,sans-serif;padding:30px;} h3{text-align:center;color:#37474f;} p{line-height:1.7;color:#000;} strong{font-weight:700;}</style></head><body>');
+      janela.document.write(conteudo);
+      janela.document.write('</body></html>');
+      janela.document.close();
+      janela.print();
+    }
+
+    function salvarRequerimento() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const conteudo = document.getElementById("resultado").innerText;
+      const linhas = doc.splitTextToSize(conteudo, 180);
+      doc.setFontSize(12);
+      doc.text(linhas, 15, 20);
+      doc.save("requerimento.pdf");
+    }
+
+    function novoRequerimento() {
+      location.reload(); // recarrega a página
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const hoje = new Date();
+      const dia = String(hoje.getDate()).padStart(2, "0");
+      const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+      const ano = hoje.getFullYear();
+      document.getElementById("dataDoc").value = `${ano}-${mes}-${dia}`;
+    });
+
+  </script>
+</body>
+</html>
+

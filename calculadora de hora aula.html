@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Calculadora de Hora Aula</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f0f4f8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .calculator {
+    background: #fff;
+    padding: 25px 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    width: 350px;
+  }
+
+  h2 {
+    text-align: center;
+    color: #002366;
+  }
+
+  label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+  }
+
+  input {
+    width: 100%;
+    padding: 10px 12px;
+    margin-top: 5px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+  }
+
+  button {
+    margin-top: 20px;
+    width: 100%;
+    padding: 12px;
+    background: #1976d2;
+    color: #fff;
+    font-size: 15px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  button:hover {
+    background: #0d47a1;
+  }
+
+  #resultado {
+    margin-top: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    color: #c62828;
+  }
+</style>
+</head>
+<body>
+
+<div class="calculator">
+  <h2>Calculadora de Hora Aula</h2>
+  
+  <label>Nome do Professor:</label>
+  <input type="text" id="professor" placeholder="Digite o nome do professor">
+
+  <label>Total de faltas (em minutos):</label>
+  <input type="number" id="faltas" placeholder="Ex: 90">
+
+  <button onclick="calcularHorasAula()">Calcular Horas-Aula</button>
+
+  <div id="resultado"></div>
+</div>
+
+<script>
+  function calcularHorasAula() {
+    const professor = document.getElementById("professor").value.trim();
+    const faltas = parseInt(document.getElementById("faltas").value);
+
+    if(!professor || isNaN(faltas) || faltas < 0){
+      alert("Preencha corretamente o nome do professor e as faltas.");
+      return;
+    }
+
+    // 45 minutos = 1 hora-aula
+    const horasAula = faltas / 45;
+    const horasAulaFormat = horasAula.toFixed(2); // duas casas decimais
+
+    document.getElementById("resultado").innerHTML = 
+      `O professor <b>${professor}</b> tem <b>${horasAulaFormat} hora(s)-aula</b> de faltas.`;
+  }
+</script>
+
+</body>
+</html>

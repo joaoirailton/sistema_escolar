@@ -1,0 +1,767 @@
+<!--<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Gerador de Termo - Frequência Escolar</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4ff;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #c62828; /* vermelho */
+      color: #fff;
+      text-align: center;
+      padding: 15px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .container {
+      max-width: 750px;
+      margin: 30px auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      border: 2px solid #1976d2;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    label {
+      font-weight: bold;
+      margin-top: 10px;
+      display: block;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+    input:focus, select:focus {
+      border-color: #1976d2;
+      outline: none;
+    }
+    .buttons {
+      margin-top: 15px;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    button {
+      background: #1976d2;
+      color: #fff;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #0d47a1;
+    }
+    #documento {
+      margin-top: 25px;
+      border: 2px solid #c62828;
+      border-radius: 8px;
+      padding: 20px;
+      background: #fafafa;
+      min-height: 250px;
+      line-height: 1.6;
+    }
+    #documento h2 {
+      text-align: center;
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 16px;
+    }
+    #documento p {
+      text-align: justify;
+    }
+    .assinatura {
+      text-align: center;
+      margin-top: 50px;
+    }
+    .data {
+      text-align: center;
+      margin-top: 30px;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <header>Gerador de Termo - Frequência Escolar</header>
+
+  <div class="container">
+    <label>Aluno:</label>
+    <input type="text" id="aluno">
+
+    <label>Turma:</label>
+    <input type="text" id="turma">
+
+    <label>Curso:</label>
+    <select id="curso">
+      <option value="">Selecione</option>
+      <option>EDUCAÇÃO INFANTIL</option>
+      <option>ENSINO FUNDAMENTAL</option>
+    </select>
+
+    <label>Ano/Série:</label>
+    <select id="serie">
+      <option value="">Selecione</option>
+      <option>PRÉ I</option>
+      <option>PRÉ II</option>
+      <option>1º ANO</option>
+      <option>2º ANO</option>
+      <option>3º ANO</option>
+      <option>4º ANO</option>
+      <option>5º ANO</option>
+      <option>6º ANO</option>
+      <option>7º ANO</option>
+      <option>8º ANO</option>
+      <option>9º ANO</option>
+    </select>
+
+    <label>Turno:</label>
+    <select id="turno">
+      <option value="">Selecione</option>
+      <option>MANHÃ</option>
+      <option>TARDE</option>
+    </select>
+
+    <label>Exercício:</label>
+    <select id="exercicio"></select>
+
+    <label>Responsável:</label>
+    <input type="text" id="responsavel">
+
+    <label>RG:</label>
+    <input type="text" id="rg">
+
+    <label>CPF:</label>
+    <input type="text" id="cpf" onblur="formatarCPF(this)">
+
+    <label>Parentesco:</label>
+    <input type="text" id="parentesco">
+
+    <label>Data:</label>
+    <input type="date" id="dataDoc">
+
+    <div class="buttons">
+      <button onclick="gerarTermo()">Gerar Termo</button>
+      <button onclick="novo()">Novo</button>
+      <button onclick="salvar()">Salvar</button>
+      <button onclick="imprimir()">Imprimir</button>
+    </div>
+
+    <div id="documento"></div>
+  </div>
+
+  <script>
+    // Preenche lista de anos (2020 a 2035)
+    window.onload = function() {
+      const select = document.getElementById("exercicio");
+      for (let ano = 2020; ano <= 2035; ano++) {
+        let option = document.createElement("option");
+        option.value = ano;
+        option.textContent = ano;
+        select.appendChild(option);
+      }
+    };
+
+    function formatarCPF(campo) {
+      let valor = campo.value.replace(/\D/g, "");
+      if (valor.length === 11) {
+        campo.value = valor.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+      }
+    }
+
+    function formatarDataExtenso(data) {
+      const meses = ["janeiro","fevereiro","março","abril","maio","junho","julho",
+        "agosto","setembro","outubro","novembro","dezembro"];
+      let partes = data.split("-");
+      return `${parseInt(partes[2])} de ${meses[parseInt(partes[1])-1]} de ${partes[0]}`;
+    }
+
+    function gerarTermo() {
+      const aluno = document.getElementById("aluno").value;
+      const turma = document.getElementById("turma").value;
+      const curso = document.getElementById("curso").value;
+      const serie = document.getElementById("serie").value;
+      const turno = document.getElementById("turno").value;
+      const exercicio = document.getElementById("exercicio").value;
+      const responsavel = document.getElementById("responsavel").value;
+      const rg = document.getElementById("rg").value;
+      const cpf = document.getElementById("cpf").value;
+      const parentesco = document.getElementById("parentesco").value;
+      const dataDoc = document.getElementById("dataDoc").value;
+
+      if (!aluno || !turma || !curso || !serie || !turno || !exercicio || !responsavel || !rg || !cpf || !parentesco || !dataDoc) {
+        alert("Preencha todos os campos!");
+        return;
+      }
+
+      const dataFormatada = formatarDataExtenso(dataDoc);
+
+      const termo = `
+        <h2>TERMO DE RESPONSABILIDADE DE ACOMPANHAMENTO DA FREQUÊNCIA ESCOLAR E PARTICIPAÇÃO NO PROCESSO DE APRENDIZAGEM</h2>
+        <p><b>DADOS DA MATRÍCULA:</b><br>
+        Aluno: ${aluno} &nbsp;&nbsp; Turma: ${turma}<br>
+        Curso: ${curso} &nbsp;&nbsp; Ano/Série: ${serie}<br>
+        Turno: ${turno} &nbsp;&nbsp; Exercício: ${exercicio}</p>
+
+        <p>Pelo presente termo, Eu, <b>${responsavel}</b>, com RG nº ${rg}, com CPF nº ${cpf}, na condição de ${parentesco} do(a) aluno(a) acima citado, estou ciente e assumo a responsabilidade e o compromisso em acompanhá-lo(a) no que se refere à sua participação nas aulas, no cumprimento da frequência escolar, conforme estabelecida pela legislação pertinente, bem como nos quesitos de desempenho e rendimento no processo de aprendizagem.</p>
+
+        <div class="data">Óbidos - PA, ${dataFormatada}</div>
+
+        <div class="assinatura">
+          _______________________________<br>
+          <b>${responsavel}</b>
+        </div>
+      `;
+
+      document.getElementById("documento").innerHTML = termo;
+    }
+
+    function novo() {
+      document.querySelectorAll("input, select").forEach(i => i.value = "");
+      document.getElementById("documento").innerHTML = "";
+    }
+
+    function salvar() {
+      const conteudo = document.getElementById("documento").innerText;
+      if (!conteudo.trim()) {
+        alert("Gere o termo antes de salvar!");
+        return;
+      }
+      const blob = new Blob([conteudo], { type: "text/plain;charset=utf-8" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "termo_responsabilidade.txt";
+      link.click();
+    }
+
+    function imprimir() {
+      const conteudo = document.getElementById("documento").innerHTML;
+      if (!conteudo.trim()) {
+        alert("Gere o termo antes de imprimir!");
+        return;
+      }
+      const janela = window.open("", "_blank");
+      janela.document.write("<html><head><title>Imprimir</title></head><body>");
+      janela.document.write(conteudo);
+      janela.document.write("</body></html>");
+      janela.document.close();
+      janela.print();
+    }
+  </script>
+</body>
+</html>
+-->
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Gerador de Termo - Frequência Escolar</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(135deg, #6a11cb, #2575fc); /* gradiente moderno azul/roxo */
+      color: #333;
+    }
+
+    header {
+      background: #fff;
+      color: #2575fc;
+      text-align: center;
+      padding: 20px;
+      font-size: 24px;
+      font-weight: bold;
+      border-bottom: 3px solid #6a11cb;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .main {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+      padding: 20px;
+      gap: 20px;
+    }
+
+    /* FORMULÁRIO LADO ESQUERDO */
+    .form-container {
+      flex: 1;
+      background: #fff;
+      border-radius: 12px;
+      padding: 30px;
+      overflow-y: auto;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-top: 15px;
+      margin-bottom: 5px;
+      color: #6a11cb;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+      transition: all 0.3s ease;
+    }
+
+    input:focus, select:focus {
+      border-color: #2575fc;
+      outline: none;
+      box-shadow: 0 0 8px rgba(37,117,252,0.2);
+    }
+
+    .buttons {
+      margin-top: 25px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 12px 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      flex: 1;
+      color: #fff;
+      transition: all 0.3s ease;
+    }
+
+    button:nth-child(1) { background: #2575fc; } /* azul moderno */
+    button:nth-child(1):hover { background: #1a5edb; }
+
+    button:nth-child(2) { background: #6a11cb; } /* roxo */
+    button:nth-child(2):hover { background: #4b0fa2; }
+
+    button:nth-child(3) { background: #333; } /* preto */
+    button:nth-child(3):hover { background: #555; }
+
+    button:nth-child(4) { background: #6a11cb; } /* roxo */
+    button:nth-child(4):hover { background: #4b0fa2; }
+
+    /* DOCUMENTO LADO DIREITO */
+    .doc-container {
+      flex: 1;
+      background: #f4f4f4;
+      border-radius: 12px;
+      padding: 30px;
+      overflow-y: auto;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    #documento {
+      border-left: 6px solid #2575fc;
+      border-radius: 12px;
+      padding: 25px 30px;
+      min-height: 100%;
+      line-height: 1.7;
+      font-size: 15px;
+      color: #333;
+      background: #fff;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    #documento img{
+      max-width: 100%;
+    }
+
+    #documento h2 {
+      text-align: center;
+      font-size: 17px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #6a11cb;
+    }
+
+    #documento p {
+      text-align: justify;
+      margin-bottom: 15px;
+    }
+
+    .assinatura, .data {
+      text-align: center;
+      margin-top: 40px;
+      font-style: italic;
+    }
+
+    .assinatura b {
+      display: block;
+      margin-top: 8px;
+      color: #2575fc;
+    }
+
+    @media(max-width: 900px){
+      .main {
+        flex-direction: column;
+      }
+      .form-container, .doc-container {
+        flex: 1;
+      }
+      .buttons button {
+        flex: 100%;
+      }
+    }
+
+    @media print {
+      body {
+        margin: 0;
+        padding: 0;
+        background: #fff !important;
+      }
+
+      /* esconde tudo exceto o documento */
+      header, .form-container, .buttons {
+        display: none !important;
+      }
+
+      .doc-container {
+        width: 100% !important;
+        margin: 0;
+        padding: 0;
+        box-shadow: none !important;
+        border: none !important;
+      }
+
+      #documento {
+        width: 210mm;         /* largura da folha A4 */
+        min-height: 297mm;    /* altura da folha A4 */
+        margin: 0 auto;
+        padding: 20mm;
+        box-sizing: border-box;
+        font-size: 12pt;
+        line-height: 1.5;
+        color: #000 !important;
+        border: none !important;
+      }
+
+      /* garante que o timbre fique ajustado e centralizado */
+      #documento img {
+        display: block;
+        margin: 0 auto 15px auto;
+        max-width: 120px; /* controla o tamanho */
+        height: auto;
+      }
+
+      /* centraliza título */
+      #documento h2 {
+        text-align: center !important;
+        font-size: 16pt !important;
+        margin-bottom: 20px;
+      }
+
+      /* centraliza data */
+      #documento .data {
+        text-align: center !important;
+        margin-top: 30px;
+        font-style: italic;
+      }
+
+      /* centraliza assinatura */
+      #documento .assinatura {
+        text-align: center !important;
+        margin-top: 60px;
+      }
+
+      #documento .assinatura b {
+        display: block;
+        margin-top: 8px;
+      }
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+</head>
+<body>
+  <header>Gerador de Termo - Frequência Escolar</header>
+
+  <div class="main">
+    <div class="form-container">
+      <label>Aluno:</label>
+      <input type="text" id="aluno">
+
+      <label>Turma:</label>
+      <input type="text" id="turma">
+
+      <label>Curso:</label>
+      <select id="curso">
+        <option value="">Selecione</option>
+        <option>EDUCAÇÃO INFANTIL</option>
+        <option>ENSINO FUNDAMENTAL</option>
+      </select>
+
+      <label>Ano/Série:</label>
+      <select id="serie">
+        <option value="">Selecione</option>
+        <option>PRÉ I</option>
+        <option>PRÉ II</option>
+        <option>1º ANO</option>
+        <option>2º ANO</option>
+        <option>3º ANO</option>
+        <option>4º ANO</option>
+        <option>5º ANO</option>
+        <option>6º ANO</option>
+        <option>7º ANO</option>
+        <option>8º ANO</option>
+        <option>9º ANO</option>
+      </select>
+
+      <label>Turno:</label>
+      <select id="turno">
+        <option value="">Selecione</option>
+        <option>MANHÃ</option>
+        <option>TARDE</option>
+      </select>
+
+      <label>Exercício:</label>
+      <select id="exercicio"></select>
+
+      <label>Responsável:</label>
+      <input type="text" id="responsavel">
+
+      <label>RG:</label>
+      <input type="text" id="rg">
+
+      <label>CPF:</label>
+      <input type="text" id="cpf" onblur="formatarCPF(this)">
+
+      <label>Parentesco:</label>
+      <select id="parentesco">
+        <option value="">Selecione</option>
+        <option>Pai</option>
+        <option>Mãe</option>
+        <option>Avô</option>
+        <option>Avó</option>
+        <option>Tio</option>
+        <option>Tia</option>
+        <option>Irmão</option>
+        <option>Irmã</option>
+        <option>Padrasto</option>
+        <option>Madrasta</option>
+        <option>Outro Responsável</option>
+      </select>
+
+
+      <label>Data:</label>
+      <input type="date" id="dataDoc">
+
+      <div class="buttons">
+        <button onclick="gerarTermo()">Gerar Termo</button>
+        <button onclick="novo()">Novo</button>
+        <button onclick="salvar()">Salvar</button>
+        <button onclick="imprimir()">Imprimir</button>
+      </div>
+    </div>
+
+    <div class="doc-container">
+      <div id="documento">
+        <div style="text-align:center; margin-bottom:20px;">
+          <img src="timbre.png" alt="Timbre">
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Definir data atual no campo "dataDoc"
+    window.onload = function() {
+      const select = document.getElementById("exercicio");
+      for (let ano = 2020; ano <= 2035; ano++) {
+        let option = document.createElement("option");
+        option.value = ano;
+        option.textContent = ano;
+        select.appendChild(option);
+      }
+
+      // Adiciona a data atual no campo
+      const hoje = new Date().toISOString().split("T")[0];
+      document.getElementById("dataDoc").value = hoje;
+    };
+
+
+    function formatarCPF(campo) {
+      let valor = campo.value.replace(/\D/g, "");
+      if (valor.length === 11) {
+        campo.value = valor.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+      }
+    }
+
+    function formatarDataExtenso(data) {
+      const meses = ["janeiro","fevereiro","março","abril","maio","junho","julho",
+        "agosto","setembro","outubro","novembro","dezembro"];
+      let partes = data.split("-");
+      return `${parseInt(partes[2])} de ${meses[parseInt(partes[1])-1]} de ${partes[0]}`;
+    }
+
+    function gerarTermo() {
+      const aluno = document.getElementById("aluno").value;
+      const turma = document.getElementById("turma").value;
+      const curso = document.getElementById("curso").value;
+      const serie = document.getElementById("serie").value;
+      const turno = document.getElementById("turno").value;
+      const exercicio = document.getElementById("exercicio").value;
+      const responsavel = document.getElementById("responsavel").value;
+      const rg = document.getElementById("rg").value;
+      const cpf = document.getElementById("cpf").value;
+      const parentesco = document.getElementById("parentesco").value;
+      const dataDoc = document.getElementById("dataDoc").value;
+
+      if (!aluno || !turma || !curso || !serie || !turno || !exercicio || !responsavel || !rg || !cpf || !parentesco || !dataDoc) {
+        alert("Preencha todos os campos!");
+        return;
+      }
+
+      const dataFormatada = formatarDataExtenso(dataDoc);
+
+      const termo = `<div style="text-align:center; margin-bottom:20px;"><img src="timbre.png"  alt="Timbre"></div>
+        <h2>TERMO DE RESPONSABILIDADE DE ACOMPANHAMENTO DA FREQUÊNCIA ESCOLAR E PARTICIPAÇÃO NO PROCESSO DE APRENDIZAGEM</h2>
+        <p><b>DADOS DA MATRÍCULA:</b><br>
+        Aluno: ${aluno} &nbsp;&nbsp; Turma: ${turma}<br>
+        Curso: ${curso} &nbsp;&nbsp; Ano/Série: ${serie}<br>
+        Turno: ${turno} &nbsp;&nbsp; Exercício: ${exercicio}</p>
+
+        <p>Pelo presente termo, Eu, <b>${responsavel}</b>, com RG nº ${rg}, com CPF nº ${cpf}, na condição de ${parentesco} do(a) aluno(a) acima citado, estou ciente e assumo a responsabilidade e o compromisso em acompanhá-lo(a) no que se refere à sua participação nas aulas, no cumprimento da frequência escolar, conforme estabelecida pela legislação pertinente, bem como nos quesitos de desempenho e rendimento no processo de aprendizagem.</p>
+
+        <div class="data">Óbidos - PA, ${dataFormatada}</div>
+
+        <div class="assinatura">
+          _______________________________<br>
+          <b>${responsavel}</b>
+        </div>
+      `;
+
+      document.getElementById("documento").innerHTML = termo;
+    }
+
+    function novo() {
+      location.reload(); // recarrega a página inteira
+    }
+
+
+    async function salvar() {
+      const { jsPDF } = window.jspdf;
+      const docElement = document.getElementById("documento");
+
+      if (!docElement.innerHTML.trim()) {
+        alert("Gere o termo antes de salvar!");
+        return;
+      }
+
+      try {
+        const canvas = await html2canvas(docElement, { scale: 2 });
+        const imgData = canvas.toDataURL("image/png");
+
+        const pdf = new jsPDF("p", "mm", "a4");
+        const imgProps = pdf.getImageProperties(imgData);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+        pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+        pdf.save("termo_responsabilidade.pdf");
+      } catch (e) {
+        console.error("Erro ao gerar PDF:", e);
+        alert("Erro ao salvar em PDF. Verifique o console.");
+      }
+    }
+
+
+    function imprimir() {
+      const conteudo = document.getElementById("documento").innerHTML;
+      if (!conteudo.trim()) {
+        alert("Gere o termo antes de imprimir!");
+        return;
+      }
+
+      const janela = window.open("", "_blank");
+      janela.document.write(`
+        <html>
+        <head>
+          <title>Imprimir</title>
+          <style>
+            body {
+              margin: 0;
+              padding: 0;
+              font-family: Arial, sans-serif;
+              background: #fff;
+            }
+            #documento {
+              width: 210mm;
+              min-height: 297mm;
+              padding: 20mm;
+              margin: auto;
+              box-sizing: border-box;
+              font-size: 12pt;
+              line-height: 1.5;
+              color: #000;
+            }
+            #documento img {
+              display: block;
+              margin: 0 auto 20px auto;
+              max-width: 100%;
+              height: auto;
+            }
+            #documento h2 {
+              text-align: center;
+              font-size: 16pt;
+              margin-bottom: 20px;
+            }
+            #documento p {
+              text-align: justify;
+              margin-bottom: 12px;
+            }
+            .data {
+              text-align: center;
+              margin-top: 30px;
+              font-style: italic;
+            }
+            .assinatura {
+              text-align: center;
+              margin-top: 60px;
+            }
+            .assinatura b {
+              display: block;
+              margin-top: 8px;
+            }
+          </style>
+        </head>
+        <body>
+          <div id="documento">${conteudo}</div>
+        </body>
+        </html>
+      `);
+      janela.document.close();
+      janela.print();
+    }
+
+  </script>
+</body>
+</html>
+

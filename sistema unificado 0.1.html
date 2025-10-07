@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard com Sidebar Expandida</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+
+  .main {
+    display: flex;
+    height: 100vh;
+  }
+
+  /* Sidebar colapsada */
+  .sidebar {
+    width: 60px; /* Apenas ícones */
+    background: #002366; /* Azul escuro */
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+    transition: width 0.3s;
+    overflow: hidden;
+  }
+
+  /* Expande a sidebar ao passar o mouse */
+  .sidebar:hover {
+    width: 340px;
+  }
+
+  .sidebar a {
+    padding: 15px 20px;
+    text-decoration: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    transition: background 0.3s;
+    border-left: 4px solid transparent;
+  }
+
+  .sidebar a i {
+    min-width: 20px;
+    text-align: center;
+    margin-right: 10px;
+    font-size: 18px;
+  }
+
+  .sidebar a span {
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  /* Mostra o texto quando expandido */
+  .sidebar:hover a span {
+    opacity: 1;
+  }
+
+  .sidebar a:hover {
+    background: #ff0000; /* Vermelho ao passar o mouse */
+    border-left: 4px solid #ffffff; /* Branco na borda */
+  }
+
+  .content {
+    flex: 1;
+    background: #f0f2f5;
+    padding: 20px;
+  }
+
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 10px;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+</style>
+</head>
+<body>
+
+<div class="main">
+  <div class="sidebar">
+    <a href="geração de termo de responsabilidade.html" target="contentFrame">
+      <i class="fas fa-user-slash"></i> <span>TERMO DESISTÊNCIA</span>
+    </a>
+    <a href="gerador de requerimento.html" target="contentFrame">
+      <i class="fas fa-exchange-alt"></i> <span>REQUERIMENTO TRANSFERÊNCIA</span>
+    </a>
+    <a href="termo de acompanhamento.html" target="contentFrame">
+      <i class="fas fa-calendar-check"></i> <span>TERMO DE ACOMPANHAMENTO</span>
+    </a>
+    <a href="termo de danos.html" target="contentFrame">
+      <i class="fas fa-tools"></i> <span>TERMO DE DANOS</span>
+    </a>
+    <!-- Novo link adicionado -->
+    <a href="Ficha aposentadoria.html" target="contentFrame">
+      <i class="fas fa-file-alt"></i> <span>FICHA APOSENTADORIA</span>
+    </a>
+  </div>
+
+
+  <div class="content">
+    <iframe name="contentFrame" src=""></iframe>
+  </div>
+</div>
+
+</body>
+</html>

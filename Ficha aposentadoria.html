@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<!--JUNINHO-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Ficha de Matrícula — Sistema</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+  :root{
+    --a:#F20530;
+    --b:#D9043D;
+    --c:#A60842;
+    --d:#010B40;
+    --e:#0477BF;
+
+    --azul:#002366;
+    --azul-suave:#5a7dbc;
+    --vermelho:#c62828;
+    --vermelho-suave: #c86565;
+    --branco:#ffffff;
+    --paper-width:820px; /* largura do documento reduzida */
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family: "Times New Roman", serif;
+    background:#f3f6fb;
+    color:#000;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* Layout: sidebar + documento + painel de ações (direita) */
+  .app {
+    display: flex;
+    min-height:100vh;
+    gap:18px;
+    padding:18px;
+  }
+
+  /* SIDEBAR */
+  .sidebar{
+    width:340px;
+    background:var(--branco);
+    border-radius:10px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.08);
+    padding:16px;
+    overflow:auto;
+  }
+  .sidebar h2{margin:6px 0 12px 0; font-size:18px; color:var(--azul)}
+  .field{margin-bottom:10px}
+  .field label{
+    display:block;
+    font-weight:700;
+    margin-bottom:6px;
+    font-size:13px;
+    color:#222;
+  }
+  .field input[type="text"],
+  .field input[type="date"],
+  .field select,
+  .field input[type="tel"],
+  .field input[type="number"]{
+    width:100%;
+    padding:8px 10px;
+    border:1px solid #cfcfcf;
+    border-radius:6px;
+    font-size:14px;
+  }
+  .small-row {display:flex; gap:8px}
+  .small-row .field{flex:1}
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:10px 12px;
+    border-radius:8px;
+    border:none;
+    cursor:pointer;
+    font-weight:700;
+  }
+  .btn-primary{background:linear-gradient(135deg,var(--azul),#1e90ff); color:white}
+  .btn-red{background:linear-gradient(135deg,var(--vermelho),#ff4c4c); color:white}
+  .muted{background:#f7f8fb; color:#333; border:1px solid #e7e7e7}
+
+  /* Lista de registros (24-28) */
+  .registro-box{
+    margin-top:8px;
+    padding:8px;
+    border:1px dashed #ddd;
+    border-radius:8px;
+    background:#fff;
+  }
+  .reg-list{margin-top:8px; max-height:220px; overflow:auto}
+  .reg-item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    padding:8px 6px;
+    border-bottom:1px solid #f1f1f1;
+  }
+  .reg-item:last-child{border-bottom:none}
+  .reg-item .txt{flex:1; font-size:13px}
+  .reg-actions button{
+    background:transparent;border:none;color:var(--azul);cursor:pointer;padding:6px;font-size:14px
+  }
+
+  /* RADIO */
+  .radio-row{display:flex;gap:12px;align-items:center;margin-top:8px}
+  .radio-row label{font-weight:600}
+
+  /* DOCUMENTO (centro) */
+  .documento-wrap{
+    width:var(--paper-width);
+    background:var(--branco);
+    border-radius:8px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+    padding:20px;
+    overflow:auto;
+  }
+
+  header.doc-header{
+    text-align:center;
+    border-bottom:3px solid var(--vermelho);
+    padding-bottom:12px;
+    margin-bottom:12px;
+  }
+  header.doc-header h2{margin:2px 0;color:var(--azul)}
+  header.doc-header p{font-size:12px;margin-top:6px}
+
+  .titulo{
+    text-align:center;
+    font-weight:700;
+    color:var(--vermelho);
+    text-transform:uppercase;
+    margin:14px 0;
+    font-size:18px;
+  }
+
+  table.doc-table{width:100%; border-collapse:collapse; margin-bottom:14px; font-size:13px}
+  table.doc-table th{
+    background:var(--azul-suave);
+    color:#fff;
+    padding:6px;
+    text-transform:uppercase;
+    border:1px solid #000;
+    font-weight:700;
+  }
+  table.doc-table td{
+    padding:6px; border:1px solid #000;
+    vertical-align:middle;
+  }
+
+  .assinaturas{
+    margin-top:18px;
+    text-align:center;
+  }
+  .assinatura-line{
+    display:block;
+    margin:70px auto 45px;
+    width:320px;
+    border-top:1px solid #000;
+    padding-top:6px;
+    font-size:13px;
+  }
+
+  .rodape{
+    margin-top:12px;
+    font-size:13px;
+    font-style:italic;
+    border-top:2px solid var(--vermelho);
+    padding-top:8px;
+  }
+
+  /* Painel de ações (direita) */
+  .panel-actions{
+    width:120px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    align-items:stretch;
+  }
+  .panel-actions .btn{width:100%}
+
+  /* Responsividade */
+  @media (max-width:1100px){
+    .app{flex-direction:column; padding:12px}
+    .sidebar{width:100%}
+    .panel-actions{flex-direction:row; width:100%}
+    .panel-actions .btn{flex:1}
+    .documento-wrap{width:100%}
+  }
+  /*DESTAQUE NOS CAMPOS DE ADICIONAR HISTÓRIOCO DO ALUNO (24 - 28)*/
+  .destaque-side{
+    background-color: var(--vermelho-suave);
+    border-radius: 8px;
+    padding: 8px;
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR: FORMULÁRIO -->
+  <aside class="sidebar" aria-label="Formulário">
+    <h2>Preencher Ficha</h2>
+
+    <!-- 1 Unidade Escolar (select) -->
+    <div class="field">
+      <label>1˚ Unidade Escolar</label>
+      <select id="campo_unidade">
+        <option value="E.M.E.I.E.F. MESTRE PACÍFICO">E.M.E.I.E.F. MESTRE PACÍFICO</option>
+        <option value="E.M.E.I.E.F. MARILDA CARVALHO">E.M.E.I.E.F. MARILDA CARVALHO</option>
+        <option value="E.M.E.I.E.F. JOÃO FERNANDES">E.M.E.I.E.F. JOÃO FERNANDES</option>
+      </select>
+    </div>
+
+    <!-- 2 Endereço -->
+    <div class="field">
+      <label>2˚ Endereço</label>
+      <input type="text" id="campo_endereco" placeholder="Ex: Comunidade Igarapé-Açú">
+    </div>
+
+    <!-- 3 Cidades do Pará (select) - ÓBIDOS pré-selecionado -->
+    <div class="field">
+      <label>3˚ Cidade:</label>
+      <select id="campo_cidade_para">
+        <!-- Uma lista representativa dos municípios do Pará (inclui ÓBIDOS pré-selecionado) -->
+        <option value="ÓBIDOS" selected>ÓBIDOS</option>
+        <option>Belém</option>
+        <option>Ananindeua</option>
+        <option>Santarém</option>
+        <option>Marabá</option>
+        <option>Altamira</option>
+        <option>Bragança</option>
+        <option>Castanhal</option>
+        <option>Redenção</option>
+        <option>Salinópolis</option>
+        <option>Paragominas</option>
+        <option>Moju</option>
+        <option>Barcarena</option>
+        <option>Soure</option>
+        <option>Alenquer</option>
+        <option>Óbidos</option>
+        <option>Curuá</option>
+        <!-- ...se desejar a lista completa dos 144 municípios posso adicionar -->
+      </select>
+    </div>
+
+    <!-- 4 Nome do Aluno -->
+    <div class="field">
+      <label>4˚ Nome do Aluno</label>
+      <input type="text" id="campo_aluno" placeholder="Nome completo">
+    </div>
+
+    <!-- 5 Sexo -->
+    <div class="field">
+      <label>5˚ Sexo</label>
+      <select id="campo_sexo">
+        <option>Masculino</option>
+        <option>Feminino</option>
+      </select>
+    </div>
+
+    <!-- 6 Data de Nascimento -->
+    <div class="field">
+      <label>6˚ Data de Nascimento</label>
+      <input type="date" id="campo_nasc">
+    </div>
+
+    <!-- 7 Cidades do Brasil (datalist com ÓBIDOS prédefinido) -->
+    <div class="field">
+      <label>7˚ Cidade que Nasceu:</label>
+      <select id="campo_cidade_brasil">
+        <!-- Uma lista representativa dos municípios do Pará (inclui ÓBIDOS pré-selecionado) -->
+        <option value="ÓBIDOS" selected>ÓBIDOS</option>
+        <option>Belém</option>
+        <option>Ananindeua</option>
+        <option>Santarém</option>
+        <option>Marabá</option>
+        <option>Altamira</option>
+        <option>Bragança</option>
+        <option>Castanhal</option>
+        <option>Redenção</option>
+        <option>Salinópolis</option>
+        <option>Paragominas</option>
+        <option>Moju</option>
+        <option>Barcarena</option>
+        <option>Soure</option>
+        <option>Alenquer</option>
+        <option>Óbidos</option>
+        <option>Curuá</option>
+      </select>
+    </div>
+
+    <!-- 8 Estados do Brasil (select) -->
+    <div class="field">
+      <label>8˚ Estado</label>
+      <select id="campo_estado">
+        <option value="PA" selected>Pará</option>
+        <option>AC</option>
+        <option>AL</option>
+        <option>AP</option>
+        <option>AM</option>
+        <option>BA</option>
+        <option>CE</option>
+        <option>DF</option>
+        <option>ES</option>
+        <option>GO</option>
+        <option>MA</option>
+        <option>MG</option>
+        <option>MS</option>
+        <option>MT</option>
+        <option>PB</option>
+        <option>PE</option>
+        <option>PI</option>
+        <option>PR</option>
+        <option>RJ</option>
+        <option>RN</option>
+        <option>RO</option>
+        <option>RR</option>
+        <option>RS</option>
+        <option>SC</option>
+        <option>SE</option>
+        <option>SP</option>
+      </select>
+    </div>
+
+    <!-- 9 Registro de nascimento -->
+    <div class="field">
+      <label>9˚ Registro de Nascimento</label>
+      <input type="text" id="campo_registro">
+    </div>
+
+    <!-- 10 Livro -->
+    <div class="field">
+      <label>10˚ Livro</label>
+      <input type="text" id="campo_livro">
+    </div>
+
+    <!-- 11 Folha -->
+    <div class="field">
+      <label>11˚ Folha</label>
+      <input type="text" id="campo_folha">
+    </div>
+
+    <!-- 12 Mãe -->
+    <div class="field">
+      <label>12˚ Nome da Mãe</label>
+      <input type="text" id="campo_mae">
+    </div>
+
+    <!-- 13 Profissão da mãe -->
+    <div class="field">
+      <label>13˚ Profissão da Mãe</label>
+      <input type="text" id="campo_prof_mae">
+    </div>
+
+    <!-- 14 RG da mãe -->
+    <div class="field">
+      <label>14˚ RG da Mãe</label>
+      <input type="text" id="campo_rg_mae">
+    </div>
+
+    <!-- 15 CPF da mãe (format on blur) -->
+    <div class="field">
+      <label>15˚ CPF da Mãe</label>
+      <input type="text" id="campo_cpf_mae" placeholder="00000000000">
+    </div>
+
+    <!-- 16 Pai -->
+    <div class="field">
+      <label>16˚ Nome do Pai</label>
+      <input type="text" id="campo_pai">
+    </div>
+
+    <!-- 17 Profissão do pai -->
+    <div class="field">
+      <label>17˚ Profissão do Pai</label>
+      <input type="text" id="campo_prof_pai">
+    </div>
+
+    <!-- 18 RG do pai -->
+    <div class="field">
+      <label>18˚ RG do Pai</label>
+      <input type="text" id="campo_rg_pai">
+    </div>
+
+    <!-- 19 CPF do pai -->
+    <div class="field">
+      <label>19˚ CPF do Pai</label>
+      <input type="text" id="campo_cpf_pai" placeholder="00000000000">
+    </div>
+
+    <!-- 20 Endereço (residência) -->
+    <div class="field">
+      <label>20˚ Endereço (residência)</label>
+      <input type="text" id="campo_residencia">
+    </div>
+
+    <!-- 21 Cidade (Brasil) para residência -->
+    <div class="field">
+      <label>21˚ Cidade (Brasil)</label>
+      <!--<input list="cidades-br" id="campo_cidade_resid" value="ÓBIDOS" />-->
+      <select id="campo_cidade_resid">
+        <!-- Uma lista representativa dos municípios do Pará (inclui ÓBIDOS pré-selecionado) -->
+        <option value="ÓBIDOS" selected>ÓBIDOS</option>
+        <option>Belém</option>
+        <option>Ananindeua</option>
+        <option>Santarém</option>
+        <option>Marabá</option>
+        <option>Altamira</option>
+        <option>Bragança</option>
+        <option>Castanhal</option>
+        <option>Redenção</option>
+        <option>Salinópolis</option>
+        <option>Paragominas</option>
+        <option>Moju</option>
+        <option>Barcarena</option>
+        <option>Soure</option>
+        <option>Alenquer</option>
+        <option>Óbidos</option>
+        <option>Curuá</option>
+      </select>
+    </div>
+
+    <!-- 22 Estado (Brasil) para residência -->
+    <div class="field">
+      <label>22˚ Estado</label>
+      <select id="campo_estado_resid">
+        <option value="PA" selected>Pará</option>
+        <option>AC</option>
+        <option>AL</option>
+        <option>AP</option>
+        <option>AM</option>
+        <option>BA</option>
+        <option>CE</option>
+        <option>DF</option>
+        <option>ES</option>
+        <option>GO</option>
+        <option>MA</option>
+        <option>MG</option>
+        <option>MS</option>
+        <option>MT</option>
+        <option>PB</option>
+        <option>PE</option>
+        <option>PI</option>
+        <option>PR</option>
+        <option>RJ</option>
+        <option>RN</option>
+        <option>RO</option>
+        <option>RR</option>
+        <option>RS</option>
+        <option>SC</option>
+        <option>SE</option>
+        <option>SP</option>
+      </select>
+    </div>
+
+    <!-- 23 Data do Documento (default hoje) -->
+    <div class="field">
+      <label>23˚ Data do Documento</label>
+      <input type="date" id="campo_data_doc">
+    </div>
+
+    <!-- 24 Ano (1960-2040) -->
+    <div class="destaque-side">
+      <div class="field">
+        <label>24˚ Ano</label>
+        <select id="campo_ano_registro"></select>
+      </div>
+      <!-- 25 Série (lista ampla) -->
+      <div class="field">
+        <label>25˚ Série/Etapa</label>
+        <select id="campo_serie_registro">
+          <option>1˚ SÉRIE</option>
+          <option>2˚ SÉRIE</option>
+          <option>3˚ SÉRIE</option>
+          <option>4˚ SÉRIE</option>
+          <option>5˚ SÉRIE</option>
+          <option>6˚ SÉRIE</option>
+          <option>7˚ SÉRIE</option>
+          <option>8˚ SÉRIE</option>
+          <option>PRÉ I</option>
+          <option>PRÉ II</option>
+          <option>CRECHE</option>
+          <option>1˚ ANO</option>
+          <option>2˚ANO</option>
+          <option>3˚ANO</option>
+          <option>4˚ANO</option>
+          <option>5˚ANO</option>
+          <option>6˚ANO</option>
+          <option>7˚ANO</option>
+          <option>8˚ANO</option>
+          <option>9˚ANO</option>
+          <option>3˚ ETAPA</option>
+          <option>4˚ ETAPA</option>
+        </select>
+      </div>
+      <!-- 26 Curso -->
+      <div class="field">
+        <label>26˚ Curso</label>
+        <select id="campo_curso_registro">
+          <option>EDU. INF.</option>
+          <option>ENS. FUND.</option>
+        </select>
+      </div>
+      <!-- 27 Escola (texto) -->
+      <div class="field">
+        <label>27˚ Escola - Comunidade</label>
+        <input type="text" id="campo_escola_registro" placeholder="Nome da escola / comunidade">
+      </div>
+      <!-- 28 Resultado -->
+      <div class="field">
+        <label>28˚ Resultado</label>
+        <select id="campo_resultado_registro">
+          <option>APROVADO</option>
+          <option>PROMOVIDO</option>
+          <option>REPROVADO</option>
+          <option>DESISTENTE</option>
+          <option>AVANÇA</option>
+        </select>
+      </div>
+      <!-- Botão adicionar registro -->
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button id="btn_add_reg" class="btn btn-primary" type="button"><i class="fa fa-plus"></i> Adicionar registro</button>
+        <button id="btn_limpar_reg" class="btn muted" type="button"><i class="fa fa-eraser"></i> Limpar</button>
+      </div>
+      <!-- Lista de registros -->
+      <div class="registro-box">
+        <strong>Registros adicionados (24–28)</strong>
+        <div class="reg-list" id="reg_list"></div>
+      </div>
+    </div>
+
+    <!-- 29 Rádio: ATIVO / PASSIVO (passivo pré-definido) -->
+    <div style="margin-top:10px">
+      <label>29˚ Origem das informações</label>
+      <div class="radio-row">
+        <label><input type="radio" name="origem" value="ATIVO"> ATIVO</label>
+        <label><input type="radio" name="origem" value="PASSIVO" checked> PASSIVO</label>
+      </div>
+    </div>
+
+    <!-- Gerar Documento -->
+    <div style="margin-top:14px">
+      <button id="btn_gerar" class="btn btn-red" type="button"><i class="fa fa-file-alt"></i> Gerar documento</button>
+    </div>
+
+    <div style="height:20px"></div>
+  </aside>
+
+  <!-- DOCUMENTO (meio) -->
+  <main class="documento-wrap" id="documento_wrap" role="main" aria-label="Documento">
+    <header class="doc-header">
+      <h2>PREFEITURA MUNICIPAL DE ÓBIDOS</h2>
+      <h2>SECRETARIA MUNICIPAL DE EDUCAÇÃO</h2>
+      <h2>DIRETORIA DE ENSINO</h2>
+      <h2>DOCUMENTAÇÃO ESCOLAR</h2>
+      <p>CNPJ Nº. 05.131.180/0001-64, Tv. Bom Jesus, s/n, Centro</p>
+    </header>
+
+    <div class="titulo">FICHA DE MATRÍCULA</div>
+
+    <!-- Tabelas preenchíveis -->
+    <table class="doc-table" id="tbl_ident_unidade">
+      <tr>
+        <th colspan="2">UNIDADE ESCOLAR</th>
+        <td id="td_unidade" colspan="4">E.M.E.I.E.F. “MESTRE PACÍFICO”</td>
+      </tr>
+      <tr>
+        <th colspan="2">ENDEREÇO</th>
+        <td id="td_endereco" colspan="4">COMUNIDADE IGARAPÉ-AÇÚ</td>
+      </tr>
+      <tr>
+        <th colspan="2">MUNICÍPIO</th>
+        <td id="td_municipio" colspan="4">ÓBIDOS</td>
+      </tr>
+    </table>
+
+    <table class="doc-table" id="tbl_identificacao">
+      <tr><th colspan="6">IDENTIFICAÇÃO</th></tr>
+      <tr><th>NOME DO ALUNO</th><td id="td_nome_aluno" colspan="5"></td></tr>
+      <tr><th>SEXO</th><td id="td_sexo"> </td><th>DATA DE NASCIMENTO</th><td id="td_nasc"> </td><th>CIDADE</th><td id="td_cidade"> </td></tr>
+      <tr><th>ESTADO</th><td id="td_estado"> </td><th>REGISTRO DE NASC.</th><td id="td_registro"> </td><th>LIVRO</th><td id="td_livro"> </td></tr>
+      <tr><th>FOLHA</th><td id="td_folha" colspan="5"></td></tr>
+    </table>
+
+    <table class="doc-table" id="tbl_filiacao">
+      <tr><th colspan="6">FILIAÇÃO</th></tr>
+      <tr><th>MÃE</th><td id="td_mae" colspan="5"></td></tr>
+      <tr><th>PROFISSÃO</th><td id="td_prof_mae"></td><th>RG</th><td id="td_rg_mae"></td><th>CPF</th><td id="td_cpf_mae"></td></tr>
+      <tr><th>PAI</th><td id="td_pai" colspan="5"></td></tr>
+      <tr><th>PROFISSÃO</th><td id="td_prof_pai"></td><th>RG</th><td id="td_rg_pai"></td><th>CPF</th><td id="td_cpf_pai"></td></tr>
+    </table>
+
+    <table class="doc-table" id="tbl_residencia">
+      <tr><th>RESIDENTE EM</th><td id="td_residencia" colspan="5"></td></tr>
+      <tr><th>MUNICÍPIO</th><td id="td_cidade_resid" ></td><th>ESTADO</th><td id="td_estado_resid" colspan="3"></td></tr>
+    </table>
+
+    <!-- Assinatura do responsável pelo preenchimento aparece acima da data -->
+    <div class="assinaturas">
+      <span class="assinatura-line" id="assinatura_preench">ASSINATURA DO RESPONSÁVEL PELO PREENCHIMENTO</span>
+      <p id="paragrafo_data">ÓBIDOS – PA, <span id="td_data_doc"></span></p>
+      <span class="assinatura-line" id="assinatura_pai">ASSINATURA DO PAI OU RESPONSÁVEL</span>
+    </div>
+
+    <!-- Histórico Escolar (registros 24-28) -->
+    <table class="doc-table" id="tbl_historico">
+      <thead>
+        <tr>
+          <th>ANO</th><th>SÉRIE</th><th>CURSO</th><th>ESCOLA - COMUNIDADE</th><th>RESULTADO</th>
+        </tr>
+      </thead>
+      <tbody id="tbody_historico">
+        <!-- linhas adicionadas dinamicamente -->
+      </tbody>
+    </table>
+
+    <div class="rodape">
+      OBS: Estas informações foram retiradas do nosso arquivo PASSIVO que fica à disposição do INSS para qualquer fiscalização ou esclarecimento.
+    </div>
+  </main>
+
+  <!-- AÇÕES (direita) -->
+  <aside class="panel-actions" aria-label="Ações">
+    <button id="btn_novo" class="btn muted"><i class="fa fa-file"></i> Novo</button>
+    <button id="btn_salvar" class="btn btn-primary"><i class="fa fa-download"></i> Salvar</button>
+    <button id="btn_imprimir" class="btn btn-red"><i class="fa fa-print"></i> Imprimir</button>
+  </aside>
+
+</div>
+
+<script>
+/* ---------- UTILITÁRIOS ---------- */
+function formatCPFString(v){
+  if(!v) return "";
+  let s = v.replace(/\D/g,'');
+  if(s.length<=3) return s;
+  if(s.length<=6) return s.replace(/(\d{3})(\d+)/, "$1.$2");
+  if(s.length<=9) return s.replace(/(\d{3})(\d{3})(\d+)/, "$1.$2.$3");
+  return s.replace(/(\d{3})(\d{3})(\d{3})(\d{2}).*/, "$1.$2.$3-$4");
+}
+function applyCPFFormatToField(id){
+  const el = document.getElementById(id);
+  el.addEventListener('blur', ()=>{ el.value = formatCPFString(el.value); });
+}
+
+/* ---------- POPULAÇÃO INICIAL ---------- */
+(function init(){
+  
+  // preencher anos (1960-2040)
+  const selAno = document.getElementById('campo_ano_registro');
+  for(let y=1960;y<=2040;y++){
+    const o = document.createElement('option'); o.value=y; o.textContent=y;
+    selAno.appendChild(o);
+  }
+
+  // data do documento = hoje (campo 23)
+  const hoje = new Date();
+  const yyyy = hoje.getFullYear(), mm = String(hoje.getMonth()+1).padStart(2,'0'), dd = String(hoje.getDate()).padStart(2,'0');
+  document.getElementById('campo_data_doc').value = `${yyyy}-${mm}-${dd}`;
+
+  // aplicar formatação CPF nos campos 15 e 19
+  applyCPFFormatToField('campo_cpf_mae');
+  applyCPFFormatToField('campo_cpf_pai');
+})();
+//JUNINHO
+function formatarDataDocumento(data){
+  if(!data) return '';
+  const options = { day: '2-digit', month: 'long', year: 'numeric' };
+  const dt = new Date(data);
+  // força mês em minúsculas? toLocale já devolve "outubro" correto.
+  return `${dt.toLocaleDateString('pt-BR', options)}`;
+}
+
+/* ---------- REGISTROS 24–28 (lista) ---------- */
+let registros = [];
+const regListEl = document.getElementById('reg_list');
+const tbodyHistorico = document.getElementById('tbody_historico');
+
+function renderRegistros(){
+  // render sidebar list
+  regListEl.innerHTML = '';
+  registros.forEach((r, idx) => {
+    const div = document.createElement('div'); div.className='reg-item';
+    const txt = document.createElement('div'); txt.className='txt';
+    txt.innerHTML = `<strong>${r.ano}</strong> — ${r.serie} / ${r.curso} / ${r.escola} / <em>${r.resultado}</em>`;
+    const actions = document.createElement('div'); actions.className='reg-actions';
+    actions.innerHTML = `
+      <button title="Mover para cima" onclick="moveRegistro(${idx},-1)"><i class="fa fa-chevron-up"></i></button>
+      <button title="Mover para baixo" onclick="moveRegistro(${idx},1)"><i class="fa fa-chevron-down"></i></button>
+      <button title="Editar" onclick="editarRegistro(${idx})"><i class="fa fa-pen"></i></button>
+      <button title="Excluir" onclick="excluirRegistro(${idx})"><i class="fa fa-trash"></i></button>
+    `;
+    div.appendChild(txt); div.appendChild(actions);
+    regListEl.appendChild(div);
+  });
+
+  // render tabela no documento
+  tbodyHistorico.innerHTML = '';
+  registros.forEach(r=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${r.ano}</td><td>${r.serie}</td><td>${r.curso}</td><td>${r.escola}</td><td>${r.resultado}</td>`;
+    tbodyHistorico.appendChild(tr);
+  });
+}
+
+function moveRegistro(i, dir){
+  const j = i + dir;
+  if(j<0 || j>=registros.length) return;
+  const tmp = registros[i]; registros.splice(i,1);
+  registros.splice(j,0,tmp);
+  renderRegistros();
+}
+
+function editarRegistro(i){
+  const r = registros[i];
+  // carregar nos campos 24-28 para editar
+  document.getElementById('campo_ano_registro').value = r.ano;
+  document.getElementById('campo_serie_registro').value = r.serie;
+  document.getElementById('campo_curso_registro').value = r.curso;
+  document.getElementById('campo_escola_registro').value = r.escola;
+  document.getElementById('campo_resultado_registro').value = r.resultado;
+  // remover o registro antigo
+  registros.splice(i,1);
+  renderRegistros();
+}
+
+function excluirRegistro(i){
+  registros.splice(i,1);
+  renderRegistros();
+}
+
+document.getElementById('btn_add_reg').addEventListener('click', ()=>{
+  const ano = document.getElementById('campo_ano_registro').value;
+  const serie = document.getElementById('campo_serie_registro').value;
+  const curso = document.getElementById('campo_curso_registro').value;
+  const escola = document.getElementById('campo_escola_registro').value;
+  const resultado = document.getElementById('campo_resultado_registro').value;
+  if(!ano || !serie || !curso || !escola || !resultado){
+    alert('Preencha todos os campos do registro (24–28) antes de adicionar.');
+    return;
+  }
+  registros.push({ano,serie,curso,escola,resultado});
+  // limpa campos 27 (escola) opcionalmente
+  document.getElementById('campo_escola_registro').value = '';
+  renderRegistros();
+});
+
+document.getElementById('btn_limpar_reg').addEventListener('click', ()=>{
+  document.getElementById('campo_escola_registro').value='';
+  document.getElementById('campo_ano_registro').selectedIndex=0;
+  document.getElementById('campo_serie_registro').selectedIndex=0;
+  document.getElementById('campo_curso_registro').selectedIndex=0;
+  document.getElementById('campo_resultado_registro').selectedIndex=0;
+});
+
+/* ---------- GERAR DOCUMENTO ---------- */
+document.getElementById('btn_gerar').addEventListener('click', ()=>{
+  // ler campos
+  const unidade = document.getElementById('campo_unidade').value;
+  const endereco = document.getElementById('campo_endereco').value;
+  const cidadePara = document.getElementById('campo_cidade_para').value;
+  const nomeAluno = document.getElementById('campo_aluno').value;
+  const sexo = document.getElementById('campo_sexo').value;
+  const nasc = document.getElementById('campo_nasc').value;
+  const cidadeBrasil = document.getElementById('campo_cidade_brasil').value || document.getElementById('campo_cidade_brasil').getAttribute('value') || 'ÓBIDOS';
+  const estado = document.getElementById('campo_estado').value;
+  const registro = document.getElementById('campo_registro').value;
+  const livro = document.getElementById('campo_livro').value;
+  const folha = document.getElementById('campo_folha').value;
+  const mae = document.getElementById('campo_mae').value;
+  const profMae = document.getElementById('campo_prof_mae').value;
+  const rgMae = document.getElementById('campo_rg_mae').value;
+  const cpfMae = document.getElementById('campo_cpf_mae').value;
+  const pai = document.getElementById('campo_pai').value;
+  const profPai = document.getElementById('campo_prof_pai').value;
+  const rgPai = document.getElementById('campo_rg_pai').value;
+  const cpfPai = document.getElementById('campo_cpf_pai').value;
+  const resid = document.getElementById('campo_residencia').value;
+  const cidadeResid = document.getElementById('campo_cidade_resid').value || document.getElementById('campo_cidade_resid').getAttribute('value') || 'ÓBIDOS';
+  const estadoResid = document.getElementById('campo_estado_resid').value;
+  const dataDoc = document.getElementById('campo_data_doc').value;
+  const origem = document.querySelector('input[name="origem"]:checked').value;
+
+  // validações simples
+  if(!nomeAluno){
+    if(!confirm('O campo NOME DO ALUNO está vazio. Deseja continuar?')) return;
+  }
+
+  // preencher documento
+  document.getElementById('td_unidade').textContent = unidade;
+  document.getElementById('td_endereco').textContent = endereco || '—';
+  document.getElementById('td_municipio').textContent = cidadePara || '—';
+
+  document.getElementById('td_nome_aluno').textContent = nomeAluno||'—';
+  document.getElementById('td_sexo').textContent = sexo||'—';
+  document.getElementById('td_nasc').textContent = nasc ? (new Date(nasc)).toLocaleDateString('pt-BR') : '—';
+  document.getElementById('td_cidade').textContent = cidadeBrasil||'—';
+  document.getElementById('td_estado').textContent = estado||'—';
+  document.getElementById('td_registro').textContent = registro||'—';
+  document.getElementById('td_livro').textContent = livro||'—';
+  document.getElementById('td_folha').textContent = folha||'—';
+
+  document.getElementById('td_mae').textContent = mae||'—';
+  document.getElementById('td_prof_mae').textContent = profMae||'—';
+  document.getElementById('td_rg_mae').textContent = rgMae||'—';
+  document.getElementById('td_cpf_mae').textContent = cpfMae||'—';
+
+  document.getElementById('td_pai').textContent = pai||'—';
+  document.getElementById('td_prof_pai').textContent = profPai||'—';
+  document.getElementById('td_rg_pai').textContent = rgPai||'—';
+  document.getElementById('td_cpf_pai').textContent = cpfPai||'—';
+
+  document.getElementById('td_residencia').textContent = resid||'—';
+  document.getElementById('td_cidade_resid').textContent = cidadeResid||'—';
+  document.getElementById('td_estado_resid').textContent = estadoResid||'—';
+
+  document.getElementById('td_data_doc').textContent = dataDoc ? formatarDataDocumento(dataDoc) : '';
+
+  // origem ATIVO/PASSIVO - mostra no rodapé como nota breve (opcional)
+  const rodape = document.querySelector('.rodape');
+  rodape.textContent = `OBS: Estas informações foram retiradas do nosso arquivo ${origem} que fica à disposição do INSS para qualquer fiscalização ou esclarecimento.`;
+
+  // preencher histórico com registros já adicionados
+  renderRegistros();
+
+  // scroll documento para o topo (visual)
+  document.querySelector('.documento-wrap').scrollTop = 0;
+  alert('Documento gerado com sucesso. Use Imprimir / Salvar à direita.');
+});
+
+/* ---------- BOTÕES NOVO / SALVAR / IMPRIMIR ---------- */
+document.getElementById('btn_novo').addEventListener('click', ()=>{
+  if(!confirm('Limpar formulário e documento?')) return;
+  // limpa campos do formulário (exceto anos list)
+  document.querySelectorAll('#campo_unidade, #campo_endereco, #campo_aluno, #campo_nasc, #campo_registro, #campo_livro, #campo_folha, #campo_mae, #campo_prof_mae, #campo_rg_mae, #campo_cpf_mae, #campo_pai, #campo_prof_pai, #campo_rg_pai, #campo_cpf_pai, #campo_residencia, #campo_escola_registro').forEach(i=>i.value='');
+  // reset selects to defaults
+  document.getElementById('campo_sexo').selectedIndex=0;
+  document.getElementById('campo_estado').value='PA';
+  document.getElementById('campo_cidade_para').value='ÓBIDOS';
+  document.getElementById('campo_estado_resid').value='PA';
+  // limpar registros e documento table
+  registros = []; renderRegistros();
+  document.querySelectorAll('[id^="td_"]').forEach(td => td.textContent = '');
+  document.getElementById('td_unidade').textContent = 'E.M.E.I.E.F. “MESTRE PACÍFICO”';
+  document.getElementById('td_endereco').textContent = 'COMUNIDADE IGARAPÉ-AÇÚ';
+  document.getElementById('td_municipio').textContent = 'ÓBIDOS';
+  document.getElementById('td_data_doc').textContent = '';
+  document.querySelector('.rodape').textContent = 'OBS: Estas informações foram retiradas do nosso arquivo PASSIVO que fica à disposição do INSS para qualquer fiscalização ou esclarecimento.';
+});
+document.getElementById('btn_salvar').addEventListener('click', function(){
+  // prepara o elemento que será convertido em PDF
+  const elemento = document.getElementById('documento_wrap');
+
+  // opções — ajuste margin / scale se necessário
+  const opt = {
+    margin:       [10, 10, 10, 10],               // top, left, bottom, right (pt)
+    filename:     'ficha_matricula.pdf',
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2, useCORS: true, windowWidth: elemento.scrollWidth },
+    jsPDF:        { unit: 'pt', format: 'a4', orientation: 'portrait' }
+  };
+
+  // gerar e salvar
+  html2pdf().set(opt).from(elemento).save();
+});
+//IMPRIMIR
+document.getElementById('btn_imprimir').addEventListener('click', function(){
+  const html = document.querySelector('.documento-wrap').outerHTML;
+  const w = window.open('', '_blank');
+
+  // pega todas as <style> e <link rel="stylesheet"> da página para preservar o visual
+  const styles = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]'))
+    .map(node => node.outerHTML).join('\n');
+
+  w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>Imprimir Ficha</title>');
+  w.document.write(styles);
+  // ajustes mínimos para impressão — mantém Times New Roman e margens
+  w.document.write('<style>body{font-family:Times New Roman, serif;margin:20px;color:#000} table{border-collapse:collapse;width:100%;} table, th, td{border:1px solid #000;padding:6px;} </style>');
+  w.document.write('</head><body>');
+  w.document.write(html);
+  w.document.write('</body></html>');
+  w.document.close();
+  w.focus();
+  // pequeno delay para garantir carregamento de estilos
+  setTimeout(()=>{ w.print(); }, 500);
+});
+
+
+/* fim do script */
+</script>
+<script>
+  /* Preenchimento automático dos campos de endereço e cidade */
+document.getElementById('campo_unidade').addEventListener('change', ()=>{
+  const unidade = document.getElementById('campo_unidade').value;
+  const campoEndereco = document.getElementById('campo_endereco');
+  const campoCidade = document.getElementById('campo_cidade_para');
+
+  switch(unidade){
+    case "E.M.E.I.E.F. MESTRE PACÍFICO":
+      campoEndereco.value = "Rua São Francisco - S/N, Agrovila Igarapé-Açu, CEP: 68.250-000";
+      campoCidade.value = "ÓBIDOS";
+      break;
+    case "E.M.E.I.E.F. JOÃO FERNANDES":
+      campoEndereco.value = "Agrovila Andirobal, CEP 68.250-000";
+      campoCidade.value = "ÓBIDOS";
+      break;
+    case "E.M.E.I.E.F. MARILDA CARVALHO":
+      campoEndereco.value = "Agrovila Ipixuna, CEP 68.250-000";
+      campoCidade.value = "ÓBIDOS";
+      break;
+    default:
+      campoEndereco.value = "";
+      campoCidade.value = "";
+  }
+});
+//hhhhhhhhhhhhhhhhhhh
+
+</script>
+</body>
+</html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Gerador de Documento Oficial</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      display: flex;
+      gap: 20px;
+    }
+    .formulario {
+      width: 30%;
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h3{
+      text-align: center;
+    }
+    .formulario label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+    }
+    .formulario input, .formulario select {
+      width: 100%;
+      padding: 6px;
+      margin-top: 4px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .botoes {
+      margin-top: 15px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .botoes button {
+      flex: 1;
+      padding: 8px;
+      background: #1976d2;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .botoes button:hover {
+      background: #0d47a1;
+    }
+    .documento {
+      width: 70%;
+      background: #fff;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      min-height: 1123px; /* A4 height */
+      position: relative;
+    }
+    .documento img {
+      display: block;
+      margin: 0 auto 20px auto;
+      max-width: 100%;
+    }
+    .documento h2 {
+      text-align: center;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-top: 10px;
+    }
+    .documento p {
+      text-align: justify;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+    .assinatura {
+      margin-top: 80px;
+      text-align: center;
+    }
+    .data {
+      margin-top: 40px;
+      text-align: center;
+      font-style: italic;
+    }
+    @media print {
+      body { background: none; padding: 0; }
+      .container { display: block; }
+      .formulario { display: none; }
+      .documento {
+        width: 100%;
+        box-shadow: none;
+        border: none;
+        padding: 20mm;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Formulário -->
+    <div class="formulario">
+      <h3>PREENCHER DADOS</h3>
+      <label>Nome do Aluno:</label>
+      <input type="text" id="aluno">
+
+      <label>Turma:</label>
+      <input type="text" id="turma">
+
+      <label>Curso:</label>
+      <select id="curso">
+        <option value="">Selecione</option>
+        <option>Educação Infantil</option>
+        <option>Ensino Fundamental</option>
+      </select>
+
+      <label>Ano/Série:</label>
+      <select id="serie">
+        <option value="">Selecione</option>
+        <option>PRÉ I</option>
+        <option>PRÉ II</option>
+        <option>1º ANO</option>
+        <option>2º ANO</option>
+        <option>3º ANO</option>
+        <option>4º ANO</option>
+        <option>5º ANO</option>
+        <option>6º ANO</option>
+        <option>7º ANO</option>
+        <option>8º ANO</option>
+        <option>9º ANO</option>
+      </select>
+
+      <label>Turno:</label>
+      <select id="turno">
+        <option value="">Selecione</option>
+        <option>Manhã</option>
+        <option>Tarde</option>
+      </select>
+
+      <label>Exercício:</label>
+      <select id="exercicio"></select>
+
+      <label>Responsável:</label>
+      <input type="text" id="responsavel">
+
+      <label>Data:</label>
+      <input type="date" id="dataDoc">
+
+      <div class="botoes">
+        <button onclick="gerar()">Gerar</button>
+        <button onclick="novo()">Novo</button>
+        <button onclick="salvar()">Salvar</button>
+        <button onclick="imprimir()">Imprimir</button>
+      </div>
+    </div>
+
+    <!-- Documento -->
+    <div class="documento" id="documento">
+      <img src="timbre.png" alt="Timbre da Prefeitura">
+      <h2>TERMO DE RESPONSABILIDADE POR DANOS À ESCOLA</h2>
+      <p>Preencha os dados ao lado e clique em <b>Gerar</b> para visualizar o documento aqui.</p>
+    </div>
+  </div>
+
+  <script>
+    window.onload = function() {
+      // Preencher anos no select
+      const exercicio = document.getElementById("exercicio");
+      for (let ano = 2020; ano <= 2035; ano++) {
+        let opt = document.createElement("option");
+        opt.value = ano;
+        opt.textContent = ano;
+        exercicio.appendChild(opt);
+      }
+
+      // Já preencher a data atual no campo de data
+      const hoje = new Date();
+      const ano = hoje.getFullYear();
+      const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+      const dia = String(hoje.getDate()).padStart(2, "0");
+      document.getElementById("dataDoc").value = `${ano}-${mes}-${dia}`;
+    };
+
+
+    function formatarDataExtenso(data) {
+      const meses = ["janeiro","fevereiro","março","abril","maio","junho","julho",
+        "agosto","setembro","outubro","novembro","dezembro"];
+      let partes = data.split("-");
+      return `${parseInt(partes[2])} de ${meses[parseInt(partes[1])-1]} de ${partes[0]}`;
+    }
+
+    function gerar() {
+      const aluno = document.getElementById("aluno").value;
+      const turma = document.getElementById("turma").value;
+      const curso = document.getElementById("curso").value;
+      const serie = document.getElementById("serie").value;
+      const turno = document.getElementById("turno").value;
+      const exercicio = document.getElementById("exercicio").value;
+      const responsavel = document.getElementById("responsavel").value;
+      const dataDoc = document.getElementById("dataDoc").value;
+
+      if (!aluno || !turma || !curso || !serie || !turno || !exercicio || !responsavel || !dataDoc) {
+        alert("Preencha todos os campos!");
+        return;
+      }
+
+      const dataFormatada = formatarDataExtenso(dataDoc);
+
+      const conteudo = `
+        <img src="timbre.png" alt="Timbre da Prefeitura">
+        <h2>TERMO DE RESPONSABILIDADE POR DANOS À ESCOLA</h2>
+        <p><b>DADOS DA MATRÍCULA:</b><br>
+        Aluno: ${aluno} &nbsp;&nbsp; Turma: ${turma}<br>
+        Curso: ${curso} &nbsp;&nbsp; Ano/Série: ${serie}<br>
+        Turno: ${turno} &nbsp;&nbsp; Exercício: ${exercicio}</p>
+
+        <p>Na condição de aluno maior de idade, pais ou responsável legal por aluno matriculado nesta
+        instituição de ensino da cidade de Óbidos, declaro estar ciente do que reza a Lei Municipal
+        3.088/2003, concordando com seu conteúdo, sobretudo, o descrito no artigo 1º.</p>
+
+        <p><i>"Art. 1º fica estabelecido que os pais ou responsáveis legais pelos alunos da rede pública de ensino
+        municipal, assinarão no ato da matrícula escolar um termo próprio de compromisso a ressarcir à escola
+        de todo e qualquer prejuízo ou dano que venha a ser causado pelo aluno(a), quando ficar comprovada
+        sua autoria ou responsabilidade intelectual, atingindo ou destruindo de forma parcial ou total, qualquer
+        bem físico, material, ambiental ou arquitetônico do estabelecimento de ensino no qual estão matriculados."</i></p>
+
+        <p>Eu, <b>${responsavel}</b>, assino e dou Fé.</p>
+
+        <div class="data">Óbidos - PA, ${dataFormatada}</div>
+
+        <div class="assinatura">
+          _______________________________<br>
+          <b>${responsavel}</b>
+        </div>
+      `;
+      document.getElementById("documento").innerHTML = conteudo;
+    }
+
+    function novo() {
+      location.reload(); // Recarrega a página inteira
+    }
+
+
+    function salvar() {
+      const conteudo = document.getElementById("documento").innerText;
+      if (!conteudo.trim()) {
+        alert("Gere o documento antes de salvar!");
+        return;
+      }
+      const blob = new Blob([conteudo], { type: "text/plain;charset=utf-8" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "termo_responsabilidade.txt";
+      link.click();
+    }
+
+    function imprimir() {
+      const conteudo = document.getElementById("documento").innerHTML;
+      const estilos = `
+        <style>
+          body { font-family: Arial, sans-serif; margin: 20mm; }
+          .documento img { display:block; margin: 0 auto 20px auto; max-width: 100%; }
+          .documento h2 { text-align: center; font-weight: bold; text-transform: uppercase; margin-top: 10px; }
+          .documento p { text-align: justify; line-height: 1.6; font-size: 14px; }
+          .assinatura { margin-top: 80px; text-align: center; }
+          .data { margin-top: 40px; text-align: center; font-style: italic; }
+          @page { size: A4; margin: 20mm; }
+        </style>
+      `;
+      const win = window.open("", "_blank");
+      win.document.write("<html><head><title>Imprimir</title>");
+      win.document.write(estilos);
+      win.document.write("</head><body>");
+      win.document.write('<div class="documento">' + conteudo + "</div>");
+      win.document.write("</body></html>");
+      win.document.close();
+      win.print();
+    }
+  </script>
+</body>
+</html>
