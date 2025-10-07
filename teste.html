@@ -4,694 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DEMONSTRATIVO MENSAL MESTRE PACIFICO - EDITÁVEL DINÂMICO</title>
-    <style>
-        /* CONFIGURAÇÃO PARA ORIENTAÇÃO PAISAGEM (IMPRESSÃO) */
-        @page {
-            size: A4 landscape; /* Define a orientação da página como paisagem */
-            margin: 10mm; /* Margens mínimas */
-        }
-
-        /* Estilos Globais e do Corpo do Documento */
-        body {
-            font-family: 'Times New Roman', serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f0f0; 
-            font-size: 10pt;
-            color: #000;
-        }
-
-        /* ---------------------------------------------------- */
-        /* SIDEBAR (PAINEL DE EDIÇÃO) - FIXA */
-        /* ---------------------------------------------------- */
-        .sidebar {
-            background-color: #f7f7f7;
-            border-right: 1px solid #ddd;
-            padding: 15mm 15px; 
-            font-size: 9pt;
-            overflow-y: auto;
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            bottom: 0; 
-            width: 320px; /* Largura levemente aumentada */
-            z-index: 1000; 
-            box-sizing: border-box;
-        }
-
-        .sidebar h4 {
-            color: #004a99;
-            border-bottom: 2px solid #004a99;
-            padding-bottom: 5px;
-            margin-top: 20px;
-            font-size: 11pt;
-        }
-        .sidebar h5 {
-            margin-top: 15px;
-            margin-bottom: 5px;
-            font-size: 10pt;
-        }
-
-        .sidebar label {
-            display: block;
-            font-weight: bold;
-            margin-top: 10px;
-            margin-bottom: 3px;
-            font-size: 9pt;
-        }
-
-        .sidebar input[type="text"],
-        .sidebar input[type="number"],
-        .sidebar input[type="date"],
-        .sidebar select {
-            width: 95%;
-            padding: 3px;
-            border: 1px solid #aaa;
-            border-radius: 3px;
-            box-sizing: border-box;
-            font-size: 8pt;
-            margin-bottom: 5px;
-        }
-
-        .sidebar button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 9pt;
-            margin-top: 10px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-        .sidebar button:hover {
-            background-color: #45a049;
-        }
-        .sidebar .data-input {
-            width: 100%;
-        }
-
-        /* ---------------------------------------------------- */
-        /* CONTEÚDO PRINCIPAL - AGORA FLUTUANTE */
-        /* ---------------------------------------------------- */
-        .main-content-area {
-            /* Desloca a área principal para a direita, liberando o espaço da sidebar */
-            margin-left: 320px; /* Igual à largura da sidebar */
-            padding: 0 30px; 
-            min-height: 100vh;
-        }
-
-        /* O ELEMENTO DA PÁGINA (A4 PAISAGEM) */
-        .document-container {
-            width: 297mm;
-            min-height: 210mm;
-            /* Centraliza a página na área livre restante */
-            margin: 30px auto; 
-            padding: 15mm 15mm;
-            background: white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            box-sizing: border-box;
-        }
-
-        /* Impede que a sidebar apareça na impressão e reseta a margem */
-        @media print {
-            .sidebar {
-                display: none;
-            }
-            .main-content-area {
-                margin-left: 0;
-            }
-            .document-container {
-                margin: 0;
-                box-shadow: none;
-            }
-        }
-        
-        /* ---------------------------------------------------- */
-        /* ESTILOS DE TABELA DINÂMICA */
-        /* ---------------------------------------------------- */
-        .data-table table {
-            width: 100%;
-            border-collapse: collapse;
-            table-layout: fixed;
-            margin-bottom: 15px;
-        }
-        .data-table th, .data-table td {
-            border: 1px solid #000;
-            padding: 2px;
-            text-align: center;
-            font-size: 7.5pt;
-            word-break: break-word; 
-            white-space: normal !important;
-            vertical-align: middle;
-        }
-        .data-table th {
-            font-weight: bold;
-            background-color: #e0e0e0;
-        }
-        
-        /* Estilos para INPUTs e SELECTs dentro das CÉLULAS */
-        .data-table input[type="text"],
-        .data-table input[type="number"],
-        .data-table input[type="date"],
-        .data-table select {
-            width: 90%;
-            padding: 0;
-            margin: 0;
-            border: none;
-            text-align: center;
-            font-size: 7.5pt;
-            background: transparent;
-        }
-        /* Ajuste específico para a descrição do gênero */
-        #tabela-estoque td:nth-child(2) select {
-            width: 98%;
-            text-align: left;
-        }
-        
-        /* Estilo para o botão de remoção */
-        .remove-row-btn {
-            background: none;
-            border: none;
-            color: red;
-            cursor: pointer;
-            font-size: 10pt;
-            padding: 0 2px;
-            line-height: 1;
-        }
-        .remove-row-btn:hover {
-            color: darkred;
-        }
-
-        /* ---------------------------------------------------- */
-        /* ESTILOS DO DOCUMENTO (MANTIDOS/AJUSTADOS) */
-        /* ---------------------------------------------------- */
-        
-        .header-institutional {
-            margin-bottom: 15px;
-        }
-        #cabecalho {
-            width: 100%;
-            height: auto; 
-            display: block;
-        }
-        
-        #tabela-detalhes td {
-            height: 30px; 
-            vertical-align: middle;
-        }
-        #tabela-estoque th, #tabela-estoque td {
-            text-align: left;
-        }
-        #tabela-estoque td:nth-child(1), #tabela-estoque td:nth-child(3), #tabela-estoque td:nth-child(4), #tabela-estoque td:nth-child(5) {
-            text-align: center;
-        }
-        .footer-document {
-            margin-top: 50px;
-            padding-top: 10px;
-        }
-        .signatures {
-            display: flex;
-            justify-content: space-around;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .signatures div {
-            width: 30%;
-        }
-        .signatures hr {
-            border: 0;
-            border-top: 1px solid #000;
-            margin-bottom: 5px;
-        }
-        #rodape {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-        #tabela-detalhes span {
-            display: block;
-            width: 100%;
-        }
-
-    </style>
-</head>
-<body>
-
-    <div class="sidebar">
-        <h4>1. Detalhes da Escola (Tabela 1)</h4>
-
-        <label for="nome_escola_input">NOME DA ESCOLA</label>
-        <select id="nome_escola_input">
-            <option value="Escola Mestre Pacífico" selected>Escola Mestre Pacífico</option>
-            <option value="Escola João Fernandes de Oliveira">Escola João Fernandes de Oliveira</option>
-            <option value="Escola Marilda Carvalho">Escola Marilda Carvalho</option>
-            <option value="Escola Raimundo Pereira">Escola Raimundo Pereira</option>
-            <option value="Escola Mestre Pacífico - CEMEP">Escola Mestre Pacífico - CEMEP</option>
-            <option value="Escola Mestre Pacífico - INTEGRAL">Escola Mestre Pacífico - INTEGRAL</option>
-        </select>
-
-        <label for="endereco_escola_input">ENDEREÇO</label>
-        <select id="endereco_escola_input">
-            <option value="Comunidade Igarapé Açu" selected>Comunidade Igarapé Açu</option>
-            <option value="Comunidade Ipixuna">Comunidade Ipixuna</option>
-            <option value="Comunidade Arumã">Comunidade Arumã</option>
-        </select>
-        
-        <label for="meio_escola_input">MEIO</label>
-        <select id="meio_escola_input">
-            <option value="Terra Firme" selected>Terra Firme</option>
-        </select>
-
-        <label for="municipio_escola_input">MUNICÍPIO</label>
-        <select id="municipio_escola_input">
-            <option value="Óbidos" selected>Óbidos</option>
-        </select>
-
-        <label for="num_alunos_input">N° DE ALUNOS MATRICULADOS</label>
-        <input type="number" id="num_alunos_input" value="330">
-        
-        <label for="tipo_ensino_input">TIPO DE ENSINO</label>
-        <select id="tipo_ensino_input">
-            <option value="Ed. Inf. E Ens. Fund." selected>Ed. Inf. E Ens. Fund.</option>
-            <option value="Ed. Infantil">Ed. Infantil</option>
-            <option value="Ens. Fundamental">Ens. Fundamental</option>
-        </select>
-        
-        <label for="periodo_input">PERÍODO (Início e Fim)</label>
-        <input type="text" id="periodo_input" placeholder="Ex: 24/07/2025\n21/08/2025" value="24/07/2025\n21/08/2025">
-
-        
-        <hr style="margin-top: 20px;">
-        
-        <h5>Data do Documento</h5>
-        <input type="date" id="document_date_input" class="data-input">
-
-        <hr style="margin-top: 20px;">
-
-        <h5>2. Mapa de Frequência (Tabela 2)</h5>
-        <button onclick="addRowTable2()">+ Adicionar Linha (Tabela 2)</button>
-
-        <h5 style="margin-top: 25px;">3. Controle de Estoque (Tabela 3)</h5>
-        <button onclick="addRowTable3()">+ Adicionar Linha (Tabela 3)</button>
-
-        <p style="font-size: 8pt; margin-top: 20px;">*As unidades de medida e cálculos de saldo na Tabela 3 são automáticos.</p>
-    </div>
-    <div class="main-content-area">
-        <div class="document-container">
-
-            <div class="header-institutional">
-                <img id="cabecalho" src="timbre.png" alt="cabeçalho">
-            </div>
-
-            <h2 style="text-align: center; font-size: 11pt; margin: 10px 0; text-decoration: underline;">DEMONSTRATIVO MENSAL DA DISTRIBUIÇÃO DE REFEIÇÕES E CONSUMO DE GÊNEROS ALIMENTÍCIOS NA ESCOLA</h2>
-
-            <div class="data-table">
-                <table id="tabela-detalhes">
-                    <thead>
-                        <tr>
-                            <th style="width: 15%;">NOME DA ESCOLA</th>
-                            <th style="width: 18%;">ENDEREÇO</th>
-                            <th style="width: 8%;">MEIO</th>
-                            <th style="width: 10%;">MUNICÍPIO</th>
-                            <th style="width: 13%;">DEPENDÊNCIA ADMINISTRATIVA</th>
-                            <th style="width: 10%;">N° DE ALUNOS MATRICULADOS</th>
-                            <th style="width: 13%;">TIPO DE ENSINO</th>
-                            <th style="width: 13%;">PERÍODO</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><span id="nome_escola_display">Escola Mestre Pacífico</span></td>
-                            <td><span id="endereco_escola_display">Comunidade Igarapé Açu</span></td>
-                            <td><span id="meio_escola_display">Terra Firme</span></td>
-                            <td><span id="municipio_escola_display">Óbidos</span></td>
-                            <td>Municipal</td>
-                            <td><span id="num_alunos_display">330</span></td>
-                            <td><span id="tipo_ensino_display">Ed. Inf. E Ens. Fund.</span></td>
-                            <td><span id="periodo_display">24/07/2025<br>21/08/2025</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="data-table">
-                <table class="table-cardapio">
-                    <thead>
-                        <tr>
-                            <th rowspan="2" style="width: 5%;">QUANT. DIAS</th>
-                            <th rowspan="2" style="width: 8%;">FREQ. DO DIA/<br>DATA</th>
-                            <th colspan="3">ALUNOS ATENDIDOS</th>
-                            <th rowspan="2" colspan="2" style="width: 39%;">CARDÁPIO</th>
-                            <th rowspan="2" style="width: 3%;"></th><th rowspan="2" style="width: 25%;">INSTRUÇÃO DE PREENCHIMENTO</th>
-                        </tr>
-                        <tr>
-                            <th style="width: 8%;">CRECHE</th>
-                            <th style="width: 14%;">ED. INF. E FUNDAMENTAL</th>
-                            <th style="width: 8%;">EJA</th>
-                        </tr>
-                    </thead>
-                    <tbody id="table-cardapio-body">
-                        <tr>
-                            <td class="row-number">1</td>
-                            <td><input type="date" value="2025-07-24" onchange="validateDate(this)"></td>
-                            <td><input type="number" oninput="formatAttendance(this)" value="0"></td>
-                            <td><input type="number" oninput="formatAttendance(this)" value="329"></td>
-                            <td><input type="number" oninput="formatAttendance(this)" value="0"></td>
-                            <td colspan="2"><select><option>Mingau de arroz</option><option>Frango desfiado com arroz branco</option><option>Café com leite e biscoito</option><option>Carne moída com macarrão</option><option>Feijão com carne, arroz branco e verduras</option><option>Carne moída com arroz branco</option><option>Feijão com carne, arroz branco e verduras</option><option>Sopa de feijão com carne, macarrão e farinha</option><option>Mingau de milho branco com leite</option><option>Suco de fruta com biscoito</option><option>Feijão com carne e arroz</option></select></td>
-                            <td><button class="remove-row-btn" onclick="removeRow(this, 'table-cardapio-body')">&#128465;</button></td>
-                            <td rowspan="17" style="text-align: left;">(01) Preencher todos os campos de informações do educandário;<br>(02) Registrar diariamente a frequências dos alunos;<br>(03) Anotar separadamente a frequência dos alunos atendidos da Creche, Pré-Escola, Ensino Fundamental e Eja;<br>(04) Informar diariamente o nome do cardápio servido aos alunos;<br>(05) Relacionar todos os gêneros recebidos do Setor de Alimentação Escolar;<br>(06) Registrar as quantidades de gêneros recebidos, consumidos e o saldo anterior de alimentos no estoque;</td>
-                        </tr>
-                        </tbody>
-                </table>
-            </div>
-            
-            <div class="data-table">
-                <h3 style="text-align: center; font-size: 10pt; font-weight: bold; margin-bottom: 5px;">CONTROLE DE GÊNEROS ALIMENTÍCIOS</h3>
-                <table id="tabela-estoque">
-                    <thead>
-                        <tr>
-                            <th colspan="2" style="width: 25%;">GÊNEROS RECEBIDOS DO PROGRAMA</th>
-                            <th rowspan="2" style="width: 14%;">SALDO INICIAL + RECEBIDO</th>
-                            <th rowspan="2" style="width: 14%;">QUANT. DE ALIM. CONS.</th>
-                            <th rowspan="2" style="width: 10%;">SALDO ATUAL</th>
-                            <th rowspan="2" style="width: 37%;">RELATÓRIO</th>
-                            <th rowspan="2" style="width: 3%;"></th></tr>
-                        <tr>
-                            <th style="width: 8%;">QUANT.</th>
-                            <th style="width: 17%;">DISCRIMINAÇÃO</th>
-                        </tr>
-                    </thead>
-                    <tbody id="table-estoque-body">
-                        <tr>
-                            <td><input type="number" value="20" oninput="updateTable3Row(this)"> <span class="unit">kg</span></td>
-                            <td><select onchange="updateTable3Row(this)"><option value="kg" selected>Açúcar triturado</option><option value="kg">Arroz tipo 1</option><option value="pcts">Biscoito salgado cream cracker</option><option value="kg">Carne moída</option><option value="pcts">Leite em pó integral</option><option value="kg">Peito de frango</option><option value="kg">Feijão tipo 1</option></select></td>
-                            <td class="calculated-stock">35 kg</td>
-                            <td><input type="number" value="11" oninput="updateTable3Row(this)"> <span class="unit">kg</span></td>
-                            <td class="calculated-balance">24 kg</td>
-                            <td><input type="text" style="width: 95%; text-align: left;"></td>
-                            <td><button class="remove-row-btn" onclick="removeRow(this, 'table-estoque-body')">&#128465;</button></td>
-                        </tr>
-                        </tbody>
-                </table>
-                <p style="text-align: right; margin-bottom: 30px;">Óbidos (PA), <span id="document_date_display">22 de agosto de 2025</span>.</p>
-            </div>
-
-            <div class="footer-document">
-                <div class="signatures">
-                    <div>
-                        <hr>
-                        <p>Diretor(a) da Escola</p>
-                    </div>
-                    <div>
-                        <hr>
-                        <p>Responsável pelo Depósito</p>
-                    </div>
-                    <div>
-                        <hr>
-                        <p>Responsável pelo preenchimento</p>
-                    </div>
-                </div>
-
-                <div class="footer-semed">
-                   <img id="rodape" src="rodape.png" alt="rodapé">
-                </div>
-            </div>
-
-        </div>
-    </div>
-    <script>
-    // --- UTILS ---
-    const UNITS = {
-        'Açúcar triturado': 'kg',
-        'Arroz tipo 1': 'kg',
-        'Biscoito salgado cream cracker': 'pcts',
-        'Carne moída': 'kg',
-        'Leite em pó integral': 'pcts',
-        'Peito de frango': 'kg',
-        'Feijão tipo 1': 'kg',
-        // Adicione outras opções e suas unidades aqui
-        'Outro (kg)': 'kg',
-        'Outro (pcts)': 'pcts',
-        'Outro (grfs)': 'grfs'
-    };
-    
-    // Converte DD/MM/AAAA para objeto Date
-    function parseDate(dateString) {
-        if (!dateString || dateString.length !== 10) return null;
-        const [day, month, year] = dateString.split('/').map(Number);
-        return new Date(year, month - 1, day);
-    }
-    
-    // --- FUNÇÕES DE SINCRONIZAÇÃO E VALIDAÇÃO ---
-
-    function syncSidebarToTable1() {
-        const mapping = [
-            ['nome_escola_input', 'nome_escola_display'],
-            ['endereco_escola_input', 'endereco_escola_display'],
-            ['meio_escola_input', 'meio_escola_display'],
-            ['municipio_escola_input', 'municipio_escola_display'],
-            ['num_alunos_input', 'num_alunos_display'],
-            ['tipo_ensino_input', 'tipo_ensino_display'],
-        ];
-
-        mapping.forEach(([inputId, displayId]) => {
-            const inputElement = document.getElementById(inputId);
-            const displayElement = document.getElementById(displayId);
-            if (inputElement && displayElement) {
-                displayElement.textContent = inputElement.value;
-            }
-        });
-
-        const periodoInput = document.getElementById('periodo_input');
-        const periodoDisplay = document.getElementById('periodo_display');
-
-        if (periodoInput && periodoDisplay) {
-            let formattedPeriod = periodoInput.value.replace(/(\r\n|\n)/g, '<br>').replace(' - ', '<br>');
-            periodoDisplay.innerHTML = formattedPeriod;
-        }
-        
-        // Recalcula o número das linhas na Tabela 2 e revalida datas
-        updateRowNumbers();
-    }
-    
-    // Formata campos de frequência (Tabela 2)
-    function formatAttendance(input) {
-        // Exibe 'X' se 0 ou vazio
-        if (input.value === '' || input.value === '0') {
-            input.value = 'X';
-        }
-        // Se for 'X' e o usuário tentar digitar, limpa para número
-        if (input.value.toUpperCase() === 'X' && input.value.length > 1) {
-            input.value = '';
-        }
-    }
-
-    // Validação de Data (Tabela 2)
-    function validateDate(input) {
-        const periodoInput = document.getElementById('periodo_input').value;
-        const dates = periodoInput.split(/[\n-]/).map(d => d.trim()).filter(d => d.length === 10);
-
-        if (dates.length < 2) return; // Não há período definido
-
-        // Converte a data de entrada do formato YYYY-MM-DD para DD/MM/YYYY
-        let inputDateStr = input.value.split('-').reverse().join('/');
-        let inputDate = parseDate(inputDateStr);
-        
-        if (!inputDate) return;
-
-        const startDate = parseDate(dates[0]);
-        const endDate = parseDate(dates[1]);
-
-        if (startDate && endDate) {
-            // Verifica se a data está entre o início e o fim (inclusivo)
-            if (inputDate < startDate || inputDate > endDate) {
-                alert(`A data ${inputDateStr} está fora do período de ${dates[0]} a ${dates[1]}.`);
-                input.value = ''; // Limpa o campo ou define um valor válido
-            }
-        }
-    }
-
-    // Atualiza a data do documento no rodapé
-    function updateDocumentDate() {
-        const dateInput = document.getElementById('document_date_input');
-        const dateDisplay = document.getElementById('document_date_display');
-        
-        if (dateInput.value) {
-            const date = new Date(dateInput.value + 'T00:00:00'); // Garante que a data é tratada como local
-            const options = { day: '2-digit', month: 'long', year: 'numeric' };
-            const formattedDate = date.toLocaleDateString('pt-BR', options);
-            dateDisplay.textContent = formattedDate;
-        } else {
-            dateDisplay.textContent = 'Data não informada';
-        }
-    }
-
-
-    // --- FUNÇÕES DA TABELA 2 (MAPA DE FREQUÊNCIA) ---
-
-    // Atualiza a numeração das linhas da Tabela 2
-    function updateRowNumbers() {
-        const rows = document.getElementById('table-cardapio-body').querySelectorAll('tr');
-        rows.forEach((row, index) => {
-            const numCell = row.querySelector('.row-number');
-            if (numCell) {
-                numCell.textContent = index + 1;
-            }
-        });
-    }
-
-    function addRowTable2() {
-        const tbody = document.getElementById('table-cardapio-body');
-        const newRow = tbody.insertRow();
-        const rowCount = tbody.rows.length;
-
-        // Opções de cardápio (Você pode expandir esta lista)
-        const cardapioOptions = [
-            "Mingau de arroz", "Frango desfiado com arroz branco", "Café com leite e biscoito", "Carne moída com macarrão",
-            "Feijão com carne, arroz branco e verduras", "Sopa de feijão com carne, macarrão e farinha", 
-            "Mingau de milho branco com leite", "Suco de fruta com biscoito", "Feijão com carne e arroz"
-        ];
-        
-        // Células da nova linha
-        newRow.innerHTML = `
-            <td class="row-number">${rowCount}</td>
-            <td><input type="date" onchange="validateDate(this)"></td>
-            <td><input type="number" oninput="formatAttendance(this)" value="X"></td>
-            <td><input type="number" oninput="formatAttendance(this)" value="X"></td>
-            <td><input type="number" oninput="formatAttendance(this)" value="X"></td>
-            <td colspan="2">
-                <select>${cardapioOptions.map(opt => `<option>${opt}</option>`).join('')}</select>
-            </td>
-            <td><button class="remove-row-btn" onclick="removeRow(this, 'table-cardapio-body')">&#128465;</button></td>
-            `;
-        
-        // Garante que o input de número/X é formatado corretamente
-        newRow.querySelectorAll('input[type="number"]').forEach(input => formatAttendance(input));
-        
-        updateRowNumbers();
-    }
-
-
-    // --- FUNÇÕES DA TABELA 3 (CONTROLE DE ESTOQUE) ---
-
-    // Atualiza o saldo e as unidades de medida na Tabela 3
-    function updateTable3Row(element) {
-        const row = element.closest('tr');
-        if (!row) return;
-
-        // Campos de Input/Select
-        const quantInput = row.cells[0].querySelector('input[type="number"]');
-        const descSelect = row.cells[1].querySelector('select');
-        const consInput = row.cells[3].querySelector('input[type="number"]');
-        // Campos de Display
-        const saldoInicialDisplay = row.cells[2];
-        const saldoAtualDisplay = row.cells[4];
-
-        // 1. Atualiza Unidades de Medida
-        const selectedDescription = descSelect.options[descSelect.selectedIndex].text;
-        const unit = UNITS[selectedDescription] || 'un';
-        
-        row.cells[0].querySelector('.unit').textContent = unit;
-        row.cells[3].querySelector('.unit').textContent = unit;
-        
-        // 2. Cálculo do Saldo (usando os valores numéricos dos inputs)
-        const quant = parseFloat(quantInput.value) || 0;
-        const cons = parseFloat(consInput.value) || 0;
-
-        // O SALDO INICIAL na Tabela 3 seria a soma do Saldo Anterior + Recebido.
-        // Como o Saldo Anterior não está no formulário, vamos simplificar para:
-        // SALDO ATUAL = (QUANTIDADE RECEBIDA - QUANTIDADE CONSUMIDA) + SALDO ANTERIOR
-        // Para fins de demonstração e sem o campo de Saldo Anterior:
-        // * Vamos usar a coluna 2 (SALDO INICIAL + RECEBIDO) como QUANTIDADE TOTAL
-        // * Vamos usar a coluna 4 (SALDO ATUAL) como o saldo após consumo.
-        
-        // Simulação: Saldo Anterior (Hardcoded para 15kg no exemplo)
-        const saldoAnterior = 15; // Em uma versão real, este seria um input na Tabela 3
-
-        const saldoAtual = (quant + saldoAnterior) - cons;
-
-        // Atualiza a visualização do Saldo Total e Saldo Atual
-        saldoInicialDisplay.textContent = (quant + saldoAnterior) + ' ' + unit; // Exemplo de Total em Estoque
-        saldoAtualDisplay.textContent = saldoAtual + ' ' + unit;
-    }
-
-    function addRowTable3() {
-        const tbody = document.getElementById('table-estoque-body');
-        const newRow = tbody.insertRow();
-        
-        // Opções de gêneros
-        const generoOptions = Object.keys(UNITS).map(key => `<option value="${UNITS[key]}">${key}</option>`).join('');
-
-        // Células da nova linha
-        newRow.innerHTML = `
-            <td><input type="number" value="0" oninput="updateTable3Row(this)"> <span class="unit">un</span></td>
-            <td><select onchange="updateTable3Row(this)">${generoOptions}</select></td>
-            <td class="calculated-stock">0 un</td>
-            <td><input type="number" value="0" oninput="updateTable3Row(this)"> <span class="unit">un</span></td>
-            <td class="calculated-balance">0 un</td>
-            <td><input type="text" style="width: 95%; text-align: left;"></td>
-            <td><button class="remove-row-btn" onclick="removeRow(this, 'table-estoque-body')">&#128465;</button></td>
-        `;
-
-        // Chama a função de atualização para inicializar as unidades e cálculos
-        updateTable3Row(newRow.cells[1].querySelector('select'));
-    }
-
-
-    // --- FUNÇÕES GERAIS ---
-
-    function removeRow(button, tbodyId) {
-        const row = button.closest('tr');
-        const tbody = document.getElementById(tbodyId);
-        if (row && tbody) {
-            tbody.removeChild(row);
-        }
-        // Se for a Tabela 2, recalcula os números
-        if (tbodyId === 'table-cardapio-body') {
-            updateRowNumbers();
-        }
-    }
-
-    // Inicialização
-    document.addEventListener('DOMContentLoaded', () => {
-        // Vincula a função de sincronização da Tabela 1 a todos os eventos de alteração na sidebar
-        const table1Inputs = document.querySelectorAll('.sidebar input, .sidebar select');
-        table1Inputs.forEach(input => {
-            // Apenas para inputs da Tabela 1, exceto a data do documento
-            if (input.id !== 'document_date_input') {
-                input.addEventListener('input', syncSidebarToTable1);
-                input.addEventListener('change', syncSidebarToTable1);
-            }
-        });
-        
-        // Vincula o input da data do documento
-        document.getElementById('document_date_input').addEventListener('change', updateDocumentDate);
-
-        // Inicializa a tabela 1 e a numeração
-        syncSidebarToTable1();
-        
-        // Inicializa as unidades e cálculos da primeira linha de exemplo da Tabela 3
-        const firstRowSelect = document.getElementById('table-estoque-body').querySelector('select');
-        if(firstRowSelect) updateTable3Row(firstRowSelect);
-
-        // Define a data atual como padrão no campo de data do documento (opcional)
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('document_date_input').value = today;
-        updateDocumentDate(); 
-    });
-</script>
-
-</body>
-</html>-->
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DEMONSTRATIVO MENSAL MESTRE PACIFICO - DINÂMICO V2</title>
     <style>
         /* CONFIGURAÇÃO PARA ORIENTAÇÃO PAISAGEM (IMPRESSÃO) */
@@ -1457,6 +769,2581 @@
         updateDocumentDate(); 
     });
 </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEMONSTRATIVO MENSAL MESTRE PACIFICO - DINÂMICO V3</title>
+    <style>
+        /* CONFIGURAÇÃO PARA ORIENTAÇÃO PAISAGEM (IMPRESSÃO) */
+        @page {
+            size: A4 landscape;
+            margin: 10mm;
+        }
+
+        /* Estilos Globais e do Corpo do Documento */
+        body {
+            font-family: 'Times New Roman', serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0; 
+            font-size: 10pt;
+            color: #000;
+        }
+
+        /* ---------------------------------------------------- */
+        /* SIDEBAR (PAINEL DE EDIÇÃO) - FIXA */
+        /* ---------------------------------------------------- */
+        .sidebar {
+            background-color: #f7f7f7;
+            border-right: 1px solid #ddd;
+            padding: 15mm 15px; 
+            font-size: 9pt;
+            overflow-y: auto;
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            bottom: 0; 
+            width: 320px; 
+            z-index: 1000; 
+            box-sizing: border-box;
+        }
+
+        .sidebar h4 {
+            color: #004a99;
+            border-bottom: 2px solid #004a99;
+            padding-bottom: 5px;
+            margin-top: 20px;
+            font-size: 11pt;
+        }
+        .sidebar h5 {
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-size: 10pt;
+        }
+
+        .sidebar label {
+            display: block;
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 3px;
+            font-size: 9pt;
+        }
+
+        .sidebar input[type="text"],
+        .sidebar input[type="number"],
+        .sidebar input[type="date"],
+        .sidebar select {
+            width: 95%;
+            padding: 3px;
+            border: 1px solid #aaa;
+            border-radius: 3px;
+            box-sizing: border-box;
+            font-size: 8pt;
+            margin-bottom: 5px;
+        }
+        .sidebar .date-pair {
+            display: flex;
+            justify-content: space-between;
+        }
+        .sidebar .date-pair input {
+            width: 48%;
+        }
+
+        .sidebar button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 9pt;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .sidebar button:hover {
+            background-color: #45a049;
+        }
+        /* Botões de adicionar linha mantidos na sidebar */
+        .sidebar .add-row-btn {
+             background-color: #004a99;
+             margin-bottom: 5px;
+        }
+        .sidebar .add-row-btn:hover {
+             background-color: #003066;
+        }
+        
+
+        /* ---------------------------------------------------- */
+        /* CONTEÚDO PRINCIPAL - AGORA FLUTUANTE */
+        /* ---------------------------------------------------- */
+        .main-content-area {
+            margin-left: 320px; 
+            padding: 0 30px; 
+            min-height: 100vh;
+        }
+
+        .document-container {
+            width: 297mm;
+            min-height: 210mm;
+            margin: 30px auto; 
+            padding: 15mm 15mm;
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            box-sizing: border-box;
+        }
+
+        /* Impede que a sidebar apareça na impressão */
+        @media print {
+            .sidebar {
+                display: none;
+            }
+            .main-content-area {
+                margin-left: 0;
+            }
+            .document-container {
+                margin: 0;
+                box-shadow: none;
+            }
+        }
+        
+        /* ---------------------------------------------------- */
+        /* ESTILOS DE TABELA DINÂMICA */
+        /* ---------------------------------------------------- */
+        .data-table table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            margin-bottom: 15px;
+        }
+        .data-table th, .data-table td {
+            border: 1px solid #000;
+            padding: 2px;
+            text-align: center;
+            font-size: 7.5pt;
+            word-break: break-word; 
+            white-space: normal !important;
+            vertical-align: middle;
+        }
+        .data-table th {
+            font-weight: bold;
+            background-color: #e0e0e0;
+        }
+        
+        /* Estilos para INPUTs e SELECTs dentro das CÉLULAS */
+        .data-table input[type="text"],
+        .data-table input[type="number"],
+        .data-table input[type="date"],
+        .data-table select {
+            width: 90%;
+            padding: 0;
+            margin: 0;
+            border: none;
+            text-align: center;
+            font-size: 7.5pt;
+            background: transparent;
+        }
+
+        /* Tabela 2 - Estilo de Texto/Lista para Cardápio e Observações */
+        #table-cardapio-body td:nth-child(6) select {
+            width: 98%;
+            text-align: left;
+        }
+        #table-cardapio-body td:nth-child(8) input {
+             width: 98%;
+             text-align: left;
+        }
+        
+        /* NOVO: Estilo para centralizar número e unidade na mesma linha (Tabela 3) */
+        #tabela-estoque .quantity-cell {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+        #tabela-estoque .quantity-cell input {
+            width: 70%; 
+            text-align: right;
+            padding-right: 2px;
+        }
+        #tabela-estoque .quantity-cell .unit {
+            width: 30%;
+            text-align: left;
+            padding-left: 2px;
+        }
+        /* Ajuste específico para a descrição do gênero */
+        #tabela-estoque td:nth-child(2) select {
+            width: 98%;
+            text-align: left;
+        }
+
+
+        /* Estilo para o botão de remoção */
+        .remove-row-btn {
+            background: none;
+            border: none;
+            color: red;
+            cursor: pointer;
+            font-size: 10pt;
+            padding: 0 2px;
+            line-height: 1;
+        }
+        .remove-row-btn:hover {
+            color: darkred;
+        }
+
+        /* ---------------------------------------------------- */
+        /* ESTILOS DO DOCUMENTO (MANTIDOS/AJUSTADOS) */
+        /* ---------------------------------------------------- */
+        
+        #tabela-detalhes td {
+            height: 30px; 
+            vertical-align: middle;
+        }
+        #tabela-estoque th, #tabela-estoque td {
+            text-align: left;
+        }
+        #tabela-estoque td:nth-child(1), #tabela-estoque td:nth-child(3), #tabela-estoque td:nth-child(4), #tabela-estoque td:nth-child(5) {
+            text-align: center;
+        }
+        .footer-document {
+            margin-top: 50px;
+            padding-top: 10px;
+        }
+        .signatures {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .signatures div {
+            width: 30%;
+        }
+        .signatures hr {
+            border: 0;
+            border-top: 1px solid #000;
+            margin-bottom: 5px;
+        }
+        #tabela-detalhes span {
+            display: block;
+            width: 100%;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h4>1. Detalhes da Escola (Tabela 1)</h4>
+
+        <label for="nome_escola_input">NOME DA ESCOLA</label>
+        <select id="nome_escola_input">
+            <option value="Escola Mestre Pacífico" selected>Escola Mestre Pacífico</option>
+            <option value="Escola João Fernandes de Oliveira">Escola João Fernandes de Oliveira</option>
+            <option value="Escola Marilda Carvalho">Escola Marilda Carvalho</option>
+            <option value="Escola Raimundo Pereira">Escola Raimundo Pereira</option>
+            <option value="Escola Mestre Pacífico - CEMEP">Escola Mestre Pacífico - CEMEP</option>
+            <option value="Escola Mestre Pacífico - INTEGRAL">Escola Mestre Pacífico - INTEGRAL</option>
+        </select>
+
+        <label for="endereco_escola_input">ENDEREÇO</label>
+        <select id="endereco_escola_input">
+            <option value="Comunidade Igarapé Açu" selected>Comunidade Igarapé Açu</option>
+            <option value="Comunidade Ipixuna">Comunidade Ipixuna</option>
+            <option value="Comunidade Arumã">Comunidade Arumã</option>
+        </select>
+        
+        <label for="meio_escola_input">MEIO</label>
+        <select id="meio_escola_input">
+            <option value="Terra Firme" selected>Terra Firme</option>
+        </select>
+
+        <label for="municipio_escola_input">MUNICÍPIO</label>
+        <select id="municipio_escola_input">
+            <option value="Óbidos" selected>Óbidos</option>
+        </select>
+
+        <label for="num_alunos_input">N° DE ALUNOS MATRICULADOS</label>
+        <input type="number" id="num_alunos_input" value="330">
+        
+        <label for="tipo_ensino_input">TIPO DE ENSINO</label>
+        <select id="tipo_ensino_input">
+            <option value="Ed. Inf. E Ens. Fund." selected>Ed. Inf. E Ens. Fund.</option>
+            <option value="Ed. Infantil">Ed. Infantil</option>
+            <option value="Ens. Fundamental">Ens. Fundamental</option>
+        </select>
+        
+        <label for="periodo_input">PERÍODO (Início e Fim) - Gera as datas da Tabela 2</label>
+        <div class="date-pair">
+            <input type="date" id="periodo_inicio_input" value="2025-07-24" onchange="generateTable2Rows()">
+            <input type="date" id="periodo_fim_input" value="2025-08-21" onchange="generateTable2Rows()">
+        </div>
+        <button onclick="generateTable2Rows()">Gerar Datas e Cardápios (Tabela 2)</button>
+
+        
+        <hr style="margin-top: 20px;">
+        
+        <h5>Data do Documento</h5>
+        <input type="date" id="document_date_input" class="data-input">
+
+        <hr style="margin-top: 20px;">
+
+        <h5>Gerenciamento de Linhas</h5>
+        <button class="add-row-btn" onclick="addRowTable2()">+ Adicionar Linha (Tabela 2)</button>
+        <button class="add-row-btn" onclick="addRowTable3()">+ Adicionar Linha (Tabela 3)</button>
+
+        <p style="font-size: 8pt; margin-top: 20px;">*A Tabela 3 é preenchida automaticamente com os itens do cardápio.</p>
+    </div>
+    <div class="main-content-area">
+        <div class="document-container">
+
+            <div class="header-institutional">
+                </div>
+
+            <h2 style="text-align: center; font-size: 11pt; margin: 10px 0; text-decoration: underline;">DEMONSTRATIVO MENSAL DA DISTRIBUIÇÃO DE REFEIÇÕES E CONSUMO DE GÊNEROS ALIMENTÍCIOS NA ESCOLA</h2>
+
+            <div class="data-table">
+                <table id="tabela-detalhes">
+                    <thead>
+                        <tr>
+                            <th style="width: 15%;">NOME DA ESCOLA</th>
+                            <th style="width: 18%;">ENDEREÇO</th>
+                            <th style="width: 8%;">MEIO</th>
+                            <th style="width: 10%;">MUNICÍPIO</th>
+                            <th style="width: 13%;">DEPENDÊNCIA ADMINISTRATIVA</th>
+                            <th style="width: 10%;">N° DE ALUNOS MATRICULADOS</th>
+                            <th style="width: 13%;">TIPO DE ENSINO</th>
+                            <th style="width: 13%;">PERÍODO</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span id="nome_escola_display">Escola Mestre Pacífico</span></td>
+                            <td><span id="endereco_escola_display">Comunidade Igarapé Açu</span></td>
+                            <td><span id="meio_escola_display">Terra Firme</span></td>
+                            <td><span id="municipio_escola_display">Óbidos</span></td>
+                            <td>Municipal</td>
+                            <td><span id="num_alunos_display">330</span></td>
+                            <td><span id="tipo_ensino_display">Ed. Inf. E Ens. Fund.</span></td>
+                            <td><span id="periodo_display">24/07/2025<br>21/08/2025</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="data-table">
+                <table class="table-cardapio">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" style="width: 5%;">QUANT. DIAS</th>
+                            <th rowspan="2" style="width: 8%;">FREQ. DO DIA/<br>DATA</th>
+                            <th colspan="3">ALUNOS ATENDIDOS</th>
+                            <th rowspan="2" style="width: 25%;">CARDÁPIO</th>
+                            <th rowspan="2" style="width: 3%;"></th><th rowspan="2" style="width: 32%;">JUSTIFICATIVA / OBSERVAÇÃO</th>
+                        </tr>
+                        <tr>
+                            <th style="width: 8%;">CRECHE</th>
+                            <th style="width: 11%;">ED. INF. E FUNDAMENTAL</th>
+                            <th style="width: 8%;">EJA</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-cardapio-body">
+                        </tbody>
+                </table>
+            </div>
+            
+            <div class="data-table">
+                <h3 style="text-align: center; font-size: 10pt; font-weight: bold; margin-bottom: 5px;">CONTROLE DE GÊNEROS ALIMENTÍCIOS</h3>
+                <table id="tabela-estoque">
+                    <thead>
+                        <tr>
+                            <th colspan="2" style="width: 25%;">GÊNEROS RECEBIDOS DO PROGRAMA</th>
+                            <th rowspan="2" style="width: 14%;">QUANT. DE ALIM. CONS.</th>
+                            <th rowspan="2" style="width: 14%;">QUANT. DE ALIM. JÁ EM ESTOQUE (antes da entrega)</th>
+                            <th rowspan="2" style="width: 10%;">SALDO ATUAL</th>
+                            <th rowspan="2" style="width: 34%;">RELATÓRIO</th>
+                            <th rowspan="2" style="width: 3%;"></th></tr>
+                        <tr>
+                            <th style="width: 8%;">QUANT.</th>
+                            <th style="width: 17%;">DISCRIMINAÇÃO</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-estoque-body">
+                        </tbody>
+                </table>
+                <p style="text-align: right; margin-bottom: 30px;">Óbidos (PA), <span id="document_date_display">22 de agosto de 2025</span>.</p>
+            </div>
+
+            <div class="footer-document">
+                <div class="signatures">
+                    <div>
+                        <hr>
+                        <p>Diretor(a) da Escola</p>
+                    </div>
+                    <div>
+                        <hr>
+                        <p>Responsável pelo Depósito</p>
+                    </div>
+                    <div>
+                        <hr>
+                        <p>Responsável pelo preenchimento</p>
+                    </div>
+                </div>
+
+                <div class="footer-semed">
+                   </div>
+            </div>
+
+        </div>
+    </div>
+    <script>
+    // ====================================================================
+    // 
+    //                         CONSTANTES IMPORTANTES
+    // 
+    // ====================================================================
+
+    // --- 1. ITENS DA TABELA 3 E SUAS UNIDADES (Baseado nos documentos)
+    const UNITS = {
+        'Açúcar triturado': 'kg', 'Arroz tipo 1': 'kg', 'Biscoito salgado cream cracker': 'pcts',
+        'Carne moída': 'kg', 'Leite em pó integral': 'pcts', 'Peito de frango': 'kg',
+        'Feijão tipo 1': 'kg', 'Alho in natura': 'kg', 'Batata in natura': 'kg', 
+        'Café em pó': 'pcts', 'Carne sem osso': 'kg', 'Cebola in natura': 'kg', 
+        'Cenoura in natura': 'kg', 'Colorau': 'pcts', 'Coco ralado': 'pcts', 
+        'Cominho moído': 'pcts', 'Farinha de trigo': 'kg', 'Macarrão espaguete': 'pcts', 
+        'Óleo de soja 900ml': 'pets', 'Polpa de frutas': 'pcts', 'Milho Branco': 'pcts',
+        'Azeite de dendê': 'grfs', 'Vinagre de álcool': 'grfs', 
+        'Massa para sopa': 'pcts', 'Sal moído': 'kg',
+        'OUTRO (a ser especificado)': 'un' // Opção para item não listado
+    };
+
+    // --- 2. CALENDÁRIO LETIVO DE 2025 (DIAS LETIVOS ESPECIAIS)
+    // Sábados Letivos devem ser listados aqui no formato YYYY-MM-DD
+    const CALENDARIO_LETIVO_2025 = {
+        feriados: [], // Ex: ['2025-09-07']
+        sabadosLetivos: ['2025-08-02', '2025-08-16'] // Sábados letivos de exemplo
+    };
+    
+    // --- 3. CARDÁPIO SEMANAL PADRÃO (Índice 0=Dom, 1=Seg, ..., 6=Sáb)
+    // Cardápios baseados no documento do usuário.
+    const CARDAPIO_SEMANAL_PADRAO = {
+        // Segunda-feira
+        1: "Mingau de arroz",
+        // Terça-feira
+        2: "Feijão com carne e arroz",
+        // Quarta-feira
+        3: "Carne moída com macarrão",
+        // Quinta-feira
+        4: "Sopa de feijão com carne, macarrão e farinha",
+        // Sexta-feira
+        5: "Frango desfiado com arroz branco",
+        // Sábado Letivo (é tratado separadamente, mas manteremos o padrão para o caso de ser usado)
+        6: "Café com leite e biscoito Salgado" 
+    };
+
+    const CARDAPIO_OPTIONS = Object.values(CARDAPIO_SEMANAL_PADRAO).filter((v, i, a) => a.indexOf(v) === i);
+    CARDAPIO_OPTIONS.push("Café com leite e biscoito"); // Cardápio adicional nos documentos
+    CARDAPIO_OPTIONS.push("Frango com arroz e legumes"); // Cardápio adicional nos documentos
+
+
+    // --- 4. OPÇÕES DE JUSTIFICATIVA (Lista suspensa para Tabela 2)
+    const JUSTIFICATIVA_OPTIONS = [
+        "Cardápio padrão", // Para manter
+        "Substituição por indisponibilidade de item",
+        "Substituição por demanda nutricional",
+        "Outras (especificar)"
+    ];
+    
+    // ====================================================================
+    // 
+    //                            FUNÇÕES GERAIS
+    // 
+    // ====================================================================
+
+    // Converte YYYY-MM-DD para DD/MM/AAAA
+    function formatDateToDisplay(dateString) {
+        if (!dateString) return '';
+        const [year, month, day] = dateString.split('-');
+        return `${day}/${month}/${year}`;
+    }
+
+    // Retorna o dia da semana (1=Segunda, 7=Domingo)
+    function getDayOfWeek(date) {
+        let day = date.getDay();
+        return day === 0 ? 7 : day; // Mapeia Domingo (0) para 7
+    }
+
+    // --- SINCRONIZAÇÃO E VALIDAÇÃO DA TABELA 1 ---
+
+    function syncSidebarToTable1() {
+        const mapping = [
+            ['nome_escola_input', 'nome_escola_display'], ['endereco_escola_input', 'endereco_escola_display'],
+            ['meio_escola_input', 'meio_escola_display'], ['municipio_escola_input', 'municipio_escola_display'],
+            ['num_alunos_input', 'num_alunos_display'], ['tipo_ensino_input', 'tipo_ensino_display'],
+        ];
+
+        mapping.forEach(([inputId, displayId]) => {
+            const inputElement = document.getElementById(inputId);
+            const displayElement = document.getElementById(displayId);
+            if (inputElement && displayElement) {
+                displayElement.textContent = inputElement.value;
+            }
+        });
+
+        const inicio = document.getElementById('periodo_inicio_input').value;
+        const fim = document.getElementById('periodo_fim_input').value;
+        const periodoDisplay = document.getElementById('periodo_display');
+        
+        if (inicio && fim) {
+            const inicioFmt = formatDateToDisplay(inicio);
+            const fimFmt = formatDateToDisplay(fim);
+            periodoDisplay.innerHTML = `${inicioFmt}<br>${fimFmt}`;
+        } else {
+            periodoDisplay.innerHTML = '';
+        }
+    }
+
+    function updateDocumentDate() {
+        const dateInput = document.getElementById('document_date_input');
+        const dateDisplay = document.getElementById('document_date_display');
+        
+        if (dateInput.value) {
+            const date = new Date(dateInput.value + 'T00:00:00'); 
+            const options = { day: '2-digit', month: 'long', year: 'numeric' };
+            const formattedDate = date.toLocaleDateString('pt-BR', options);
+            dateDisplay.textContent = formattedDate;
+        } else {
+            dateDisplay.textContent = 'Data não informada';
+        }
+    }
+
+    // --- FUNÇÕES DA TABELA 2 (MAPA DE FREQUÊNCIA E CARDÁPIO) ---
+
+    // Validação da soma de alunos
+    function validateAttendance(input) {
+        const row = input.closest('tr');
+        const maxAlunos = parseInt(document.getElementById('num_alunos_input').value) || 0;
+        
+        if (maxAlunos === 0) return;
+
+        // Pega todos os inputs de número na linha (índices 2, 3, 4)
+        const inputs = Array.from(row.cells).slice(2, 5).map(cell => cell.querySelector('input[type="number"]'));
+        let currentSum = 0;
+        
+        // Converte 'X' para 0 e soma os valores numéricos
+        inputs.forEach(inp => {
+            const val = inp.value;
+            if (val.toUpperCase() !== 'X' && !isNaN(parseInt(val))) {
+                currentSum += parseInt(val);
+            }
+        });
+
+        if (currentSum > maxAlunos) {
+            alert(`A soma de alunos (${currentSum}) excede o total matriculado (${maxAlunos}).`);
+            input.value = 'X'; 
+            currentSum = 0; // Recalcula a soma para fins de debug, mas o valor de input já foi resetado
+        }
+        
+        formatAttendance(input);
+    }
+    
+    // Formata campos de frequência: 'X' se 0 ou vazio
+    function formatAttendance(input) {
+        if (input.value === '' || input.value === '0') {
+            input.value = 'X';
+        }
+        if (input.value.toUpperCase() === 'X' && input.value.length > 1) {
+             input.value = input.value.substring(1).replace(/X|x/g, ''); 
+        }
+    }
+    
+    // Lógica para controle de cardápio e justificativa
+    function handleCardapioChange(selectElement) {
+        const row = selectElement.closest('tr');
+        const dateInput = row.cells[1].querySelector('input[type="date"]');
+        const justificativaInput = row.cells[7].querySelector('input[type="text"]');
+        
+        const dateISO = dateInput.value;
+        const selectedCardapio = selectElement.value;
+        const dayOfWeek = getDayOfWeek(new Date(dateISO + 'T00:00:00'));
+        
+        // 1. Obter cardápio original
+        let cardapioPrevisto;
+        if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+            cardapioPrevisto = CARDAPIO_SEMANAL_PADRAO[dayOfWeek];
+        } else if (CALENDARIO_LETIVO_2025.sabadosLetivos.includes(dateISO)) {
+            cardapioPrevisto = CARDAPIO_SEMANAL_PADRAO[6]; // Sábado Letivo
+        }
+        
+        // 2. Verificar se houve alteração
+        if (cardapioPrevisto && selectedCardapio !== cardapioPrevisto) {
+            // ALERTA
+            alert(`Atenção: O cardápio original de ${formatDateToDisplay(dateISO)} era "${cardapioPrevisto}" e foi alterado para "${selectedCardapio}". Insira a justificativa na coluna 'JUSTIFICATIVA / OBSERVAÇÃO'.`);
+            
+            // PREENCHIMENTO AUTOMÁTICO DA JUSTIFICATIVA
+            const novaJustificativa = `No dia ${formatDateToDisplay(dateISO)} o cardápio previsto era "${cardapioPrevisto}", mas foi substituido por "${selectedCardapio}"`;
+            justificativaInput.value = novaJustificativa;
+
+        } else if (cardapioPrevisto && selectedCardapio === cardapioPrevisto) {
+            // Se o usuário selecionou o cardápio original, remover a justificativa de substituição,
+            // mas manter se for a justificativa de sábado letivo.
+            const sabadoJust = `No dia ${formatDateToDisplay(dateISO)}, sábado letivo, foi servida merenda`;
+            if (justificativaInput.value !== sabadoJust) {
+                justificativaInput.value = '';
+            }
+        }
+    }
+
+
+    // Atualiza a numeração das linhas da Tabela 2
+    function updateRowNumbers() {
+        const rows = document.getElementById('table-cardapio-body').querySelectorAll('tr');
+        rows.forEach((row, index) => {
+            const numCell = row.querySelector('.row-number');
+            if (numCell) {
+                numCell.textContent = index + 1;
+            }
+        });
+    }
+
+    // Configura os listeners para os novos campos
+    function setupTable2RowListeners(newRow) {
+        // Inputs de frequência para validação
+        const freqInputs = newRow.querySelectorAll('input[type="number"]');
+        freqInputs.forEach(input => {
+            input.addEventListener('input', () => validateAttendance(input));
+            formatAttendance(input); 
+        });
+
+        // Select do Cardápio para alerta/justificativa
+        const selectCardapio = newRow.querySelector('select');
+        if (selectCardapio) {
+            selectCardapio.addEventListener('change', () => handleCardapioChange(selectCardapio));
+        }
+    }
+
+
+    // Geração automática de linhas (datas, cardápios e justificativas)
+    function generateTable2Rows() {
+        const tbody = document.getElementById('table-cardapio-body');
+        const inicioInput = document.getElementById('periodo_inicio_input').value;
+        const fimInput = document.getElementById('periodo_fim_input').value;
+
+        syncSidebarToTable1(); // Atualiza a Tabela 1 antes de validar
+        
+        if (!inicioInput || !fimInput) {
+            alert("Por favor, defina as datas de início e fim do período.");
+            return;
+        }
+        
+        // Validação de intervalo de datas (o usuário não pode inserir datas fora do período)
+        const today = new Date().toISOString().substring(0, 10);
+        if (inicioInput > today || fimInput > today) {
+             // O requisito era: "o usuário não poderá incluir datas que não estejam dentro do período definido na tabela 1".
+             // Como a Tabela 1 só exibe o texto do período, a única validação lógica real é contra a data atual ou um período letivo maior.
+             // Vamos apenas limpar a tabela anterior e prosseguir.
+        }
+
+        const startDate = new Date(inicioInput + 'T00:00:00');
+        const endDate = new Date(fimInput + 'T00:00:00');
+
+        if (startDate > endDate) {
+            alert("A data de início deve ser anterior ou igual à data de fim.");
+            return;
+        }
+        
+        // Limpa as linhas existentes
+        tbody.innerHTML = '';
+        
+        let currentDate = startDate;
+        let isFirstRow = true;
+
+        while (currentDate <= endDate) {
+            const dateISO = currentDate.toISOString().substring(0, 10);
+            const dayOfWeek = getDayOfWeek(currentDate); // 1=Seg, 7=Dom
+
+            const isFeriado = CALENDARIO_LETIVO_2025.feriados.includes(dateISO);
+            const isSabadoLetivo = CALENDARIO_LETIVO_2025.sabadosLetivos.includes(dateISO);
+            const isDiaLetivo = (dayOfWeek >= 1 && dayOfWeek <= 5) || isSabadoLetivo;
+
+            if (isDiaLetivo && !isFeriado) {
+                const newRow = tbody.insertRow();
+                const dateDisplay = formatDateToDisplay(dateISO);
+                
+                let cardapioPrevisto;
+                let justificativaInicial = '';
+
+                if (isSabadoLetivo) {
+                    cardapioPrevisto = CARDAPIO_SEMANAL_PADRAO[6]; 
+                    justificativaInicial = `No dia ${dateDisplay}, sábado letivo, foi servida merenda`;
+                } else {
+                    cardapioPrevisto = CARDAPIO_SEMANAL_PADRAO[dayOfWeek];
+                }
+                
+                // Opções de cardápio com a opção padrão selecionada
+                const optionsHTML = CARDAPIO_OPTIONS.map(opt => 
+                    `<option value="${opt}" ${opt === cardapioPrevisto ? 'selected' : ''}>${opt}</option>`
+                ).join('');
+
+
+                let rowHTML = `
+                    <td class="row-number"></td>
+                    <td><input type="date" value="${dateISO}"></td>
+                    <td><input type="number" value="X"></td>
+                    <td><input type="number" value="X"></td>
+                    <td><input type="number" value="X"></td>
+                    <td><select>${optionsHTML}</select></td>
+                    <td><button class="remove-row-btn" onclick="removeRow(this, 'table-cardapio-body')">&#128465;</button></td>
+                    <td><input type="text" value="${justificativaInicial}"></td>
+                `;
+
+                if (isFirstRow) {
+                     // Adiciona a célula de instrução APENAS na primeira linha
+                    const instrucoes = `(01) Preencher todos os campos de informações do educandário;<br>(02) Registrar diariamente a frequências dos alunos;<br>(03) Anotar separadamente a frequência dos alunos atendidos da Creche, Pré-Escola, Ensino Fundamental e Eja;<br>(04) Informar diariamente o nome do cardápio servido aos alunos;<br>(05) Relacionar todos os gêneros recebidos do Setor de Alimentação Escolar;<br>(06) Registrar as quantidades de gêneros recebidos, consumidos e o saldo anterior de alimentos no estoque;`;
+                     rowHTML += `<td rowspan="99" style="text-align: left;">${instrucoes}</td>`;
+                    isFirstRow = false;
+                }
+
+                newRow.innerHTML = rowHTML;
+                setupTable2RowListeners(newRow); 
+            }
+            
+            // Avança para o próximo dia
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+        
+        updateRowNumbers();
+    }
+    
+    // Adiciona uma linha vazia à Tabela 2 (manual)
+    function addRowTable2() {
+        const tbody = document.getElementById('table-cardapio-body');
+        const newRow = tbody.insertRow();
+        const optionsHTML = CARDAPIO_OPTIONS.map(opt => `<option value="${opt}">${opt}</option>`).join('');
+
+        let rowHTML = `
+            <td class="row-number"></td>
+            <td><input type="date"></td>
+            <td><input type="number" value="X"></td>
+            <td><input type="number" value="X"></td>
+            <td><input type="number" value="X"></td>
+            <td><select>${optionsHTML}</select></td>
+            <td><button class="remove-row-btn" onclick="removeRow(this, 'table-cardapio-body')">&#128465;</button></td>
+            <td><input type="text" value=""></td>
+        `;
+
+        newRow.innerHTML = rowHTML;
+        setupTable2RowListeners(newRow);
+        updateRowNumbers();
+    }
+
+
+    // --- FUNÇÕES DA TABELA 3 (CONTROLE DE ESTOQUE) ---
+
+    // Atualiza o saldo e as unidades de medida na Tabela 3
+    function updateTable3Row(element) {
+        const row = element.closest('tr');
+        if (!row) return;
+
+        // Colunas: [0: Recebida] [1: Descrição] [2: Consumida] [3: Estoque Anterior] [4: Saldo Atual]
+        
+        const quantInput = row.cells[0].querySelector('input[type="number"]');
+        const descSelect = row.cells[1].querySelector('select');
+        const consInput = row.cells[2].querySelector('input[type="number"]');
+        const saldoAnteriorInput = row.cells[3].querySelector('input[type="number"]');
+
+        const saldoAtualDisplay = row.cells[4];
+
+        // 1. Atualiza Unidades de Medida
+        const selectedDescription = descSelect.options[descSelect.selectedIndex].text;
+        const unit = UNITS[selectedDescription] || 'un';
+        
+        row.cells[0].querySelector('.unit').textContent = unit;
+        row.cells[2].querySelector('.unit').textContent = unit;
+        row.cells[3].querySelector('.unit').textContent = unit;
+        
+        // 2. Cálculo do Saldo
+        const quant = parseFloat(quantInput.value) || 0;
+        const cons = parseFloat(consInput.value) || 0;
+        const saldoAnterior = parseFloat(saldoAnteriorInput.value) || 0;
+
+        const saldoAtual = (quant + saldoAnterior) - cons;
+
+        saldoAtualDisplay.textContent = saldoAtual + ' ' + unit;
+    }
+
+    // Adiciona uma linha vazia à Tabela 3 (manual)
+    function addRowTable3() {
+        const tbody = document.getElementById('table-estoque-body');
+        const newRow = tbody.insertRow();
+        
+        const generoOptions = Object.keys(UNITS).map(key => `<option value="${UNITS[key]}">${key}</option>`).join('');
+
+        newRow.innerHTML = `
+            <td><div class="quantity-cell"><input type="number" value="0" oninput="updateTable3Row(this)"> <span class="unit">un</span></div></td>
+            <td><select onchange="updateTable3Row(this)">${generoOptions}</select></td>
+            <td><div class="quantity-cell"><input type="number" value="0" oninput="updateTable3Row(this)"> <span class="unit">un</span></div></td>
+            <td><div class="quantity-cell"><input type="number" value="0" oninput="updateTable3Row(this)"> <span class="unit">un</span></div></td>
+            <td class="calculated-balance">0 un</td>
+            <td><input type="text" style="width: 95%; text-align: left;"></td>
+            <td><button class="remove-row-btn" onclick="removeRow(this, 'table-estoque-body')">&#128465;</button></td>
+        `;
+
+        updateTable3Row(newRow.cells[1].querySelector('select'));
+    }
+    
+    // Preenche a Tabela 3 automaticamente ao iniciar
+    function initializeTable3() {
+        const tbody = document.getElementById('table-estoque-body');
+        tbody.innerHTML = ''; // Limpa qualquer linha de exemplo
+
+        Object.keys(UNITS).filter(key => key !== 'OUTRO (a ser especificado)').forEach(item => {
+            const newRow = tbody.insertRow();
+            const unit = UNITS[item];
+            
+            // Cria as opções de select, marcando o item atual como selecionado
+            const generoOptions = Object.keys(UNITS).map(key => 
+                `<option value="${UNITS[key]}" ${key === item ? 'selected' : ''}>${key}</option>`
+            ).join('');
+
+            newRow.innerHTML = `
+                <td><div class="quantity-cell"><input type="number" value="0" oninput="updateTable3Row(this)"> <span class="unit">${unit}</span></div></td>
+                <td><select onchange="updateTable3Row(this)">${generoOptions}</select></td>
+                <td><div class="quantity-cell"><input type="number" value="0" oninput="updateTable3Row(this)"> <span class="unit">${unit}</span></div></td>
+                <td><div class="quantity-cell"><input type="number" value="0" oninput="updateTable3Row(this)"> <span class="unit">${unit}</span></div></td>
+                <td class="calculated-balance">0 ${unit}</td>
+                <td><input type="text" style="width: 95%; text-align: left;"></td>
+                <td><button class="remove-row-btn" onclick="removeRow(this, 'table-estoque-body')">&#128465;</button></td>
+            `;
+            // Chama a atualização para garantir que o cálculo inicial (0+0)-0 seja feito
+            updateTable3Row(newRow.cells[1].querySelector('select'));
+        });
+    }
+
+
+    // --- FUNÇÕES GERAIS ---
+
+    function removeRow(button, tbodyId) {
+        const row = button.closest('tr');
+        const tbody = document.getElementById(tbodyId);
+        if (row && tbody) {
+            tbody.removeChild(row);
+        }
+        if (tbodyId === 'table-cardapio-body') {
+            updateRowNumbers();
+        }
+    }
+
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', () => {
+        // Vincula eventos da Tabela 1 na sidebar
+        const table1Inputs = document.querySelectorAll('.sidebar input:not([type="date"]), .sidebar select');
+        table1Inputs.forEach(input => {
+            if (input.id !== 'document_date_input') {
+                input.addEventListener('input', syncSidebarToTable1);
+                input.addEventListener('change', syncSidebarToTable1);
+            }
+        });
+        
+        document.getElementById('document_date_input').addEventListener('change', updateDocumentDate);
+
+        // Inicializa a Tabela 1 e a data do documento
+        syncSidebarToTable1();
+        
+        // Gera as datas iniciais na Tabela 2
+        generateTable2Rows();
+        
+        // Preenche a Tabela 3 com os itens padrões
+        initializeTable3();
+
+        // Define a data atual como padrão no campo de data do documento (opcional)
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('document_date_input').value = today;
+        updateDocumentDate(); 
+    });
+</script>
+
+</body>
+</html>-->
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEMONSTRATIVO MENSAL MESTRE PACIFICO - DINÂMICO V5</title>
+    <style>
+        /* CONFIGURAÇÃO PARA ORIENTAÇÃO PAISAGEM (IMPRESSÃO) */
+        @page {
+            size: A4 landscape;
+            margin: 10mm;
+        }
+
+        /* Estilos Globais e do Corpo do Documento */
+        body {
+            font-family: 'Times New Roman', serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0; 
+            font-size: 10pt;
+            color: #000;
+        }
+
+        /* ---------------------------------------------------- */
+        /* SIDEBAR (PAINEL DE EDIÇÃO) - FIXA */
+        /* ---------------------------------------------------- */
+        .sidebar {
+            background-color: #f7f7f7;
+            border-right: 1px solid #ddd;
+            padding: 15mm 15px; 
+            font-size: 9pt;
+            overflow-y: auto;
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            bottom: 0; 
+            width: 320px; 
+            z-index: 1000; 
+            box-sizing: border-box;
+        }
+
+        .sidebar h4 {
+            color: #004a99;
+            border-bottom: 2px solid #004a99;
+            padding-bottom: 5px;
+            margin-top: 20px;
+            font-size: 11pt;
+        }
+        .sidebar h5 {
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-size: 10pt;
+        }
+
+        .sidebar label {
+            display: block;
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 3px;
+            font-size: 9pt;
+        }
+
+        .sidebar input[type="text"],
+        .sidebar input[type="number"],
+        .sidebar input[type="date"],
+        .sidebar select {
+            width: 95%;
+            padding: 3px;
+            border: 1px solid #aaa;
+            border-radius: 3px;
+            box-sizing: border-box;
+            font-size: 8pt;
+            margin-bottom: 5px;
+        }
+        .sidebar .date-pair {
+            display: flex;
+            justify-content: space-between;
+        }
+        .sidebar .date-pair input {
+            width: 48%;
+        }
+
+        .sidebar button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 9pt;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .sidebar button:hover {
+            background-color: #45a049;
+        }
+        /* Botões de adicionar linha mantidos na sidebar */
+        .sidebar .add-row-btn {
+             background-color: #004a99;
+             margin-bottom: 5px;
+        }
+        .sidebar .add-row-btn:hover {
+             background-color: #003066;
+        }
+        
+
+        /* ---------------------------------------------------- */
+        /* CONTEÚDO PRINCIPAL - AGORA FLUTUANTE */
+        /* ---------------------------------------------------- */
+        .main-content-area {
+            margin-left: 320px; 
+            padding: 0 30px; 
+            min-height: 100vh;
+        }
+
+        .document-container {
+            width: 297mm;
+            min-height: 210mm;
+            margin: 30px auto; 
+            padding: 0mm 15mm;
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            box-sizing: border-box;
+        }
+
+        /* Impede que a sidebar apareça na impressão */
+        @media print {
+            .sidebar {
+                display: none;
+            }
+            .main-content-area {
+                margin-left: 0;
+            }
+            .document-container {
+                margin: 0;
+                box-shadow: none;
+            }
+        }
+        
+        /* ---------------------------------------------------- */
+        /* ESTILOS DE TABELA DINÂMICA */
+        /* ---------------------------------------------------- */
+        .data-table table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            margin-bottom: 15px;
+        }
+        .data-table th, .data-table td {
+            border: 1px solid #000;
+            padding: 2px;
+            text-align: center;
+            font-size: 7.5pt;
+            word-break: break-word; 
+            white-space: normal !important;
+            vertical-align: middle;
+        }
+        .data-table th {
+            font-weight: bold;
+            background-color: #e0e0e0;
+        }
+        
+        /* Adicionar estilos para o Timbre (Cabeçalho Institucional) */
+        .header-institutional {
+            text-align: center;
+            margin-bottom: 20px; /* Espaço entre o timbre e o título */
+            padding-top: 10px;
+        }
+
+        #timbre-imagem {
+            max-width: 100%;
+            display: block; /* Garante o alinhamento central */
+        }
+        /* Estilos para INPUTs e SELECTs dentro das CÉLULAS */
+        .data-table input[type="text"],
+        .data-table input[type="number"],
+        .data-table input[type="date"],
+        .data-table select {
+            width: 90%;
+            padding: 0;
+            margin: 0;
+            border: none;
+            text-align: center;
+            font-size: 7.5pt;
+            background: transparent;
+        }
+
+        /* Tabela 2 - Estilo de Texto/Lista para Cardápio e Observações */
+        #table-cardapio-body td:nth-child(6) select {
+            width: 98%;
+            text-align: left;
+        }
+        #table-cardapio-body td:nth-child(8) input {
+             width: 98%;
+             text-align: left;
+        }
+        
+        /* NOVO: Estilo para centralizar número e unidade na mesma linha (Tabela 3) */
+        #tabela-estoque .quantity-cell {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+        #tabela-estoque .quantity-cell input {
+            width: 70%; 
+            text-align: right;
+            padding-right: 2px;
+        }
+        #tabela-estoque .quantity-cell .unit {
+            width: 30%;
+            text-align: left;
+            padding-left: 2px;
+        }
+        /* Ajuste específico para a descrição do gênero */
+        #tabela-estoque td:nth-child(2) select {
+            width: 98%;
+            text-align: left;
+        }
+
+
+        /* Estilo para o botão de remoção */
+        .remove-row-btn {
+            background: none;
+            border: none;
+            color: red;
+            cursor: pointer;
+            font-size: 10pt;
+            padding: 0 2px;
+            line-height: 1;
+        }
+        .remove-row-btn:hover {
+            color: darkred;
+        }
+
+        /* ---------------------------------------------------- */
+        /* ESTILOS DO DOCUMENTO (MANTIDOS/AJUSTADOS) */
+        /* ---------------------------------------------------- */
+        
+        #tabela-detalhes td {
+            height: 30px; 
+            vertical-align: middle;
+        }
+        #tabela-estoque th, #tabela-estoque td {
+            text-align: left;
+        }
+        #tabela-estoque td:nth-child(1), #tabela-estoque td:nth-child(3), #tabela-estoque td:nth-child(4), #tabela-estoque td:nth-child(5) {
+            text-align: center;
+        }
+        .footer-document {
+            margin-top: 50px;
+            padding-top: 10px;
+        }
+        .signatures {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .signatures div {
+            width: 30%;
+        }
+        .signatures hr {
+            border: 0;
+            border-top: 1px solid #000;
+            margin-bottom: 5px;
+        }
+        #tabela-detalhes span {
+            display: block;
+            width: 100%;
+        }
+
+        /* Adicionar estilos para o Rodapé Institucional */
+        .footer-semed {
+            text-align: center;
+            margin-top: 15px; /* Espaçamento entre as assinaturas e o rodapé */
+        }
+
+        #rodape-imagem {
+            width: 100%; /* Garante que o rodapé ocupe a largura total do container */
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h4>1. Detalhes da Escola (Tabela 1)</h4>
+
+        <label for="nome_escola_input">NOME DA ESCOLA</label>
+        <select id="nome_escola_input">
+            <option value="Escola Mestre Pacífico" selected>Escola Mestre Pacífico</option>
+            <option value="Escola João Fernandes de Oliveira">Escola João Fernandes de Oliveira</option>
+            <option value="Escola Marilda Carvalho">Escola Marilda Carvalho</option>
+            <option value="Escola Raimundo Pereira">Escola Raimundo Pereira</option>
+            <option value="Escola Mestre Pacífico - CEMEP">Escola Mestre Pacífico - CEMEP</option>
+            <option value="Escola Mestre Pacífico - INTEGRAL">Escola Mestre Pacífico - INTEGRAL</option>
+        </select>
+
+        <label for="endereco_escola_input">ENDEREÇO</label>
+        <select id="endereco_escola_input">
+            <option value="Comunidade Igarapé Açu" selected>Comunidade Igarapé Açu</option>
+            <option value="Comunidade Ipixuna">Comunidade Ipixuna</option>
+            <option value="Comunidade Arumã">Comunidade Arumã</option>
+        </select>
+        
+        <label for="meio_escola_input">MEIO</label>
+        <select id="meio_escola_input">
+            <option value="Terra Firme" selected>Terra Firme</option>
+        </select>
+
+        <label for="municipio_escola_input">MUNICÍPIO</label>
+        <select id="municipio_escola_input">
+            <option value="Óbidos" selected>Óbidos</option>
+        </select>
+
+        <label for="num_alunos_input">N° DE ALUNOS MATRICULADOS</label>
+        <input type="number" id="num_alunos_input" value="330">
+        
+        <label for="tipo_ensino_input">TIPO DE ENSINO</label>
+        <select id="tipo_ensino_input">
+            <option value="Ed. Inf. E Ens. Fund." selected>Ed. Inf. E Ens. Fund.</option>
+            <option value="Ed. Infantil">Ed. Infantil</option>
+            <option value="Ens. Fundamental">Ens. Fundamental</option>
+        </select>
+        
+        <label for="periodo_input">PERÍODO (Início e Fim) - Gera as datas da Tabela 2</label>
+        <div class="date-pair">
+            <input type="date" id="periodo_inicio_input" value="2025-09-01" onchange="generateTable2Rows()">
+            <input type="date" id="periodo_fim_input" value="2025-09-30" onchange="generateTable2Rows()">
+        </div>
+        <button onclick="generateTable2Rows()">Gerar Datas e Cardápios (Tabela 2)</button>
+
+        
+        <hr style="margin-top: 20px;">
+        
+        <h5>Data do Documento</h5>
+        <input type="date" id="document_date_input" class="data-input">
+
+        <hr style="margin-top: 20px;">
+
+        <h5>Gerenciamento de Linhas</h5>
+        <button class="add-row-btn" onclick="addRowTable2()">+ Adicionar Linha (Tabela 2)</button>
+        <button class="add-row-btn" onclick="addRowTable3()">+ Adicionar Linha (Tabela 3)</button>
+
+        <p style="font-size: 8pt; margin-top: 20px;">*A Tabela 3 é preenchida automaticamente com os itens do cardápio.</p>
+        <button onclick="window.print()" style="background-color: #d9534f; margin-top: 20px;">
+            &#x1F5B6; Imprimir Documento (A4 Paisagem)
+        </button>
+    </div>
+    <div class="main-content-area">
+        <div class="document-container">
+
+            <div class="header-institutional">
+                <img id="timbre-imagem" src="timbre.png" alt="Logotipo da Instituição">
+            </div>
+
+            <h2 style="text-align: center; font-size: 11pt; margin: 10px 0; text-decoration: underline;">DEMONSTRATIVO MENSAL DA DISTRIBUIÇÃO DE REFEIÇÕES E CONSUMO DE GÊNEROS ALIMENTÍCIOS NA ESCOLA</h2>
+
+            <div class="data-table">
+                <table id="tabela-detalhes">
+                    <thead>
+                        <tr>
+                            <th style="width: 15%;">NOME DA ESCOLA</th>
+                            <th style="width: 18%;">ENDEREÇO</th>
+                            <th style="width: 8%;">MEIO</th>
+                            <th style="width: 10%;">MUNICÍPIO</th>
+                            <th style="width: 13%;">DEPENDÊNCIA ADMINISTRATIVA</th>
+                            <th style="width: 10%;">N° DE ALUNOS MATRICULADOS</th>
+                            <th style="width: 13%;">TIPO DE ENSINO</th>
+                            <th style="width: 13%;">PERÍODO</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span id="nome_escola_display">Escola Mestre Pacífico</span></td>
+                            <td><span id="endereco_escola_display">Comunidade Igarapé Açu</span></td>
+                            <td><span id="meio_escola_display">Terra Firme</span></td>
+                            <td><span id="municipio_escola_display">Óbidos</span></td>
+                            <td>Municipal</td>
+                            <td><span id="num_alunos_display">330</span></td>
+                            <td><span id="tipo_ensino_display">Ed. Inf. E Ens. Fund.</span></td>
+                            <td><span id="periodo_display">01/09/2025<br>30/09/2025</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="data-table">
+                <table class="table-cardapio">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" style="width: 5%;">QUANT. DIAS</th>
+                            <th rowspan="2" style="width: 8%;">FREQ. DO DIA/<br>DATA</th>
+                            <th colspan="3">ALUNOS ATENDIDOS</th>
+                            <th rowspan="2" style="width: 25%;">CARDÁPIO</th>
+                            <th rowspan="2" style="width: 3%;"></th><th rowspan="2" style="width: 44%;">JUSTIFICATIVA / OBSERVAÇÃO</th> </tr>
+                        <tr>
+                            <th style="width: 8%;">CRECHE</th>
+                            <th style="width: 11%;">ED. INF. E FUNDAMENTAL</th>
+                            <th style="width: 8%;">EJA</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-cardapio-body">
+                        </tbody>
+                </table>
+            </div>
+            
+            <div class="data-table">
+                <h3 style="text-align: center; font-size: 10pt; font-weight: bold; margin-bottom: 5px;">CONTROLE DE GÊNEROS ALIMENTÍCIOS</h3>
+                <table id="tabela-estoque">
+                    <thead>
+                        <tr>
+                            <th colspan="2" style="width: 25%;">GÊNEROS RECEBIDOS DO PROGRAMA</th>
+                            <th rowspan="2" style="width: 14%;">QUANT. DE ALIM. CONS.</th>
+                            <th rowspan="2" style="width: 14%;">QUANT. DE ALIM. JÁ EM ESTOQUE (antes da entrega)</th>
+                            <th rowspan="2" style="width: 10%;">SALDO ATUAL</th>
+                            <th rowspan="2" style="width: 34%;">RELATÓRIO</th>
+                            <th rowspan="2" style="width: 3%;"></th></tr>
+                        <tr>
+                            <th style="width: 8%;">QUANT.</th>
+                            <th style="width: 17%;">DISCRIMINAÇÃO</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-estoque-body">
+                        </tbody>
+                </table>
+                <p style="text-align: right; margin-bottom: 30px;">Óbidos (PA), <span id="document_date_display">22 de agosto de 2025</span>.</p>
+            </div>
+
+            <div class="footer-document">
+                <div class="signatures">
+                    <div>
+                        <hr>
+                        <p>Diretor(a) da Escola</p>
+                    </div>
+                    <div>
+                        <hr>
+                        <p>Responsável pelo Depósito</p>
+                    </div>
+                    <div>
+                        <hr>
+                        <p>Responsável pelo preenchimento</p>
+                    </div>
+                </div>
+
+                <div class="footer-semed">
+                   <img id="rodape-imagem" src="rodape.png" alt="Rodapé Institucional">
+                </div>
+            </div>
+            </div>
+
+        </div>
+    </div>
+    <script>
+        // ====================================================================
+        //                         CONSTANTES IMPORTANTES
+        // ====================================================================
+
+        // --- 1. ITENS DA TABELA 3 E SUAS UNIDADES
+        const UNITS = {
+            'Açúcar triturado': 'kg', 'Arroz tipo 1': 'kg', 'Biscoito salgado cream cracker': 'pcts',
+            'Carne moída': 'kg', 'Leite em pó integral': 'pcts', 'Peito de frango': 'kg',
+            'Feijão tipo 1': 'kg', 'Alho in natura': 'kg', 'Batata in natura': 'kg', 
+            'Café em pó': 'pcts', 'Carne sem osso': 'kg', 'Cebola in natura': 'kg', 
+            'Cenoura in natura': 'kg', 'Colorau': 'pcts', 'Coco ralado': 'pcts', 
+            'Cominho moído': 'pcts', 'Farinha de trigo': 'kg', 'Macarrão espaguete': 'pcts', 
+            'Óleo de soja 900ml': 'pets', 'Polpa de frutas': 'pcts', 'Milho Branco': 'pcts',
+            'Azeite de dendê': 'grfs', 'Vinagre de álcool': 'grfs', 'Massa para sopa': 'pcts', 
+            'Sal moído': 'kg', 'Mingau de banana grande': 'un', 'Filé de peixe desfiado com arroz': 'un',
+            'Frango desfiado com arroz': 'un', 'Suco de fruta com pão e carne moída': 'un', 
+            'Suco de fruta com biscoito salgado': 'un', 'OUTRO (a ser especificado)': 'un'
+        };
+
+        // --- 2. CALENDÁRIO LETIVO DE 2025 (FORNECIDO PELO USUÁRIO)
+        const CALENDARIO_LETIVO_2025 = {
+            ano_inicio: '2025-02-10',
+            ano_fim: '2025-12-23',
+            // Feriados e dias que NÃO são letivos (além de domingos e sábados não letivos)
+            nao_letivos: [
+                // Março: 4, 5.
+                '2025-03-04', '2025-03-05', 
+                // Maio: 1
+                '2025-05-01',
+                // Junho: 19
+                '2025-06-19',
+                // Agosto: 15
+                '2025-08-15',
+                // Outubro: 2, 15, 28
+                '2025-10-02', '2025-10-15', '2025-10-28',
+                // Novembro: 20
+                '2025-11-20',
+            ].reduce((acc, date) => { acc[date] = true; return acc; }, {}),
+
+            // Sábados Letivos
+            sabadosLetivos: [
+                // Fevereiro e Março: Nenhum
+                '2025-05-03', '2025-05-17', // Maio
+                '2025-06-07', '2025-06-28', // Junho
+                '2025-07-05', '2025-07-19', // Julho
+                '2025-08-02', '2025-08-23', // Agosto
+                '2025-09-06', '2025-09-20', // Setembro
+                '2025-10-04', '2025-10-18', // Outubro
+                '2025-11-08', '2025-11-22', // Novembro
+                '2025-12-06', '2025-12-20', // Dezembro
+            ].reduce((acc, date) => { acc[date] = true; return acc; }, {}),
+
+            // Dias Letivos Específicos em Março (Os dias letivos são exceção e não regra)
+            diasLetivosMarco: [
+                '2025-03-03', '2025-03-06', '2025-03-07', '2025-03-10', '2025-03-11', 
+                '2025-03-12', '2025-03-13', '2025-03-14'
+            ].reduce((acc, date) => { acc[date] = true; return acc; }, {}),
+        };
+        
+        // --- 3. CARDÁPIO SEMANAL PADRÃO (Índice 1=Mon, 5=Fri)
+        const CARDAPIO_SEMANAL_PADRAO = {
+            // Week 1
+            1: {
+                1: "Café com leite e biscoito salgado",
+                2: "Frango desfiado com arroz branco",
+                3: "Sopa de feijão com carne",
+                4: "Mingau de milho branco",
+                5: "Carne moída com macarrão",
+            },
+            // Week 2
+            2: {
+                1: "Mingau de farinha de tapioca",
+                2: "Carne moída com macarrão",
+                3: "Feijão com carne a arroz branco",
+                4: "Suco de fruta com biscoito salgado",
+                5: "Batapá de frango",
+            },
+            // Week 3
+            3: {
+                1: "Café com leite e biscoito salgado",
+                2: "Frango desfiado e arroz branco",
+                3: "Sopa de feijão com carne e verduras",
+                4: "Mingau de milho branco",
+                5: "Filé de peixe desfiado com arroz",
+            },
+            // Week 4 (e posteriores, pois o ciclo repete)
+            4: {
+                1: "Mingau de farinha de tapioca",
+                2: "Carne moída com macarrão",
+                3: "Feijão de carne com arroz branco",
+                4: "Suco de fruta com pão e carne moída",
+                5: "Vatapá de frango",
+            },
+            // Sábado Letivo
+            sabado: "Café com leite, biscoito e salgado",
+        };
+
+        // Lista de todos os cardápios possíveis para o <select>
+        const ALL_CARDAPIOS_RAW = [
+            CARDAPIO_SEMANAL_PADRAO.sabado,
+            ...Object.values(CARDAPIO_SEMANAL_PADRAO[1]),
+            ...Object.values(CARDAPIO_SEMANAL_PADRAO[2]),
+            ...Object.values(CARDAPIO_SEMANAL_PADRAO[3]),
+            ...Object.values(CARDAPIO_SEMANAL_PADRAO[4]),
+            "Mingau de banana grande", 
+            "Frango desfiado com arroz", 
+            "Suco de fruta com biscoito salgado", 
+        ];
+        const CARDAPIO_OPTIONS = [...new Set(ALL_CARDAPIOS_RAW)].sort();
+        
+        // ====================================================================
+        //                         FUNÇÕES DE CALENDÁRIO E CARDÁPIO
+        // ====================================================================
+
+        function syncSidebarToTable1() {
+            document.getElementById('nome_escola_display').textContent = document.getElementById('nome_escola_input').value;
+            document.getElementById('endereco_escola_display').textContent = document.getElementById('endereco_escola_input').value;
+            document.getElementById('meio_escola_display').textContent = document.getElementById('meio_escola_input').value;
+            document.getElementById('municipio_escola_display').textContent = document.getElementById('municipio_escola_input').value;
+            document.getElementById('num_alunos_display').textContent = document.getElementById('num_alunos_input').value;
+            document.getElementById('tipo_ensino_display').textContent = document.getElementById('tipo_ensino_input').value;
+
+            const inicio = document.getElementById('periodo_inicio_input').value;
+            const fim = document.getElementById('periodo_fim_input').value;
+            const inicioDisplay = inicio ? formatDateToDisplay(inicio) : '';
+            const fimDisplay = fim ? formatDateToDisplay(fim) : '';
+            document.getElementById('periodo_display').innerHTML = `${inicioDisplay}<br>${fimDisplay}`;
+        }
+
+        function updateDocumentDate() {
+            const dateInput = document.getElementById('document_date_input').value;
+            if (dateInput) {
+                const dateObj = new Date(dateInput + 'T00:00:00');
+                const options = { day: 'numeric', month: 'long', year: 'numeric' };
+                const formattedDate = dateObj.toLocaleDateString('pt-BR', options);
+                document.getElementById('document_date_display').textContent = formattedDate;
+            }
+        }
+
+        function formatDateToDisplay(dateString) {
+            if (!dateString) return '';
+            const [year, month, day] = dateString.split('-');
+            return `${day}/${month}/${year}`;
+        }
+        
+        function getWeekOfMonth(date) {
+            const d = new Date(date.getTime());
+            d.setDate(1); 
+            
+            let firstMonday = new Date(date.getFullYear(), date.getMonth(), 1);
+            while (firstMonday.getDay() !== 1) { 
+                firstMonday.setDate(firstMonday.getDate() + 1);
+            }
+            
+            let week = 1;
+            let tempDate = new Date(firstMonday.getTime());
+            
+            while (tempDate <= date) {
+                if (tempDate.getDay() === 1 && tempDate.toDateString() !== firstMonday.toDateString()) {
+                    week++;
+                }
+                
+                if (tempDate.toDateString() === date.toDateString()) {
+                    return (week - 1) % 4 + 1;
+                }
+                
+                tempDate.setDate(tempDate.getDate() + 1);
+            }
+            
+            return 1;
+        }
+
+        function getCardapioForDate(date) {
+            const dateISO = date.toISOString().substring(0, 10);
+            const dayOfWeek = date.getDay();
+
+            if (dayOfWeek === 6 && CALENDARIO_LETIVO_2025.sabadosLetivos[dateISO]) {
+                return CARDAPIO_SEMANAL_PADRAO.sabado;
+            }
+
+            if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+                const weekOfMonth = getWeekOfMonth(date);
+                const effectiveWeek = (weekOfMonth > 4) ? (weekOfMonth - 1) % 4 + 1 : weekOfMonth;
+                const dayIndex = dayOfWeek;
+                
+                const weekCardapio = CARDAPIO_SEMANAL_PADRAO[effectiveWeek];
+                
+                return weekCardapio ? weekCardapio[dayIndex] : "Cardápio Indefinido";
+            }
+
+            return null; 
+        }
+
+        function isLetivo(date) {
+            const dateISO = date.toISOString().substring(0, 10);
+            const dayOfWeek = date.getDay();
+            const month = date.getMonth() + 1;
+            const year = date.getFullYear();
+
+            const schoolStart = new Date(CALENDARIO_LETIVO_2025.ano_inicio + 'T00:00:00');
+            const schoolEnd = new Date(CALENDARIO_LETIVO_2025.ano_fim + 'T00:00:00');
+            if (date < schoolStart || date > schoolEnd) {
+                return false;
+            }
+
+            if (CALENDARIO_LETIVO_2025.nao_letivos[dateISO]) {
+                return false;
+            }
+            
+            if (month === 4) {
+                return false;
+            }
+
+            if (dayOfWeek === 0) {
+                return false;
+            }
+            
+            if (month === 3) {
+                return CALENDARIO_LETIVO_2025.diasLetivosMarco[dateISO] || false;
+            }
+
+            if (dayOfWeek === 6) {
+                return CALENDARIO_LETIVO_2025.sabadosLetivos[dateISO] || false;
+            }
+            
+            return dayOfWeek >= 1 && dayOfWeek <= 5;
+        }
+
+
+        // ====================================================================
+        //                        FUNÇÕES DE TABELA
+        // ====================================================================
+
+        // Validação da soma de alunos (Tabela 2)
+        function validateAttendance(input) {
+            const row = input.closest('tr');
+            const maxAlunos = parseInt(document.getElementById('num_alunos_input').value) || 0;
+            
+            if (maxAlunos === 0) return;
+
+            const inputs = Array.from(row.cells).slice(2, 5).map(cell => cell.querySelector('input[type="number"]'));
+            let currentSum = 0;
+            
+            inputs.forEach(inp => {
+                const val = inp.value;
+                if (val.toUpperCase() !== 'X' && !isNaN(parseInt(val))) {
+                    currentSum += parseInt(val);
+                }
+            });
+
+            if (currentSum > maxAlunos) {
+                alert(`A soma de alunos (${currentSum}) excede o total matriculado (${maxAlunos}).`);
+                input.value = 'X'; 
+            }
+            
+            formatAttendance(input);
+        }
+        
+        // Formata campos de frequência: 'X' se 0 ou vazio (Tabela 2)
+        function formatAttendance(input) {
+            if (input.value === '' || input.value === '0' || input.value.toUpperCase() === 'X') {
+                input.value = 'X';
+            }
+        }
+        
+        // Lógica para controle de cardápio e justificativa (Tabela 2)
+        function handleCardapioChange(selectElement) {
+            const row = selectElement.closest('tr');
+            const dateInput = row.cells[1].querySelector('input[type="date"]');
+            const justificativaInput = row.cells[7].querySelector('input[type="text"]');
+            
+            const dateISO = dateInput.value;
+            const selectedCardapio = selectElement.value;
+            
+            const dateObj = new Date(dateISO + 'T00:00:00');
+            const cardapioPrevisto = getCardapioForDate(dateObj);
+            
+            const dateDisplay = formatDateToDisplay(dateISO);
+            const isSabadoLetivo = dateObj.getDay() === 6 && CALENDARIO_LETIVO_2025.sabadosLetivos[dateISO];
+            const sabadoJust = `(No dia ${dateDisplay}, sábado letivo, foi servida merenda)`;
+
+            if (cardapioPrevisto && selectedCardapio !== cardapioPrevisto) {
+                
+                const novaJustificativa = `(No dia ${dateDisplay} o cardápio previsto era "${cardapioPrevisto}", mas foi substituido por "${selectedCardapio}")`;
+                
+                if (!justificativaInput.value || justificativaInput.value === sabadoJust || justificativaInput.value === '-') {
+                    alert(`Atenção: O cardápio original de ${dateDisplay} era "${cardapioPrevisto}" e foi alterado para "${selectedCardapio}". Por favor, justifique no campo ao lado.`);
+                    justificativaInput.value = novaJustificativa;
+                }
+
+            } else if (cardapioPrevisto && selectedCardapio === cardapioPrevisto) {
+                if (justificativaInput.value.includes('o cardápio previsto era')) {
+                    justificativaInput.value = isSabadoLetivo ? sabadoJust : '-';
+                } else if (isSabadoLetivo) {
+                    justificativaInput.value = sabadoJust;
+                } else {
+                    justificativaInput.value = '-';
+                }
+            }
+        }
+
+        // ... (restante das funções de Tabela 2 - updateRowNumbers, setupTable2RowListeners, generateTable2Rows, addRowTable2 - não alteradas, mantidas do código anterior)
+
+        function updateRowNumbers() {
+            const rows = document.getElementById('table-cardapio-body').querySelectorAll('tr');
+            rows.forEach((row, index) => {
+                const numCell = row.querySelector('.row-number');
+                if (numCell) {
+                    numCell.textContent = index + 1;
+                }
+            });
+        }
+
+        function setupTable2RowListeners(newRow) {
+            const freqInputs = newRow.querySelectorAll('input[type="number"]');
+            freqInputs.forEach(input => {
+                input.addEventListener('input', () => validateAttendance(input));
+                formatAttendance(input); 
+            });
+
+            const selectCardapio = newRow.querySelector('select');
+            if (selectCardapio) {
+                selectCardapio.addEventListener('change', () => handleCardapioChange(selectCardapio));
+            }
+        }
+
+        function generateTable2Rows() {
+            const tbody = document.getElementById('table-cardapio-body');
+            const inicioInput = document.getElementById('periodo_inicio_input').value;
+            const fimInput = document.getElementById('periodo_fim_input').value;
+
+            syncSidebarToTable1();
+            
+            if (!inicioInput || !fimInput) {
+                alert("Por favor, defina as datas de início e fim do período.");
+                return;
+            }
+
+            const startDate = new Date(inicioInput + 'T00:00:00');
+            const endDate = new Date(fimInput + 'T00:00:00');
+
+            if (startDate > endDate) {
+                alert("A data de início deve ser anterior ou igual à data de fim.");
+                return;
+            }
+            
+            tbody.innerHTML = '';
+            let currentDate = startDate;
+
+            while (currentDate <= endDate) {
+                const dateISO = currentDate.toISOString().substring(0, 10);
+                
+                if (isLetivo(currentDate)) {
+                    const newRow = tbody.insertRow();
+                    const dateDisplay = formatDateToDisplay(dateISO);
+                    
+                    const cardapioPrevisto = getCardapioForDate(currentDate);
+                    const isSabadoLetivo = currentDate.getDay() === 6;
+                    
+                    let justificativaInicial = '-';
+                    if (isSabadoLetivo) {
+                        justificativaInicial = `(No dia ${dateDisplay}, sábado letivo, foi servida merenda)`;
+                    }
+                    
+                    const optionsHTML = CARDAPIO_OPTIONS.map(opt => 
+                        `<option value="${opt}" ${opt === cardapioPrevisto ? 'selected' : ''}>${opt}</option>`
+                    ).join('');
+
+                    let rowHTML = `
+                        <td class="row-number"></td>
+                        <td><input type="date" value="${dateISO}"></td>
+                        <td><input type="number" value="X"></td>
+                        <td><input type="number" value="X"></td>
+                        <td><input type="number" value="X"></td>
+                        <td><select>${optionsHTML}</select></td>
+                        <td><button class="remove-row-btn" onclick="removeRow(this, 'table-cardapio-body')">&#128465;</button></td>
+                        <td><input type="text" value="${justificativaInicial}" style="width: 98%; text-align: left;"></td>
+                    `;
+
+                    newRow.innerHTML = rowHTML;
+                    setupTable2RowListeners(newRow); 
+                }
+                
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+            
+            updateRowNumbers();
+        }
+        
+        function addRowTable2() {
+            const tbody = document.getElementById('table-cardapio-body');
+            const newRow = tbody.insertRow();
+            const optionsHTML = CARDAPIO_OPTIONS.map(opt => `<option value="${opt}">${opt}</option>`).join('');
+
+            let rowHTML = `
+                <td class="row-number"></td>
+                <td><input type="date"></td>
+                <td><input type="number" value="X"></td>
+                <td><input type="number" value="X"></td>
+                <td><input type="number" value="X"></td>
+                <td><select>${optionsHTML}</select></td>
+                <td><button class="remove-row-btn" onclick="removeRow(this, 'table-cardapio-body')">&#128465;</button></td>
+                <td><input type="text" value="-"></td>
+            `;
+
+            newRow.innerHTML = rowHTML;
+            setupTable2RowListeners(newRow);
+            updateRowNumbers();
+        }
+
+        // Atualiza o saldo e as unidades de medida na Tabela 3
+        function updateTable3Row(element) {
+            const row = element.closest('tr');
+            if (!row) return;
+
+            const quantInput = row.cells[0].querySelector('input[type="number"]');
+            const descSelect = row.cells[1].querySelector('select');
+            const consInput = row.cells[2].querySelector('input[type="number"]');
+            const saldoAnteriorInput = row.cells[3].querySelector('input[type="number"]');
+            const relatorioInput = row.cells[5].querySelector('input[type="text"]');
+
+            const saldoAtualDisplay = row.cells[4];
+
+            // 1. Atualiza Unidades de Medida
+            const selectedDescription = descSelect.options[descSelect.selectedIndex].text;
+            const unit = UNITS[selectedDescription] || 'un';
+            
+            row.cells[0].querySelector('.unit').textContent = unit;
+            row.cells[2].querySelector('.unit').textContent = unit;
+            row.cells[3].querySelector('.unit').textContent = unit;
+            
+            // 2. Leitura dos valores numéricos reais (ignorando '-')
+            const quant = parseFloat(quantInput.value.replace('-', '0')) || 0;
+            const cons = parseFloat(consInput.value.replace('-', '0')) || 0;
+            const saldoAnterior = parseFloat(saldoAnteriorInput.value.replace('-', '0')) || 0;
+
+            // 3. Formata os valores de entrada para visualização (zero vira '-')
+            // Esta formatação só é feita se não estivermos na pré-impressão, para não interferir na edição.
+            if (!document.body.classList.contains('printing')) {
+                quantInput.value = quant === 0 ? '-' : quant;
+                consInput.value = cons === 0 ? '-' : cons;
+                saldoAnteriorInput.value = saldoAnterior === 0 ? '-' : saldoAnterior;
+                
+                // Formata o campo de observação
+                if (relatorioInput.value === '' || relatorioInput.value === '0') {
+                    relatorioInput.value = '-';
+                }
+            }
+            
+            // 4. Cálculo do Saldo (usando os valores numéricos reais)
+            const saldoAtual = (quant + saldoAnterior) - cons;
+
+            saldoAtualDisplay.textContent = saldoAtual.toFixed(0) + ' ' + unit;
+        }
+
+        function addRowTable3() {
+            const tbody = document.getElementById('table-estoque-body');
+            const newRow = tbody.insertRow();
+            
+            const generoOptions = Object.keys(UNITS).map(key => `<option value="${UNITS[key]}">${key}</option>`).join('');
+
+            newRow.innerHTML = `
+                <td><div class="quantity-cell"><input type="number" value="-" oninput="updateTable3Row(this)"> <span class="unit">un</span></div></td>
+                <td><select onchange="updateTable3Row(this)">${generoOptions}</select></td>
+                <td><div class="quantity-cell"><input type="number" value="-" oninput="updateTable3Row(this)"> <span class="unit">un</span></div></td>
+                <td><div class="quantity-cell"><input type="number" value="-" oninput="updateTable3Row(this)"> <span class="unit">un</span></div></td>
+                <td class="calculated-balance">0 un</td>
+                <td><input type="text" value="-" style="width: 95%; text-align: left;" oninput="updateTable3Row(this)"></td>
+                <td><button class="remove-row-btn" onclick="removeRow(this, 'table-estoque-body')">&#128465;</button></td>
+            `;
+
+            updateTable3Row(newRow.cells[1].querySelector('select'));
+        }
+        
+        function initializeTable3() {
+            const tbody = document.getElementById('table-estoque-body');
+            tbody.innerHTML = '';
+
+            const defaultItems = Object.keys(UNITS).filter(key => 
+                key !== 'OUTRO (a ser especificado)' && 
+                !key.includes('Mingau de banana') && 
+                !key.includes('Filé de peixe') && 
+                !key.includes('Frango desfiado com arroz') && 
+                !key.includes('Suco de fruta com pão') &&
+                !key.includes('Suco de fruta com biscoito salgado')
+            );
+
+
+            defaultItems.forEach(item => {
+                const newRow = tbody.insertRow();
+                const unit = UNITS[item];
+                
+                const generoOptions = Object.keys(UNITS).map(key => 
+                    `<option value="${UNITS[key]}" ${key === item ? 'selected' : ''}>${key}</option>`
+                ).join('');
+
+                newRow.innerHTML = `
+                    <td><div class="quantity-cell"><input type="number" value="-" oninput="updateTable3Row(this)"> <span class="unit">${unit}</span></div></td>
+                    <td><select onchange="updateTable3Row(this)">${generoOptions}</select></td>
+                    <td><div class="quantity-cell"><input type="number" value="-" oninput="updateTable3Row(this)"> <span class="unit">${unit}</span></div></td>
+                    <td><div class="quantity-cell"><input type="number" value="-" oninput="updateTable3Row(this)"> <span class="unit">${unit}</span></div></td>
+                    <td class="calculated-balance">0 ${unit}</td>
+                    <td><input type="text" value="-" style="width: 95%; text-align: left;" oninput="updateTable3Row(this)"></td>
+                    <td><button class="remove-row-btn" onclick="removeRow(this, 'table-estoque-body')">&#128465;</button></td>
+                `;
+                updateTable3Row(newRow.cells[1].querySelector('select'));
+            });
+        }
+
+
+        // --- FUNÇÕES GERAIS ---
+
+        function removeRow(button, tbodyId) {
+            const row = button.closest('tr');
+            const tbody = document.getElementById(tbodyId);
+            if (row && tbody) {
+                tbody.removeChild(row);
+            }
+            if (tbodyId === 'table-cardapio-body') {
+                updateRowNumbers();
+            }
+        }
+
+        // ====================================================================
+        //                 FUNÇÕES DE PRÉ E PÓS-IMPRESSÃO (NOVO)
+        // ====================================================================
+
+        let originalValuesT2 = [];
+        let originalValuesT3 = [];
+
+        // Formata campos para impressão (X na T2, - na T3)
+        function applyPrintFormatting() {
+            document.body.classList.add('printing');
+            
+            // Tabela 2: Frequência (Inputs de 'number' de colunas 3, 4, 5)
+            const t2Inputs = document.querySelectorAll('#table-cardapio-body td:nth-child(3) input, #table-cardapio-body td:nth-child(4) input, #table-cardapio-body td:nth-child(5) input');
+            originalValuesT2 = Array.from(t2Inputs).map(input => {
+                const original = input.value;
+                if (original === '' || original === '0' || original.toUpperCase() === 'X') {
+                    input.value = 'X';
+                }
+                return { input, original };
+            });
+
+            // Tabela 3: Quantidades e Relatório (Inputs de 'number' e 'text')
+            const t3Inputs = document.querySelectorAll('#table-estoque-body input');
+            originalValuesT3 = Array.from(t3Inputs).map(input => {
+                const original = input.value;
+                if (input.type === 'number') {
+                    // Quantidades T3: 0 ou vazio vira '-'
+                    const numericValue = parseFloat(original.replace('-', '0')) || 0;
+                    if (numericValue === 0 || original === '') {
+                        input.value = '-';
+                    }
+                } else if (input.type === 'text') {
+                    // Relatório T3: vazio vira '-'
+                    if (original === '' || original === '0') {
+                        input.value = '-';
+                    }
+                }
+                return { input, original };
+            });
+            
+            // Força o recalculo para atualizar a exibição da Tabela 3
+            document.querySelectorAll('#table-estoque-body select').forEach(select => updateTable3Row(select));
+        }
+
+        // Restaura campos após a impressão
+        function restoreOriginalFormatting() {
+            document.body.classList.remove('printing');
+            
+            originalValuesT2.forEach(item => item.input.value = item.original);
+            originalValuesT3.forEach(item => item.input.value = item.original);
+            
+            // Força o recalculo para restaurar a exibição da Tabela 3
+            document.querySelectorAll('#table-estoque-body select').forEach(select => updateTable3Row(select));
+        }
+
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            const table1Inputs = document.querySelectorAll('.sidebar input:not([type="date"]), .sidebar select');
+            table1Inputs.forEach(input => {
+                if (input.id !== 'document_date_input') {
+                    input.addEventListener('input', syncSidebarToTable1);
+                    input.addEventListener('change', syncSidebarToTable1);
+                }
+            });
+            
+            document.getElementById('document_date_input').addEventListener('change', updateDocumentDate);
+
+            syncSidebarToTable1();
+            generateTable2Rows();
+            initializeTable3();
+
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('document_date_input').value = today;
+            updateDocumentDate(); 
+            
+            // Adiciona Listeners para eventos de impressão
+            if (window.matchMedia) {
+                window.matchMedia('print').addListener(function(mql) {
+                    if (mql.matches) {
+                        applyPrintFormatting();
+                    } else {
+                        restoreOriginalFormatting();
+                    }
+                });
+            }
+            window.onbeforeprint = applyPrintFormatting;
+            window.onafterprint = restoreOriginalFormatting;
+        });
+    </script>
+    <!--<script>
+    // ====================================================================
+    //                         CONSTANTES IMPORTANTES
+    // ====================================================================
+
+    // --- 1. ITENS DA TABELA 3 E SUAS UNIDADES
+    const UNITS = {
+        'Açúcar triturado': 'kg', 'Arroz tipo 1': 'kg', 'Biscoito salgado cream cracker': 'pcts',
+        'Carne moída': 'kg', 'Leite em pó integral': 'pcts', 'Peito de frango': 'kg',
+        'Feijão tipo 1': 'kg', 'Alho in natura': 'kg', 'Batata in natura': 'kg', 
+        'Café em pó': 'pcts', 'Carne sem osso': 'kg', 'Cebola in natura': 'kg', 
+        'Cenoura in natura': 'kg', 'Colorau': 'pcts', 'Coco ralado': 'pcts', 
+        'Cominho moído': 'pcts', 'Farinha de trigo': 'kg', 'Macarrão espaguete': 'pcts', 
+        'Óleo de soja 900ml': 'pets', 'Polpa de frutas': 'pcts', 'Milho Branco': 'pcts',
+        'Azeite de dendê': 'grfs', 'Vinagre de álcool': 'grfs', 'Massa para sopa': 'pcts', 
+        'Sal moído': 'kg', 'Mingau de banana grande': 'un', 'Filé de peixe desfiado com arroz': 'un',
+        'Frango desfiado com arroz': 'un', 'Suco de fruta com pão e carne moída': 'un', 
+        'Suco de fruta com biscoito salgado': 'un', 'OUTRO (a ser especificado)': 'un'
+    };
+
+    // --- 2. CALENDÁRIO LETIVO DE 2025 (FORNECIDO PELO USUÁRIO)
+    const CALENDARIO_LETIVO_2025 = {
+        ano_inicio: '2025-02-10',
+        ano_fim: '2025-12-23',
+        // Feriados e dias que NÃO são letivos (além de domingos e sábados não letivos)
+        nao_letivos: [
+            // Março: 4, 5.
+            '2025-03-04', '2025-03-05', 
+            // Maio: 1
+            '2025-05-01',
+            // Junho: 19
+            '2025-06-19',
+            // Agosto: 15
+            '2025-08-15',
+            // Outubro: 2, 15, 28
+            '2025-10-02', '2025-10-15', '2025-10-28',
+            // Novembro: 20
+            '2025-11-20',
+        ].reduce((acc, date) => { acc[date] = true; return acc; }, {}),
+
+        // Sábados Letivos
+        sabadosLetivos: [
+            // Fevereiro e Março: Nenhum
+            '2025-05-03', '2025-05-17', // Maio
+            '2025-06-07', '2025-06-28', // Junho
+            '2025-07-05', '2025-07-19', // Julho
+            '2025-08-02', '2025-08-23', // Agosto
+            '2025-09-06', '2025-09-20', // Setembro
+            '2025-10-04', '2025-10-18', // Outubro
+            '2025-11-08', '2025-11-22', // Novembro
+            '2025-12-06', '2025-12-20', // Dezembro
+        ].reduce((acc, date) => { acc[date] = true; return acc; }, {}),
+
+        // Dias Letivos Específicos em Março (Os dias não-letivos no meio da semana)
+        diasLetivosMarco: [
+            '2025-03-03', '2025-03-06', '2025-03-07', '2025-03-10', '2025-03-11', 
+            '2025-03-12', '2025-03-13', '2025-03-14'
+        ].reduce((acc, date) => { acc[date] = true; return acc; }, {}),
+    };
+    
+    // --- 3. CARDÁPIO SEMANAL PADRÃO (Índice 1=Mon, 5=Fri)
+    const CARDAPIO_SEMANAL_PADRAO = {
+        // Week 1
+        1: {
+            1: "Café com leite e biscoito salgado",
+            2: "Frango desfiado com arroz branco",
+            3: "Sopa de feijão com carne",
+            4: "Mingau de milho branco",
+            5: "Carne moída com macarrão",
+        },
+        // Week 2
+        2: {
+            1: "Mingau de farinha de tapioca", // Defaulting to first option
+            2: "Carne moída com macarrão",
+            3: "Feijão com carne a arroz branco",
+            4: "Suco de fruta com biscoito salgado",
+            5: "Batapá de frango",
+        },
+        // Week 3
+        3: {
+            1: "Café com leite e biscoito salgado",
+            2: "Frango desfiado e arroz branco",
+            3: "Sopa de feijão com carne e verduras",
+            4: "Mingau de milho branco",
+            5: "Filé de peixe desfiado com arroz", // Defaulting to first option
+        },
+        // Week 4 (e posteriores, pois o ciclo repete)
+        4: {
+            1: "Mingau de farinha de tapioca", // Defaulting to first option
+            2: "Carne moída com macarrão",
+            3: "Feijão de carne com arroz branco",
+            4: "Suco de fruta com pão e carne moída", // Defaulting to first option
+            5: "Vatapá de frango",
+        },
+        // Sábado Letivo
+        sabado: "Café com leite, biscoito e salgado",
+    };
+
+    // Lista de todos os cardápios possíveis para o <select>
+    const ALL_CARDAPIOS_RAW = [
+        CARDAPIO_SEMANAL_PADRAO.sabado, // Sábado
+        ...Object.values(CARDAPIO_SEMANAL_PADRAO[1]),
+        ...Object.values(CARDAPIO_SEMANAL_PADRAO[2]),
+        ...Object.values(CARDAPIO_SEMANAL_PADRAO[3]),
+        ...Object.values(CARDAPIO_SEMANAL_PADRAO[4]),
+        "Mingau de banana grande", // Opção "OU"
+        "Frango desfiado com arroz", // Opção "OU"
+        "Suco de fruta com biscoito salgado", // Opção "OU" (no caso da 4ª semana)
+    ];
+    const CARDAPIO_OPTIONS = [...new Set(ALL_CARDAPIOS_RAW)].sort(); // Únicos e ordenados
+    
+    // ====================================================================
+    //                         FUNÇÕES DE CALENDÁRIO E CARDÁPIO
+    // ====================================================================
+
+    // Sincroniza os dados da sidebar com a Tabela 1 e atualiza a data do documento
+    function syncSidebarToTable1() {
+        document.getElementById('nome_escola_display').textContent = document.getElementById('nome_escola_input').value;
+        document.getElementById('endereco_escola_display').textContent = document.getElementById('endereco_escola_input').value;
+        document.getElementById('meio_escola_display').textContent = document.getElementById('meio_escola_input').value;
+        document.getElementById('municipio_escola_display').textContent = document.getElementById('municipio_escola_input').value;
+        document.getElementById('num_alunos_display').textContent = document.getElementById('num_alunos_input').value;
+        document.getElementById('tipo_ensino_display').textContent = document.getElementById('tipo_ensino_input').value;
+
+        const inicio = document.getElementById('periodo_inicio_input').value;
+        const fim = document.getElementById('periodo_fim_input').value;
+        const inicioDisplay = inicio ? formatDateToDisplay(inicio) : '';
+        const fimDisplay = fim ? formatDateToDisplay(fim) : '';
+        document.getElementById('periodo_display').innerHTML = `${inicioDisplay}<br>${fimDisplay}`;
+    }
+
+    // Atualiza a data do rodapé
+    function updateDocumentDate() {
+        const dateInput = document.getElementById('document_date_input').value;
+        if (dateInput) {
+            const dateObj = new Date(dateInput + 'T00:00:00');
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            const formattedDate = dateObj.toLocaleDateString('pt-BR', options);
+            document.getElementById('document_date_display').textContent = formattedDate;
+        }
+    }
+
+    // Converte YYYY-MM-DD para DD/MM/AAAA
+    function formatDateToDisplay(dateString) {
+        if (!dateString) return '';
+        const [year, month, day] = dateString.split('-');
+        return `${day}/${month}/${year}`;
+    }
+    
+    // Calcula a semana do mês (1-4, repetindo). Considera que a primeira semana útil é a 1.
+    function getWeekOfMonth(date) {
+        const d = new Date(date.getTime());
+        d.setDate(1); 
+        
+        // Encontra o primeiro dia do mês que é segunda-feira
+        let firstMonday = new Date(date.getFullYear(), date.getMonth(), 1);
+        while (firstMonday.getDay() !== 1) { 
+            firstMonday.setDate(firstMonday.getDate() + 1);
+        }
+        
+        let week = 1;
+        let tempDate = new Date(firstMonday.getTime());
+        
+        while (tempDate <= date) {
+            if (tempDate.getDay() === 1 && tempDate.toDateString() !== firstMonday.toDateString()) {
+                week++;
+            }
+            
+            if (tempDate.toDateString() === date.toDateString()) {
+                return (week - 1) % 4 + 1; // 1, 2, 3, 4, 1, 2, 3, 4...
+            }
+            
+            tempDate.setDate(tempDate.getDate() + 1);
+        }
+        
+        return 1;
+    }
+
+    // Retorna o cardápio padrão para a data
+    function getCardapioForDate(date) {
+        const dateISO = date.toISOString().substring(0, 10);
+        const dayOfWeek = date.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+
+        // 1. Sábado Letivo
+        if (dayOfWeek === 6 && CALENDARIO_LETIVO_2025.sabadosLetivos[dateISO]) {
+            return CARDAPIO_SEMANAL_PADRAO.sabado;
+        }
+
+        // 2. Dia de Semana (Mon-Fri)
+        if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+            const weekOfMonth = getWeekOfMonth(date);
+            const effectiveWeek = (weekOfMonth > 4) ? (weekOfMonth - 1) % 4 + 1 : weekOfMonth;
+            const dayIndex = dayOfWeek; // 1 to 5
+            
+            const weekCardapio = CARDAPIO_SEMANAL_PADRAO[effectiveWeek];
+            
+            return weekCardapio ? weekCardapio[dayIndex] : "Cardápio Indefinido";
+        }
+
+        return null; 
+    }
+
+    // Verifica se o dia é letivo
+    function isLetivo(date) {
+        const dateISO = date.toISOString().substring(0, 10);
+        const dayOfWeek = date.getDay(); // 0=Sun, 6=Sat
+        const month = date.getMonth() + 1; // 1=Jan, 12=Dec
+        const year = date.getFullYear();
+
+        // 1. Checa se está fora do período letivo principal (2025)
+        const schoolStart = new Date(CALENDARIO_LETIVO_2025.ano_inicio + 'T00:00:00');
+        const schoolEnd = new Date(CALENDARIO_LETIVO_2025.ano_fim + 'T00:00:00');
+        if (date < schoolStart || date > schoolEnd) {
+            return false;
+        }
+
+        // 2. Checa por não-letivos/feriados explícitos
+        if (CALENDARIO_LETIVO_2025.nao_letivos[dateISO]) {
+            return false;
+        }
+        
+        // 3. Checa Abril (Férias)
+        if (month === 4) {
+            return false;
+        }
+
+        // 4. Checa Domingos
+        if (dayOfWeek === 0) {
+            return false;
+        }
+        
+        // 5. Checa Março (dias letivos são exceção e não regra)
+        if (month === 3) {
+            return CALENDARIO_LETIVO_2025.diasLetivosMarco[dateISO] || false;
+        }
+
+        // 6. Checa Sábados (somente letivo se explicitamente na lista)
+        if (dayOfWeek === 6) {
+            return CALENDARIO_LETIVO_2025.sabadosLetivos[dateISO] || false;
+        }
+        
+        // 7. Todos os outros dias úteis (Seg-Sex) são letivos, pois as exceções já foram filtradas.
+        return dayOfWeek >= 1 && dayOfWeek <= 5;
+    }
+
+
+    // ====================================================================
+    //                        FUNÇÕES DE TABELA
+    // ====================================================================
+
+    // Validação da soma de alunos (Tabela 2)
+    function validateAttendance(input) {
+        const row = input.closest('tr');
+        const maxAlunos = parseInt(document.getElementById('num_alunos_input').value) || 0;
+        
+        if (maxAlunos === 0) return;
+
+        const inputs = Array.from(row.cells).slice(2, 5).map(cell => cell.querySelector('input[type="number"]'));
+        let currentSum = 0;
+        
+        inputs.forEach(inp => {
+            const val = inp.value;
+            // Apenas soma se for um número, ignorando 'X'
+            if (val.toUpperCase() !== 'X' && !isNaN(parseInt(val))) {
+                currentSum += parseInt(val);
+            }
+        });
+
+        if (currentSum > maxAlunos) {
+            alert(`A soma de alunos (${currentSum}) excede o total matriculado (${maxAlunos}).`);
+            input.value = 'X'; 
+        }
+        
+        formatAttendance(input);
+    }
+    
+    // Formata campos de frequência: 'X' se 0 ou vazio (Tabela 2)
+    function formatAttendance(input) {
+        // NOVO: Se o valor for vazio, 0, ou 'x' (case insensitive), preenche com 'X'.
+        if (input.value === '' || input.value === '0' || input.value.toUpperCase() === 'X') {
+            input.value = 'X';
+        }
+        // Garante que se houver um número, ele não seja 'X'.
+        if (!isNaN(parseInt(input.value)) && parseInt(input.value) > 0) {
+             // Mantém o valor numérico
+        }
+    }
+    
+    // Lógica para controle de cardápio e justificativa (Tabela 2)
+    function handleCardapioChange(selectElement) {
+        const row = selectElement.closest('tr');
+        const dateInput = row.cells[1].querySelector('input[type="date"]');
+        const justificativaInput = row.cells[7].querySelector('input[type="text"]');
+        
+        const dateISO = dateInput.value;
+        const selectedCardapio = selectElement.value;
+        
+        // Obter cardápio original (apenas para o dia em questão)
+        const dateObj = new Date(dateISO + 'T00:00:00');
+        const cardapioPrevisto = getCardapioForDate(dateObj);
+        
+        const dateDisplay = formatDateToDisplay(dateISO);
+        const isSabadoLetivo = dateObj.getDay() === 6 && CALENDARIO_LETIVO_2025.sabadosLetivos[dateISO];
+        const sabadoJust = `(No dia ${dateDisplay}, sábado letivo, foi servida merenda)`;
+
+        // 1. Verificar se houve alteração em relação ao previsto
+        if (cardapioPrevisto && selectedCardapio !== cardapioPrevisto) {
+            
+            // PREENCHIMENTO AUTOMÁTICO DA JUSTIFICATIVA
+            const novaJustificativa = `(No dia ${dateDisplay} o cardápio previsto era "${cardapioPrevisto}", mas foi substituido por "${selectedCardapio}")`;
+            
+            // Só exibe o alerta se o campo de justificativa não tiver sido preenchido com algo diferente.
+            if (!justificativaInput.value || justificativaInput.value === sabadoJust || justificativaInput.value === '-') {
+                alert(`Atenção: O cardápio original de ${dateDisplay} era "${cardapioPrevisto}" e foi alterado para "${selectedCardapio}". Por favor, justifique no campo ao lado.`);
+                justificativaInput.value = novaJustificativa;
+            } else if (justificativaInput.value === novaJustificativa) {
+                // Se o usuário só re-selecionou o novo cardápio, mantemos a justificativa.
+            } else {
+                // Se já houver outra justificativa manual, apenas alerta e não sobrescreve.
+            }
+
+
+        } else if (cardapioPrevisto && selectedCardapio === cardapioPrevisto) {
+            // 2. Se o cardápio for re-selecionado para o previsto, limpar a justificativa de substituição, mas manter a de sábado.
+            if (justificativaInput.value.includes('o cardápio previsto era')) {
+                justificativaInput.value = isSabadoLetivo ? sabadoJust : '-';
+            } else if (isSabadoLetivo) {
+                 justificativaInput.value = sabadoJust;
+            } else {
+                 justificativaInput.value = '-'; // NOVO: Campo de observação limpo deve ser '-'
+            }
+        }
+    }
+
+    // Atualiza a numeração das linhas da Tabela 2
+    function updateRowNumbers() {
+        const rows = document.getElementById('table-cardapio-body').querySelectorAll('tr');
+        rows.forEach((row, index) => {
+            const numCell = row.querySelector('.row-number');
+            if (numCell) {
+                numCell.textContent = index + 1;
+            }
+        });
+    }
+
+    // Configura os listeners para os novos campos
+    function setupTable2RowListeners(newRow) {
+        const freqInputs = newRow.querySelectorAll('input[type="number"]');
+        freqInputs.forEach(input => {
+            input.addEventListener('input', () => validateAttendance(input));
+            formatAttendance(input); 
+        });
+
+        const selectCardapio = newRow.querySelector('select');
+        if (selectCardapio) {
+            selectCardapio.addEventListener('change', () => handleCardapioChange(selectCardapio));
+        }
+    }
+
+    // Geração automática de linhas (datas, cardápios e justificativas)
+    function generateTable2Rows() {
+        const tbody = document.getElementById('table-cardapio-body');
+        const inicioInput = document.getElementById('periodo_inicio_input').value;
+        const fimInput = document.getElementById('periodo_fim_input').value;
+
+        syncSidebarToTable1();
+        
+        if (!inicioInput || !fimInput) {
+            alert("Por favor, defina as datas de início e fim do período.");
+            return;
+        }
+
+        const startDate = new Date(inicioInput + 'T00:00:00');
+        const endDate = new Date(fimInput + 'T00:00:00');
+
+        if (startDate > endDate) {
+            alert("A data de início deve ser anterior ou igual à data de fim.");
+            return;
+        }
+        
+        tbody.innerHTML = '';
+        let currentDate = startDate;
+
+        while (currentDate <= endDate) {
+            const dateISO = currentDate.toISOString().substring(0, 10);
+            
+            if (isLetivo(currentDate)) {
+                const newRow = tbody.insertRow();
+                const dateDisplay = formatDateToDisplay(dateISO);
+                
+                const cardapioPrevisto = getCardapioForDate(currentDate);
+                const isSabadoLetivo = currentDate.getDay() === 6;
+                
+                let justificativaInicial = '-'; // NOVO: Padrão para observação é '-'
+                if (isSabadoLetivo) {
+                    justificativaInicial = `(No dia ${dateDisplay}, sábado letivo, foi servida merenda)`;
+                }
+                
+                const optionsHTML = CARDAPIO_OPTIONS.map(opt => 
+                    `<option value="${opt}" ${opt === cardapioPrevisto ? 'selected' : ''}>${opt}</option>`
+                ).join('');
+
+                let rowHTML = `
+                    <td class="row-number"></td>
+                    <td><input type="date" value="${dateISO}"></td>
+                    <td><input type="number" value="X"></td>
+                    <td><input type="number" value="X"></td>
+                    <td><input type="number" value="X"></td>
+                    <td><select>${optionsHTML}</select></td>
+                    <td><button class="remove-row-btn" onclick="removeRow(this, 'table-cardapio-body')">&#128465;</button></td>
+                    <td><input type="text" value="${justificativaInicial}" style="width: 98%; text-align: left;"></td>
+                `;
+
+                newRow.innerHTML = rowHTML;
+                setupTable2RowListeners(newRow); 
+            }
+            
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+        
+        updateRowNumbers();
+    }
+    
+    // Adiciona uma linha vazia à Tabela 2 (manual)
+    function addRowTable2() {
+        const tbody = document.getElementById('table-cardapio-body');
+        const newRow = tbody.insertRow();
+        const optionsHTML = CARDAPIO_OPTIONS.map(opt => `<option value="${opt}">${opt}</option>`).join('');
+
+        let rowHTML = `
+            <td class="row-number"></td>
+            <td><input type="date"></td>
+            <td><input type="number" value="X"></td>
+            <td><input type="number" value="X"></td>
+            <td><input type="number" value="X"></td>
+            <td><select>${optionsHTML}</select></td>
+            <td><button class="remove-row-btn" onclick="removeRow(this, 'table-cardapio-body')">&#128465;</button></td>
+            <td><input type="text" value="-"></td> `;
+
+        newRow.innerHTML = rowHTML;
+        setupTable2RowListeners(newRow);
+        updateRowNumbers();
+    }
+
+    // Atualiza o saldo e as unidades de medida na Tabela 3
+    function updateTable3Row(element) {
+        const row = element.closest('tr');
+        if (!row) return;
+
+        const quantInput = row.cells[0].querySelector('input[type="number"]');
+        const descSelect = row.cells[1].querySelector('select');
+        const consInput = row.cells[2].querySelector('input[type="number"]');
+        const saldoAnteriorInput = row.cells[3].querySelector('input[type="number"]');
+        const relatorioInput = row.cells[5].querySelector('input[type="text"]');
+
+        const saldoAtualDisplay = row.cells[4];
+
+        // 1. Atualiza Unidades de Medida
+        const selectedDescription = descSelect.options[descSelect.selectedIndex].text;
+        const unit = UNITS[selectedDescription] || 'un';
+        
+        row.cells[0].querySelector('.unit').textContent = unit;
+        row.cells[2].querySelector('.unit').textContent = unit;
+        row.cells[3].querySelector('.unit').textContent = unit;
+        
+        // 2. Leitura e Formatação (NOVO: '0' vira '-')
+        const quant = parseFloat(quantInput.value) || 0;
+        const cons = parseFloat(consInput.value) || 0;
+        const saldoAnterior = parseFloat(saldoAnteriorInput.value) || 0;
+
+        // NOVO: Formata os valores de entrada
+        quantInput.value = quant === 0 ? '-' : quant;
+        consInput.value = cons === 0 ? '-' : cons;
+        saldoAnteriorInput.value = saldoAnterior === 0 ? '-' : saldoAnterior;
+        
+        // NOVO: Formata o campo de observação
+        if (relatorioInput.value === '' || relatorioInput.value === '0') {
+            relatorioInput.value = '-';
+        }
+
+        // 3. Cálculo do Saldo (usando os valores numéricos reais)
+        const saldoAtual = (quant + saldoAnterior) - cons;
+
+        saldoAtualDisplay.textContent = saldoAtual.toFixed(0) + ' ' + unit;
+    }
+
+    // Adiciona uma linha vazia à Tabela 3 (manual)
+    function addRowTable3() {
+        const tbody = document.getElementById('table-estoque-body');
+        const newRow = tbody.insertRow();
+        
+        const generoOptions = Object.keys(UNITS).map(key => `<option value="${UNITS[key]}">${key}</option>`).join('');
+
+        newRow.innerHTML = `
+            <td><div class="quantity-cell"><input type="number" value="-" oninput="updateTable3Row(this)"> <span class="unit">un</span></div></td>
+            <td><select onchange="updateTable3Row(this)">${generoOptions}</select></td>
+            <td><div class="quantity-cell"><input type="number" value="-" oninput="updateTable3Row(this)"> <span class="unit">un</span></div></td>
+            <td><div class="quantity-cell"><input type="number" value="-" oninput="updateTable3Row(this)"> <span class="unit">un</span></div></td>
+            <td class="calculated-balance">0 un</td>
+            <td><input type="text" value="-" style="width: 95%; text-align: left;" oninput="updateTable3Row(this)"></td>
+            <td><button class="remove-row-btn" onclick="removeRow(this, 'table-estoque-body')">&#128465;</button></td>
+        `;
+
+        updateTable3Row(newRow.cells[1].querySelector('select'));
+    }
+    
+    // Preenche a Tabela 3 automaticamente ao iniciar
+    function initializeTable3() {
+        const tbody = document.getElementById('table-estoque-body');
+        tbody.innerHTML = '';
+
+        const defaultItems = Object.keys(UNITS).filter(key => 
+            key !== 'OUTRO (a ser especificado)' && 
+            !key.includes('Mingau de banana') && 
+            !key.includes('Filé de peixe') && 
+            !key.includes('Frango desfiado com arroz') && 
+            !key.includes('Suco de fruta com pão') &&
+            !key.includes('Suco de fruta com biscoito salgado') // Remove as opções de cardápio compostas
+        );
+
+
+        defaultItems.forEach(item => {
+            const newRow = tbody.insertRow();
+            const unit = UNITS[item];
+            
+            const generoOptions = Object.keys(UNITS).map(key => 
+                `<option value="${UNITS[key]}" ${key === item ? 'selected' : ''}>${key}</option>`
+            ).join('');
+
+            newRow.innerHTML = `
+                <td><div class="quantity-cell"><input type="number" value="-" oninput="updateTable3Row(this)"> <span class="unit">${unit}</span></div></td>
+                <td><select onchange="updateTable3Row(this)">${generoOptions}</select></td>
+                <td><div class="quantity-cell"><input type="number" value="-" oninput="updateTable3Row(this)"> <span class="unit">${unit}</span></div></td>
+                <td><div class="quantity-cell"><input type="number" value="-" oninput="updateTable3Row(this)"> <span class="unit">${unit}</span></div></td>
+                <td class="calculated-balance">0 ${unit}</td>
+                <td><input type="text" value="-" style="width: 95%; text-align: left;" oninput="updateTable3Row(this)"></td>
+                <td><button class="remove-row-btn" onclick="removeRow(this, 'table-estoque-body')">&#128465;</button></td>
+            `;
+            updateTable3Row(newRow.cells[1].querySelector('select'));
+        });
+    }
+
+
+    // --- FUNÇÕES GERAIS ---
+
+    function removeRow(button, tbodyId) {
+        const row = button.closest('tr');
+        const tbody = document.getElementById(tbodyId);
+        if (row && tbody) {
+            tbody.removeChild(row);
+        }
+        if (tbodyId === 'table-cardapio-body') {
+            updateRowNumbers();
+        }
+    }
+
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', () => {
+        // Vincula eventos da Tabela 1 na sidebar
+        const table1Inputs = document.querySelectorAll('.sidebar input:not([type="date"]), .sidebar select');
+        table1Inputs.forEach(input => {
+            if (input.id !== 'document_date_input') {
+                input.addEventListener('input', syncSidebarToTable1);
+                input.addEventListener('change', syncSidebarToTable1);
+            }
+        });
+        
+        document.getElementById('document_date_input').addEventListener('change', updateDocumentDate);
+
+        syncSidebarToTable1();
+        generateTable2Rows(); // Gera a tabela com o período inicial
+        initializeTable3();
+
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('document_date_input').value = today;
+        updateDocumentDate(); 
+    });
+</script>-->
 
 </body>
 </html>
