@@ -360,10 +360,16 @@
         <button class="add-row-btn" onclick="addRowTable3()">+ Adicionar Linha (Tabela 3)</button>
 
         <h5>Gerenciamento de Dados</h5>
-        <button class="generate-btn" onclick="exportDataToJSON()" style="background-color: #f7931e;">Exportar Dados (JSON)</button>
-        <input type="file" id="import_file" accept=".json" style="margin-bottom: 5px;">
-        <button class="generate-btn" onclick="document.getElementById('import_file').click()" style="background-color: #5cb85c; margin-top: 0;">Selecionar Arquivo</button>
-        <button class="generate-btn" onclick="importDataFromJSON()" style="background-color: #337ab7; margin-top: 5px;">Importar Dados</button>
+        <button class="generate-btn" onclick="exportDataToTEXT()" style="background-color: #f7931e;">
+            Exportar Dados (Planilha)
+        </button>
+        <input type="file" id="import_file" accept=".txt" style="margin-bottom: 5px;">
+        <button class="generate-btn" onclick="document.getElementById('import_file').click()" style="background-color: #5cb85c; margin-top: 0;">
+            Selecionar Arquivo
+        </button>
+        <button class="generate-btn" onclick="importDataFromTEXT()" style="background-color: #337ab7; margin-top: 5px;">
+            Importar Dados
+        </button>
 
         <p style="font-size: 8pt; margin-top: 20px;">*A Tabela 3 é preenchida automaticamente com os itens do cardápio.</p>
         <button onclick="window.print()" style="background-color: #d9534f; margin-top: 20px;">
@@ -477,6 +483,769 @@
         </div>
     </div>
     <script>
+        const UNITS = {
+            'Açúcar triturado': 'kg', 'Arroz tipo 1': 'kg', 'Biscoito salgado cream cracker': 'pcts',
+            'Carne moída': 'kg', 'Leite em pó integral': 'pcts', 'Peito de frango': 'kg',
+            'Feijão tipo 1': 'kg', 'Alho in natura': 'kg', 'Batata in natura': 'kg', 
+            'Café em pó': 'pcts', 'Carne sem osso': 'kg', 'Cebola in natura': 'kg', 
+            'Cenoura in natura': 'kg', 'Colorau': 'pcts', 'Coco ralado': 'pcts', 
+            'Cominho moído': 'pcts', 'Farinha de trigo': 'kg', 'Macarrão espaguete': 'pcts', 
+            'Óleo de soja 900ml': 'pets', 'Polpa de frutas': 'pcts', 'Milho Branco': 'pcts',
+            'Azeite de dendê': 'grfs', 'Vinagre de álcool': 'grfs', 'Massa para sopa': 'pcts', 
+            'Sal moído': 'kg', 'Mingau de banana grande': 'un', 'Filé de peixe desfiado com arroz': 'un',
+            'Frango desfiado com arroz': 'un', 'Suco de fruta com pão e carne moída': 'un', 
+            'Suco de fruta com biscoito salgado': 'un', 'OUTRO (a ser especificado)': 'un'
+        };
+
+        const CALENDARIO_LETIVO_2025 = {
+            ano_inicio: '2025-02-10',
+            ano_fim: '2025-12-23',
+            nao_letivos: [
+                '2025-03-04', '2025-03-05', 
+                '2025-05-01',
+                '2025-06-19',
+                '2025-08-15',
+                '2025-10-02', '2025-10-15', '2025-10-28',
+                '2025-11-20',
+            ].reduce((acc, date) => { acc[date] = true; return acc; }, {}),
+            sabadosLetivos: [
+                '2025-05-03', '2025-05-17',
+                '2025-06-07', '2025-06-28',
+                '2025-07-05', '2025-07-19',
+                '2025-08-02', '2025-08-23',
+                '2025-09-06', '2025-09-20',
+                '2025-10-04', '2025-10-18',
+                '2025-11-08', '2025-11-22',
+                '2025-12-06', '2025-12-20',
+            ].reduce((acc, date) => { acc[date] = true; return acc; }, {}),
+            diasLetivosMarco: [
+                '2025-03-03', '2025-03-06', '2025-03-07', '2025-03-10', '2025-03-11', 
+                '2025-03-12', '2025-03-13', '2025-03-14'
+            ].reduce((acc, date) => { acc[date] = true; return acc; }, {}),
+        };
+        
+        const CARDAPIO_REGULAR = {
+            1: {
+                1: "Café com leite e biscoito salgado",
+                2: "Frango desfiado com arroz branco",
+                3: "Sopa de feijão com carne",
+                4: "Mingau de milho branco",
+                5: "Carne moída com macarrão",
+            },
+            2: {
+                1: "Mingau de farinha de tapioca",
+                2: "Carne moída com macarrão",
+                3: "Feijão com carne, arroz branco e verduras",
+                4: "Suco de fruta com biscoito salgado",
+                5: "Batapá de frango",
+            },
+            3: {
+                1: "Café com leite e biscoito salgado",
+                2: "Frango desfiado e arroz branco",
+                3: "Sopa de feijão com carne e verduras",
+                4: "Mingau de milho branco",
+                5: "Filé de peixe desfiado com arroz",
+            },
+            4: {
+                1: "Mingau de farinha de tapioca",
+                2: "Carne moída com macarrão",
+                3: "Feijão de carne com arroz branco",
+                4: "Suco de fruta com pão e carne moída",
+                5: "Vatapá de frango",
+            },
+            sabado: "Café com leite, biscoito e salgado",
+        };
+        
+        const CARDAPIO_INTEGRAL = {
+            1: {
+                1: "Café com leite, pão e queijo (Manhã) | Frango desfiado e Arroz com Salada (Almoço)",
+                2: "Mingau de aveia (Manhã) | Feijão, Arroz, Carne Moída e Legumes (Almoço)",
+                3: "Suco de fruta e Biscoito (Manhã) | Sopa reforçada com carne e macarrão (Almoço)",
+                4: "Iogurte e fruta (Manhã) | Peito de frango assado, purê de batata e suco (Almoço)",
+                5: "Café com leite e bolo (Manhã) | Carne de panela, macarrão e verduras (Almoço)",
+            },
+            2: {
+                1: "Mingau de farinha de tapioca (Manhã) | Carne moída, Arroz e Salada (Almoço)",
+                2: "Café com leite e biscoito salgado (Manhã) | Feijão com carne, arroz branco e verduras (Almoço)",
+                3: "Pão com ovo e fruta (Manhã) | Vatapá de frango com arroz (Almoço)",
+                4: "Suco de fruta com pão e carne moída (Manhã) | Peixe ensopado com legumes e farofa (Almoço)",
+                5: "Mingau de milho branco (Manhã) | Strogonoff de frango e arroz (Almoço)",
+            },
+            3: this[1], 
+            4: this[2], 
+            sabado: "Almoço especial de sábado letivo: Feijoada leve com arroz.",
+        };
+
+
+        const ALL_CARDAPIOS_RAW = [
+            ...Object.values(CARDAPIO_REGULAR[1]),
+            ...Object.values(CARDAPIO_REGULAR[2]),
+            ...Object.values(CARDAPIO_REGULAR[3]),
+            ...Object.values(CARDAPIO_REGULAR[4]),
+            CARDAPIO_REGULAR.sabado,
+            ...Object.values(CARDAPIO_INTEGRAL[1]),
+            ...Object.values(CARDAPIO_INTEGRAL[2]),
+            CARDAPIO_INTEGRAL.sabado,
+            "Mingau de banana grande", 
+            "Frango desfiado com arroz", 
+            "Suco de fruta com pão e carne moída", 
+            "Suco de fruta com biscoito salgado", 
+        ];
+        const CARDAPIO_OPTIONS = [...new Set(ALL_CARDAPIOS_RAW)].sort();
+        
+        let currentCardapioType = 'regular'; 
+        
+        function syncSidebarToTable1() {
+            document.getElementById('nome_escola_display').textContent = document.getElementById('nome_escola_input').value;
+            document.getElementById('endereco_escola_display').textContent = document.getElementById('endereco_escola_input').value;
+            document.getElementById('meio_escola_display').textContent = document.getElementById('meio_escola_input').value;
+            document.getElementById('municipio_escola_display').textContent = document.getElementById('municipio_escola_input').value;
+            document.getElementById('num_alunos_display').textContent = document.getElementById('num_alunos_input').value;
+            document.getElementById('tipo_ensino_display').textContent = document.getElementById('tipo_ensino_input').value;
+
+            const inicio = document.getElementById('periodo_inicio_input').value;
+            const fim = document.getElementById('periodo_fim_input').value;
+            const inicioDisplay = inicio ? formatDateToDisplay(inicio) : '';
+            const fimDisplay = fim ? formatDateToDisplay(fim) : '';
+            document.getElementById('periodo_display').innerHTML = `${inicioDisplay}<br>${fimDisplay}`;
+        }
+
+        function updateDocumentDate() {
+            const dateInput = document.getElementById('document_date_input').value;
+            if (dateInput) {
+                const dateObj = new Date(dateInput + 'T00:00:00');
+                const options = { day: 'numeric', month: 'long', year: 'numeric' };
+                const formattedDate = dateObj.toLocaleDateString('pt-BR', options);
+                document.getElementById('document_date_display').textContent = formattedDate;
+            }
+        }
+
+        function formatDateToDisplay(dateString) {
+            if (!dateString) return '';
+            const [year, month, day] = dateString.split('-');
+            return `${day}/${month}/${year}`;
+        }
+        
+        function getWeekOfMonth(date) {
+            const d = new Date(date.getTime());
+            d.setDate(1); 
+            
+            let firstMonday = new Date(date.getFullYear(), date.getMonth(), 1);
+            while (firstMonday.getDay() !== 1) { 
+                firstMonday.setDate(firstMonday.getDate() + 1);
+            }
+            
+            let week = 1;
+            let tempDate = new Date(firstMonday.getTime());
+            
+            while (tempDate <= date) {
+                if (tempDate.getDay() === 1 && tempDate.toDateString() !== firstMonday.toDateString()) {
+                    week++;
+                }
+                
+                if (tempDate.toDateString() === date.toDateString()) {
+                    return (week - 1) % 4 + 1;
+                }
+                
+                tempDate.setDate(tempDate.getDate() + 1);
+            }
+            
+            return 1;
+        }
+
+        function getCardapioForDate(date) {
+            const dateISO = date.toISOString().substring(0, 10);
+            const dayOfWeek = date.getDay();
+            
+            const CARDAPIOS_SELECIONADOS = currentCardapioType === 'integral' ? CARDAPIO_INTEGRAL : CARDAPIO_REGULAR;
+
+            if (dayOfWeek === 6 && CALENDARIO_LETIVO_2025.sabadosLetivos[dateISO]) {
+                return CARDAPIOS_SELECIONADOS.sabado;
+            }
+
+            if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+                const weekOfMonth = getWeekOfMonth(date);
+                const effectiveWeek = (weekOfMonth > 4) ? (weekOfMonth - 1) % 4 + 1 : weekOfMonth;
+                const dayIndex = dayOfWeek;
+                
+                const weekCardapio = CARDAPIOS_SELECIONADOS[effectiveWeek];
+                
+                return weekCardapio ? weekCardapio[dayIndex] : "Cardápio Indefinido";
+            }
+
+            return null; 
+        }
+
+        function isLetivo(date) {
+            const dateISO = date.toISOString().substring(0, 10);
+            const dayOfWeek = date.getDay();
+            const month = date.getMonth() + 1;
+            const year = date.getFullYear();
+
+            const schoolStart = new Date(CALENDARIO_LETIVO_2025.ano_inicio + 'T00:00:00');
+            const schoolEnd = new Date(CALENDARIO_LETIVO_2025.ano_fim + 'T00:00:00');
+            if (date < schoolStart || date > schoolEnd) {
+                return false;
+            }
+
+            if (CALENDARIO_LETIVO_2025.nao_letivos[dateISO]) {
+                return false;
+            }
+            
+            if (month === 4) {
+                return false;
+            }
+
+            if (dayOfWeek === 0) {
+                return false;
+            }
+            
+            if (month === 3) {
+                return CALENDARIO_LETIVO_2025.diasLetivosMarco[dateISO] || false;
+            }
+
+            if (dayOfWeek === 6) {
+                return CALENDARIO_LETIVO_2025.sabadosLetivos[dateISO] || false;
+            }
+            
+            return dayOfWeek >= 1 && dayOfWeek <= 5;
+        }
+
+
+        function validateAttendance(input) {
+            const row = input.closest('tr');
+            const maxAlunos = parseInt(document.getElementById('num_alunos_input').value) || 0;
+            
+            if (maxAlunos === 0) return;
+
+            const inputs = Array.from(row.cells).slice(2, 5).map(cell => cell.querySelector('input[type="number"]'));
+            let currentSum = 0;
+            
+            inputs.forEach(inp => {
+                const val = inp.value;
+                if (val.toUpperCase() !== 'X' && !isNaN(parseInt(val))) {
+                    currentSum += parseInt(val);
+                }
+            });
+
+            if (currentSum > maxAlunos) {
+                alert(`A soma de alunos (${currentSum}) excede o total matriculado (${maxAlunos}).`);
+                input.value = 'X'; 
+            }
+            
+            formatAttendance(input);
+        }
+        
+        function formatAttendance(input) {
+            if (input.value === '' || input.value === '0' || input.value.toUpperCase() === 'X') {
+                input.value = 'X';
+            }
+        }
+        
+        function handleCardapioChange(selectElement) {
+            const row = selectElement.closest('tr');
+            const dateInput = row.cells[1].querySelector('input[type="date"]');
+            const justificativaInput = row.cells[7].querySelector('input[type="text"]');
+            
+            const dateISO = dateInput.value;
+            const selectedCardapio = selectElement.value;
+            
+            const dateObj = new Date(dateISO + 'T00:00:00');
+            const cardapioPrevisto = getCardapioForDate(dateObj);
+            
+            const dateDisplay = formatDateToDisplay(dateISO);
+            const isSabadoLetivo = dateObj.getDay() === 6 && CALENDARIO_LETIVO_2025.sabadosLetivos[dateISO];
+            const sabadoJust = `(No dia ${dateDisplay}, sábado letivo, foi servida merenda)`;
+
+            if (cardapioPrevisto && selectedCardapio !== cardapioPrevisto) {
+                
+                const novaJustificativa = `(No dia ${dateDisplay} o cardápio previsto era "${cardapioPrevisto}", mas foi substituido por "${selectedCardapio}")`;
+                
+                if (!justificativaInput.value || justificativaInput.value === sabadoJust || justificativaInput.value === '-') {
+                    alert(`Atenção: O cardápio original de ${dateDisplay} era "${cardapioPrevisto}" e foi alterado para "${selectedCardapio}". Por favor, justifique no campo ao lado.`);
+                    justificativaInput.value = novaJustificativa;
+                }
+
+            } else if (cardapioPrevisto && selectedCardapio === cardapioPrevisto) {
+                if (justificativaInput.value.includes('o cardápio previsto era')) {
+                    justificativaInput.value = isSabadoLetivo ? sabadoJust : '-';
+                } else if (isSabadoLetivo) {
+                    justificativaInput.value = sabadoJust;
+                } else {
+                    justificativaInput.value = '-';
+                }
+            }
+        }
+
+        function updateRowNumbers() {
+            const rows = document.getElementById('table-cardapio-body').querySelectorAll('tr');
+            rows.forEach((row, index) => {
+                const numCell = row.querySelector('.row-number');
+                if (numCell) {
+                    numCell.textContent = index + 1;
+                }
+            });
+        }
+
+        function setupTable2RowListeners(newRow) {
+            const freqInputs = newRow.querySelectorAll('input[type="number"]');
+            freqInputs.forEach(input => {
+                input.addEventListener('input', () => validateAttendance(input));
+                formatAttendance(input); 
+            });
+
+            const selectCardapio = newRow.querySelector('select');
+            if (selectCardapio) {
+                selectCardapio.addEventListener('change', () => handleCardapioChange(selectCardapio));
+            }
+        }
+
+        function generateTable2Rows() {
+            const tbody = document.getElementById('table-cardapio-body');
+            const inicioInput = document.getElementById('periodo_inicio_input').value;
+            const fimInput = document.getElementById('periodo_fim_input').value;
+
+            syncSidebarToTable1();
+            
+            if (!inicioInput || !fimInput) {
+                alert("Por favor, defina as datas de início e fim do período.");
+                return;
+            }
+
+            const startDate = new Date(inicioInput + 'T00:00:00');
+            const endDate = new Date(fimInput + 'T00:00:00');
+
+            if (startDate > endDate) {
+                alert("A data de início deve ser anterior ou igual à data de fim.");
+                return;
+            }
+            
+            tbody.innerHTML = '';
+            let currentDate = startDate;
+
+            while (currentDate <= endDate) {
+                const dateISO = currentDate.toISOString().substring(0, 10);
+                
+                if (isLetivo(currentDate)) {
+                    const newRow = tbody.insertRow();
+                    const dateDisplay = formatDateToDisplay(dateISO);
+                    
+                    const cardapioPrevisto = getCardapioForDate(currentDate);
+                    const isSabadoLetivo = currentDate.getDay() === 6;
+                    
+                    let justificativaInicial = '-';
+                    if (isSabadoLetivo) {
+                        justificativaInicial = `(No dia ${dateDisplay}, sábado letivo, foi servida merenda)`;
+                    }
+                    
+                    const optionsHTML = CARDAPIO_OPTIONS.map(opt => 
+                        `<option value="${opt}" ${opt === cardapioPrevisto ? 'selected' : ''}>${opt}</option>`
+                    ).join('');
+
+                    let rowHTML = `
+                        <td class="row-number"></td>
+                        <td><input type="date" value="${dateISO}"></td>
+                        <td><input type="number" value="X"></td>
+                        <td><input type="number" value="X"></td>
+                        <td><input type="number" value="X"></td>
+                        <td><select>${optionsHTML}</select></td>
+                        <td><button class="remove-row-btn" onclick="removeRow(this, 'table-cardapio-body')">&#128465;</button></td>
+                        <td><input type="text" value="${justificativaInicial}" style="width: 98%; text-align: left;"></td>
+                    `;
+
+                    newRow.innerHTML = rowHTML;
+                    setupTable2RowListeners(newRow); 
+                }
+                
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+            
+            updateRowNumbers();
+        }
+        
+        function addRowTable2() {
+            const tbody = document.getElementById('table-cardapio-body');
+            const newRow = tbody.insertRow();
+            const optionsHTML = CARDAPIO_OPTIONS.map(opt => `<option value="${opt}">${opt}</option>`).join('');
+
+            let rowHTML = `
+                <td class="row-number"></td>
+                <td><input type="date"></td>
+                <td><input type="number" value="X"></td>
+                <td><input type="number" value="X"></td>
+                <td><input type="number" value="X"></td>
+                <td><select>${optionsHTML}</select></td>
+                <td><button class="remove-row-btn" onclick="removeRow(this, 'table-cardapio-body')">&#128465;</button></td>
+                <td><input type="text" value="-"></td>
+            `;
+
+            newRow.innerHTML = rowHTML;
+            setupTable2RowListeners(newRow);
+            updateRowNumbers();
+        }
+
+        function updateTable3Row(element) {
+            const row = element.closest('tr');
+            if (!row) return;
+
+            const quantInput = row.cells[0].querySelector('input[type="number"]');
+            const descSelect = row.cells[1].querySelector('select');
+            const consInput = row.cells[2].querySelector('input[type="number"]');
+            const saldoAnteriorInput = row.cells[3].querySelector('input[type="number"]');
+            const relatorioInput = row.cells[5].querySelector('input[type="text"]');
+
+            const saldoAtualDisplay = row.cells[4];
+
+            const selectedDescription = descSelect.options[descSelect.selectedIndex].text;
+            const unit = UNITS[selectedDescription] || 'un';
+            
+            row.cells[0].querySelector('.unit').textContent = unit;
+            row.cells[2].querySelector('.unit').textContent = unit;
+            row.cells[3].querySelector('.unit').textContent = unit;
+            
+            const quant = parseFloat(quantInput.value.replace('-', '0')) || 0;
+            const cons = parseFloat(consInput.value.replace('-', '0')) || 0;
+            const saldoAnterior = parseFloat(saldoAnteriorInput.value.replace('-', '0')) || 0;
+
+            if (!document.body.classList.contains('printing')) {
+                quantInput.value = quant === 0 ? '-' : quant;
+                consInput.value = cons === 0 ? '-' : cons;
+                saldoAnteriorInput.value = saldoAnterior === 0 ? '-' : saldoAnterior;
+                
+                if (relatorioInput.value === '' || relatorioInput.value === '0') {
+                    relatorioInput.value = '-';
+                }
+            }
+            
+            const saldoAtual = (quant + saldoAnterior) - cons;
+
+            saldoAtualDisplay.textContent = saldoAtual.toFixed(0) + ' ' + unit;
+        }
+
+        function addRowTable3() {
+            const tbody = document.getElementById('table-estoque-body');
+            const newRow = tbody.insertRow();
+            
+            const generoOptions = Object.keys(UNITS).map(key => `<option value="${UNITS[key]}">${key}</option>`).join('');
+
+            newRow.innerHTML = `
+                <td><div class="quantity-cell"><input type="number" value="-" oninput="updateTable3Row(this)"> <span class="unit">un</span></div></td>
+                <td><select onchange="updateTable3Row(this)">${generoOptions}</select></td>
+                <td><div class="quantity-cell"><input type="number" value="-" oninput="updateTable3Row(this)"> <span class="unit">un</span></div></td>
+                <td><div class="quantity-cell"><input type="number" value="-" oninput="updateTable3Row(this)"> <span class="unit">un</span></div></td>
+                <td class="calculated-balance">0 un</td>
+                <td><input type="text" value="-" style="width: 95%; text-align: left;" oninput="updateTable3Row(this)"></td>
+                <td><button class="remove-row-btn" onclick="removeRow(this, 'table-estoque-body')">&#128465;</button></td>
+            `;
+
+            updateTable3Row(newRow.cells[1].querySelector('select'));
+        }
+        
+        function initializeTable3() {
+            const tbody = document.getElementById('table-estoque-body');
+            tbody.innerHTML = '';
+
+            const defaultItems = Object.keys(UNITS).filter(key => 
+                key !== 'OUTRO (a ser especificado)' && 
+                !key.includes('Mingau de banana') && 
+                !key.includes('Filé de peixe') && 
+                !key.includes('Frango desfiado com arroz') && 
+                !key.includes('Suco de fruta com pão') &&
+                !key.includes('Suco de fruta com biscoito salgado')
+            );
+
+
+            defaultItems.forEach(item => {
+                const newRow = tbody.insertRow();
+                const unit = UNITS[item];
+                
+                const generoOptions = Object.keys(UNITS).map(key => 
+                    `<option value="${UNITS[key]}" ${key === item ? 'selected' : ''}>${key}</option>`
+                ).join('');
+
+                newRow.innerHTML = `
+                    <td><div class="quantity-cell"><input type="number" value="-" oninput="updateTable3Row(this)"> <span class="unit">${unit}</span></div></td>
+                    <td><select onchange="updateTable3Row(this)">${generoOptions}</select></td>
+                    <td><div class="quantity-cell"><input type="number" value="-" oninput="updateTable3Row(this)"> <span class="unit">${unit}</span></div></td>
+                    <td><div class="quantity-cell"><input type="number" value="-" oninput="updateTable3Row(this)"> <span class="unit">${unit}</span></div></td>
+                    <td class="calculated-balance">0 ${unit}</td>
+                    <td><input type="text" value="-" style="width: 95%; text-align: left;" oninput="updateTable3Row(this)"></td>
+                    <td><button class="remove-row-btn" onclick="removeRow(this, 'table-estoque-body')">&#128465;</button></td>
+                `;
+                updateTable3Row(newRow.cells[1].querySelector('select'));
+            });
+        }
+
+
+        function removeRow(button, tbodyId) {
+            const row = button.closest('tr');
+            const tbody = document.getElementById(tbodyId);
+            if (row && tbody) {
+                tbody.removeChild(row);
+            }
+            if (tbodyId === 'table-cardapio-body') {
+                updateRowNumbers();
+            }
+        }
+
+        let originalValuesT2 = [];
+        let originalValuesT3 = [];
+
+        function applyPrintFormatting() {
+            document.body.classList.add('printing');
+            
+            const t2Inputs = document.querySelectorAll('#table-cardapio-body td:nth-child(3) input, #table-cardapio-body td:nth-child(4) input, #table-cardapio-body td:nth-child(5) input');
+            originalValuesT2 = Array.from(t2Inputs).map(input => {
+                const original = input.value;
+                if (original === '' || original === '0' || original.toUpperCase() === 'X') {
+                    input.value = 'X';
+                }
+                return { input, original };
+            });
+
+            const t3Inputs = document.querySelectorAll('#table-estoque-body input');
+            originalValuesT3 = Array.from(t3Inputs).map(input => {
+                const original = input.value;
+                if (input.type === 'number') {
+                    const numericValue = parseFloat(original.replace('-', '0')) || 0;
+                    if (numericValue === 0 || original === '') {
+                        input.value = '-';
+                    }
+                } else if (input.type === 'text') {
+                    if (original === '' || original === '0') {
+                        input.value = '-';
+                    }
+                }
+                return { input, original };
+            });
+            
+            document.querySelectorAll('#table-estoque-body select').forEach(select => updateTable3Row(select));
+        }
+
+        function restoreOriginalFormatting() {
+            document.body.classList.remove('printing');
+            
+            originalValuesT2.forEach(item => item.input.value = item.original);
+            originalValuesT3.forEach(item => item.input.value = item.original);
+            
+            document.querySelectorAll('#table-estoque-body select').forEach(select => updateTable3Row(select));
+        }
+
+        // ====================================================================
+        //              FUNÇÕES: EXPORTAÇÃO E IMPORTAÇÃO (TXT/PLANILHA)
+        // ====================================================================
+
+        function collectData() {
+            const data = {};
+
+            // 1. Coleta dos dados da Sidebar (Tabela 1 e Período)
+            data.sidebar = {};
+            document.querySelectorAll('.sidebar input:not([type="file"]), .sidebar select').forEach(input => {
+                if (input.type === 'radio') {
+                    if (input.checked) {
+                        data.sidebar[input.name] = input.value;
+                    }
+                } else {
+                    data.sidebar[input.id] = input.value;
+                }
+            });
+            data.sidebar.tipo_cardapio = currentCardapioType; 
+            
+            // 2. Coleta dos dados da Tabela 2 (Cardápio)
+            data.table2 = [];
+            const t2rows = document.getElementById('table-cardapio-body').querySelectorAll('tr');
+            t2rows.forEach(row => {
+                const inputs = row.querySelectorAll('input, select');
+                data.table2.push({
+                    data: inputs[0].value,
+                    freq_creche: inputs[1].value,
+                    freq_ed_inf_fund: inputs[2].value,
+                    freq_eja: inputs[3].value,
+                    cardapio: inputs[4].value,
+                    justificativa: inputs[5].value,
+                });
+            });
+
+            // 3. Coleta dos dados da Tabela 3 (Estoque)
+            data.table3 = [];
+            const t3rows = document.getElementById('table-estoque-body').querySelectorAll('tr');
+            t3rows.forEach(row => {
+                const inputs = row.querySelectorAll('input:not([type="text"]), select, input[type="text"]');
+                data.table3.push({
+                    recebido: inputs[0].value,
+                    descricao: inputs[1].value,
+                    consumido: inputs[2].value,
+                    saldo_anterior: inputs[3].value,
+                    relatorio: inputs[4].value,
+                });
+            });
+
+            return data;
+        }
+
+        function exportDataToTEXT() {
+            const data = collectData();
+            const textData = JSON.stringify(data, null, 2);
+            const blob = new Blob([textData], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            
+            const date = new Date().toISOString().substring(0, 10);
+            const schoolName = document.getElementById('nome_escola_input').value.replace(/[^a-z0-9]/gi, '_').toLowerCase() || 'demonstrativo';
+            
+            // Exporta como .txt, que pode ser aberto por Excel
+            a.download = `demonstrativo_${schoolName}_${date}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert("Dados exportados! Salve o arquivo .txt. Você pode abri-lo em um editor de texto ou planilha (como Google Sheets ou Excel) para editar os dados. Lembre-se de manter o formato do arquivo para importar novamente.");
+        }
+
+        function importDataFromTEXT() {
+            const fileInput = document.getElementById('import_file');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert("Por favor, selecione um arquivo de dados (.txt) para importar.");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    // Tenta fazer o parse do texto como JSON
+                    const importedData = JSON.parse(event.target.result);
+                    applyImportedData(importedData);
+                    alert("Dados importados com sucesso! Clique em 'Gerar Tabela' se notar alguma inconsistência no período.");
+                } catch (e) {
+                    alert("Erro ao processar o arquivo de dados. Certifique-se de que o arquivo (.txt) não foi corrompido ou alterado de forma incompatível com o sistema.");
+                    console.error("Erro de importação:", e);
+                }
+            };
+            // Lê o arquivo como texto
+            reader.readAsText(file);
+        }
+
+        function applyImportedData(data) {
+            // 1. Aplicar dados da Sidebar (Tabela 1 e Período)
+            if (data.sidebar) {
+                for (const id in data.sidebar) {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        if (id === 'tipo_cardapio') {
+                            // Trata o rádio
+                            const radio = document.querySelector(`input[name="tipo_cardapio"][value="${data.sidebar[id]}"]`);
+                            if (radio) {
+                                radio.checked = true;
+                                currentCardapioType = data.sidebar[id];
+                            }
+                        } else {
+                            element.value = data.sidebar[id];
+                        }
+                    }
+                }
+            }
+
+            // 2. Aplicar dados da Tabela 2 (Cardápio)
+            if (data.table2) {
+                const tbody = document.getElementById('table-cardapio-body');
+                tbody.innerHTML = ''; 
+                data.table2.forEach(rowData => {
+                    const newRow = tbody.insertRow();
+                    const optionsHTML = CARDAPIO_OPTIONS.map(opt => 
+                        `<option value="${opt}" ${opt === rowData.cardapio ? 'selected' : ''}>${opt}</option>`
+                    ).join('');
+
+                    let rowHTML = `
+                        <td class="row-number"></td>
+                        <td><input type="date" value="${rowData.data}"></td>
+                        <td><input type="number" value="${rowData.freq_creche}"></td>
+                        <td><input type="number" value="${rowData.freq_ed_inf_fund}"></td>
+                        <td><input type="number" value="${rowData.freq_eja}"></td>
+                        <td><select>${optionsHTML}</select></td>
+                        <td><button class="remove-row-btn" onclick="removeRow(this, 'table-cardapio-body')">&#128465;</button></td>
+                        <td><input type="text" value="${rowData.justificativa}" style="width: 98%; text-align: left;"></td>
+                    `;
+                    newRow.innerHTML = rowHTML;
+                    setupTable2RowListeners(newRow);
+                });
+                updateRowNumbers();
+            }
+
+            // 3. Aplicar dados da Tabela 3 (Estoque)
+            if (data.table3) {
+                const tbody = document.getElementById('table-estoque-body');
+                tbody.innerHTML = '';
+                data.table3.forEach(rowData => {
+                    const newRow = tbody.insertRow();
+                    const unit = UNITS[rowData.descricao] || 'un';
+                    
+                    const generoOptions = Object.keys(UNITS).map(key => 
+                        `<option value="${UNITS[key]}" ${key === rowData.descricao ? 'selected' : ''}>${key}</option>`
+                    ).join('');
+
+                    newRow.innerHTML = `
+                        <td><div class="quantity-cell"><input type="number" value="${rowData.recebido}" oninput="updateTable3Row(this)"> <span class="unit">${unit}</span></div></td>
+                        <td><select onchange="updateTable3Row(this)">${generoOptions}</select></td>
+                        <td><div class="quantity-cell"><input type="number" value="${rowData.consumido}" oninput="updateTable3Row(this)"> <span class="unit">${unit}</span></div></td>
+                        <td><div class="quantity-cell"><input type="number" value="${rowData.saldo_anterior}" oninput="updateTable3Row(this)"> <span class="unit">${unit}</span></div></td>
+                        <td class="calculated-balance">0 ${unit}</td>
+                        <td><input type="text" value="${rowData.relatorio}" style="width: 95%; text-align: left;" oninput="updateTable3Row(this)"></td>
+                        <td><button class="remove-row-btn" onclick="removeRow(this, 'table-estoque-body')">&#128465;</button></td>
+                    `;
+                    updateTable3Row(newRow.cells[1].querySelector('select'));
+                });
+            }
+            
+            syncSidebarToTable1();
+        }
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const table1Inputs = document.querySelectorAll('.sidebar input:not([type="date"]), .sidebar select');
+            table1Inputs.forEach(input => {
+                if (input.id !== 'document_date_input') {
+                    input.addEventListener('input', syncSidebarToTable1);
+                    input.addEventListener('change', syncSidebarToTable1);
+                }
+            });
+            
+            document.getElementById('document_date_input').addEventListener('change', updateDocumentDate);
+            
+            const cardapioRadios = document.querySelectorAll('input[name="tipo_cardapio"]');
+            cardapioRadios.forEach(radio => {
+                radio.addEventListener('change', (event) => {
+                    currentCardapioType = event.target.value;
+                    generateTable2Rows(); 
+                });
+            });
+
+            syncSidebarToTable1();
+            generateTable2Rows();
+            initializeTable3();
+
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('document_date_input').value = today;
+            updateDocumentDate(); 
+            
+            if (window.matchMedia) {
+                window.matchMedia('print').addListener(function(mql) {
+                    if (mql.matches) {
+                        applyPrintFormatting();
+                    } else {
+                        restoreOriginalFormatting();
+                    }
+                });
+            }
+            window.onbeforeprint = applyPrintFormatting;
+            window.onafterprint = restoreOriginalFormatting;
+        });
+    </script>
+    <!--<script>
         // ====================================================================
         //                         CONSTANTES IMPORTANTES
         // ====================================================================
@@ -1119,6 +1888,6 @@
             window.onbeforeprint = applyPrintFormatting;
             window.onafterprint = restoreOriginalFormatting;
         });
-    </script>
+    </script>-->
 </body>
 </html>
