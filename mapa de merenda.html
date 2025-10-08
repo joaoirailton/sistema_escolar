@@ -359,6 +359,12 @@
         <button class="add-row-btn" onclick="addRowTable2()">+ Adicionar Linha (Tabela 2)</button>
         <button class="add-row-btn" onclick="addRowTable3()">+ Adicionar Linha (Tabela 3)</button>
 
+        <h5>Gerenciamento de Dados</h5>
+        <button class="generate-btn" onclick="exportDataToJSON()" style="background-color: #f7931e;">Exportar Dados (JSON)</button>
+        <input type="file" id="import_file" accept=".json" style="margin-bottom: 5px;">
+        <button class="generate-btn" onclick="document.getElementById('import_file').click()" style="background-color: #5cb85c; margin-top: 0;">Selecionar Arquivo</button>
+        <button class="generate-btn" onclick="importDataFromJSON()" style="background-color: #337ab7; margin-top: 5px;">Importar Dados</button>
+
         <p style="font-size: 8pt; margin-top: 20px;">*A Tabela 3 é preenchida automaticamente com os itens do cardápio.</p>
         <button onclick="window.print()" style="background-color: #d9534f; margin-top: 20px;">
             &#x1F5B6; Imprimir Documento (A4 Paisagem)
@@ -406,11 +412,13 @@
                 <table class="table-cardapio">
                     <thead>
                         <tr>
-                            <th rowspan="2" style="width: 5%;">QUANT. DIAS</th>
-                            <th rowspan="2" style="width: 8%;">FREQ. DO DIA/<br>DATA</th>
+                            <th rowspan="2" style="width: 3%;">QUANT. DIAS</th>
+                            <th rowspan="2" style="width: 9%;">FREQ. DO DIA/<br>DATA</th>
                             <th colspan="3">ALUNOS ATENDIDOS</th>
-                            <th rowspan="2" style="width: 25%;">CARDÁPIO</th>
-                            <th rowspan="2" style="width: 3%;"></th><th rowspan="2" style="width: 44%;">JUSTIFICATIVA / OBSERVAÇÃO</th> </tr>
+                            <th rowspan="2" style="width: 35%;">CARDÁPIO</th>
+                            <th rowspan="2" style="width: 2%;"></th>
+                            <th rowspan="2" style="width: 34%;">JUSTIFICATIVA / OBSERVAÇÃO</th>
+                        </tr>
                         <tr>
                             <th style="width: 8%;">CRECHE</th>
                             <th style="width: 11%;">ED. INF. E FUNDAMENTAL</th>
@@ -427,14 +435,14 @@
                 <table id="tabela-estoque">
                     <thead>
                         <tr>
-                            <th colspan="2" style="width: 25%;">GÊNEROS RECEBIDOS DO PROGRAMA</th>
-                            <th rowspan="2" style="width: 14%;">QUANT. DE ALIM. CONS.</th>
-                            <th rowspan="2" style="width: 14%;">QUANT. DE ALIM. JÁ EM ESTOQUE (antes da entrega)</th>
-                            <th rowspan="2" style="width: 10%;">SALDO ATUAL</th>
-                            <th rowspan="2" style="width: 34%;">RELATÓRIO</th>
-                            <th rowspan="2" style="width: 3%;"></th></tr>
+                            <th colspan="2" style="width: 20%;">GÊNEROS RECEBIDOS DO PROGRAMA</th>
+                            <th rowspan="2" style="width: 6%;">QUANT. DE ALIM. CONS.</th>
+                            <th rowspan="2" style="width: 10%;">QUANT. DE ALIM. JÁ EM ESTOQUE (antes da entrega)</th>
+                            <th rowspan="2" style="width: 7%;">SALDO ATUAL</th>
+                            <th rowspan="2" style="width: 40%;">RELATÓRIO</th>
+                            <th rowspan="2" style="width: 2%;"></th></tr>
                         <tr>
-                            <th style="width: 8%;">QUANT.</th>
+                            <th style="width: 7%;">QUANT.</th>
                             <th style="width: 17%;">DISCRIMINAÇÃO</th>
                         </tr>
                     </thead>

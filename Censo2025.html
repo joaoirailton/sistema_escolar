@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificação de Permanência no Censo Escolar 2025</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #004080;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #007bff;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s;
+            margin-bottom: 15px;
+        }
+        button:hover {
+            background-color: #1e7e34;
+        }
+        .info-box {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 4px;
+            font-size: 18px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .censo-fica {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .censo-sai {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .censo-invalido {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        .rule-text {
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-left: 4px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Verificação de Censo Escolar 2025</h1>
+    <p>A **Data Base (Ponto de Corte)** do Censo Escolar 2025 é **28/05/2025**.</p>
+
+    <h2>1. Entrada de Alunos (Matrícula)</h2>
+    
+    <div class="rule-text">
+        **Regra:** Se o aluno entrar na escola **até a Data Base** (28/05/2025), ele **FICA** no Censo da sua escola. Se entrar depois (29/05/2025 em diante), ele **SAI**.
+    </div>
+    
+    <label for="dataEntrada">Data de Entrada/Matrícula do Aluno:</label>
+    <input type="date" id="dataEntrada" value="">
+    
+    <button onclick="verificarCensoEntrada()">Verificar Permanência (Entrada)</button>
+    
+    <div id="resultadoEntrada" class="info-box censo-invalido">
+        Aguardando data...
+    </div>
+
+    <hr style="margin: 30px 0; border-top: 1px solid #eee;">
+
+    <h2>2. Saída de Alunos (Transferência)</h2>
+
+    <div class="rule-text">
+        **Regra:** Se o aluno sair da escola **a partir da Data Base** (28/05/2025 em diante), ele **FICA** no Censo da sua escola. Se sair antes (27/05/2025 ou antes), ele **SAI**.
+    </div>
+
+    <label for="dataSaida">Data de Saída/Transferência do Aluno:</label>
+    <input type="date" id="dataSaida" value="">
+    
+    <button onclick="verificarCensoSaida()">Verificar Permanência (Saída)</button>
+    
+    <div id="resultadoSaida" class="info-box censo-invalido">
+        Aguardando data...
+    </div>
+</div>
+
+<script>
+    // A Data Base do Censo é 28 de Maio de 2025.
+    const DATA_BASE_CENSO = new Date('2025-05-28T00:00:00');
+
+    function formatarData(dataString) {
+        if (!dataString) return 'Data Inválida';
+        const [year, month, day] = dataString.split('-');
+        return `${day}/${month}/${year}`;
+    }
+
+    /**
+     * Verifica a permanência do aluno baseado na Data de Entrada.
+     * Regra: Fica se a entrada for ATÉ 28/05/2025.
+     */
+    function verificarCensoEntrada() {
+        const inputDateString = document.getElementById('dataEntrada').value;
+        const resultadoDiv = document.getElementById('resultadoEntrada');
+
+        if (!inputDateString) {
+            resultadoDiv.className = 'info-box censo-invalido';
+            resultadoDiv.innerHTML = 'Por favor, insira uma data de entrada válida.';
+            return;
+        }
+
+        const dataEntrada = new Date(inputDateString + 'T00:00:00');
+        const dataFormatada = formatarData(inputDateString);
+        
+        // Se a data de entrada for menor ou igual a 28/05/2025, o aluno fica.
+        if (dataEntrada <= DATA_BASE_CENSO) {
+            resultadoDiv.className = 'info-box censo-fica';
+            resultadoDiv.innerHTML = `✅ Aluno **FICA** no Censo. (Entrada em ${dataFormatada} é **ATÉ** a Data Base).`;
+        } else {
+            // Se a data de entrada for 29/05/2025 ou posterior, o aluno sai.
+            resultadoDiv.className = 'info-box censo-sai';
+            resultadoDiv.innerHTML = `❌ Aluno **SAI** do Censo. (Entrada em ${dataFormatada} é **APÓS** a Data Base).`;
+        }
+    }
+
+    /**
+     * Verifica a permanência do aluno baseado na Data de Saída.
+     * Regra: Fica se a saída for A PARTIR de 28/05/2025.
+     */
+    function verificarCensoSaida() {
+        const inputDateString = document.getElementById('dataSaida').value;
+        const resultadoDiv = document.getElementById('resultadoSaida');
+
+        if (!inputDateString) {
+            resultadoDiv.className = 'info-box censo-invalido';
+            resultadoDiv.innerHTML = 'Por favor, insira uma data de saída válida.';
+            return;
+        }
+
+        const dataSaida = new Date(inputDateString + 'T00:00:00');
+        const dataFormatada = formatarData(inputDateString);
+
+        // Se a data de saída for maior ou igual a 28/05/2025, o aluno fica.
+        if (dataSaida >= DATA_BASE_CENSO) {
+            resultadoDiv.className = 'info-box censo-fica';
+            resultadoDiv.innerHTML = `✅ Aluno **FICA** no Censo. (Saída em ${dataFormatada} é **A PARTIR** da Data Base).`;
+        } else {
+            // Se a data de saída for 27/05/2025 ou anterior, o aluno sai.
+            resultadoDiv.className = 'info-box censo-sai';
+            resultadoDiv.innerHTML = `❌ Aluno **SAI** do Censo. (Saída em ${dataFormatada} é **ANTERIOR** à Data Base).`;
+        }
+    }
+</script>
+
+</body>
+</html>
