@@ -119,191 +119,149 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Página Inicial — Forró dos Tops / Prefeitura</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Página Inicial — Painel Educação</title>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <style>
   :root{
-    --bg-dark:#0D0D0C; /* principal */
-    --panel-dark:#25261E;
-    --accent-1:#D9C4B8;
-    --accent-2:#BFADA3;
-    --accent-3:#F2E8E4;
-    --glass: rgba(255,255,255,0.06);
-    --radius:12px;
-    color-scheme: dark;
+    --p1: #F97B8C; /* rosa claro */
+    --p2: #EB0043; /* rosa/vermelho */
+    --p3: #007CE4; /* azul */
+    --p4: #99D9EE; /* azul claro */
+    --bg:  #F4F4F4; /* off-white */
+    --text: #202428;
+    --muted: rgba(32,36,40,0.6);
+    --glass: rgba(255,255,255,0.6);
   }
   *{box-sizing:border-box}
-  body{margin:0;font-family:Inter,system-ui, -apple-system, "Segoe UI", Roboto, Arial; background:var(--bg-dark); color:var(--accent-3); height:100vh;}
+  body{margin:0;font-family:Inter,system-ui, -apple-system, "Segoe UI", Roboto, Arial; background:var(--bg); color:var(--text); height:100vh}
+  .app{display:flex;height:100vh}
 
-  .app{display:flex;height:100vh;}
-
-  /* SIDEBAR (colapsável, abre ao hover) */
-  .sidebar{width:68px;background:linear-gradient(180deg,var(--panel-dark), #171614);padding-top:18px;transition:width .28s ease;overflow:hidden;border-right:1px solid rgba(255,255,255,0.03)}
+  /* SIDEBAR */
+  .sidebar{width:68px;background:linear-gradient(180deg,var(--p1),var(--p2));padding-top:18px;transition:width .28s ease,box-shadow .28s;overflow:hidden;border-right:1px solid rgba(0,0,0,0.06);box-shadow:2px 0 18px rgba(0,0,0,0.04)}
   .sidebar:hover{width:300px}
   .logo{display:flex;gap:12px;align-items:center;padding:14px 16px}
-  .logo .brand{font-weight:700;color:var(--accent-1);font-size:18px;opacity:0;transition:opacity .28s}
+  .logo .brand{font-weight:800;color:var(--bg);font-size:18px;opacity:0;transition:opacity .28s}
   .sidebar:hover .logo .brand{opacity:1}
   nav{display:flex;flex-direction:column;padding:6px}
-  nav a{display:flex;align-items:center;gap:12px;padding:12px 14px;color:var(--accent-3);text-decoration:none;border-radius:8px;margin:6px 8px;transition:background .18s}
-  nav a i{width:28px;text-align:center;font-size:18px;color:var(--accent-2)}
+  nav a{display:flex;align-items:center;gap:12px;padding:12px 14px;color:var(--bg);text-decoration:none;border-radius:10px;margin:6px 8px;transition:background .18s,transform .12s}
+  nav a i{width:28px;text-align:center;font-size:18px;color:rgba(255,255,255,0.95)}
+  nav a span{opacity:0;transition:opacity .18s;font-weight:600}
   .sidebar:hover nav a span{opacity:1}
-  nav a span{opacity:0;transition:opacity .2s}
-  nav a:hover{background:linear-gradient(90deg, rgba(217,196,184,0.08), rgba(191,173,163,0.04));}
+  nav a:hover{transform:translateX(4px)}
+  .submenu{margin-left:40px;display:flex;flex-direction:column;}
+  .submenu a{font-size:14px;padding:8px 12px;color:rgba(255,255,255,0.95)}
 
   /* MAIN area */
   .main{flex:1;display:flex;flex-direction:column;padding:18px}
   header{display:flex;align-items:center;justify-content:space-between;gap:12px}
-  .search-gemini{display:flex;gap:8px;align-items:center}
-  .search-gemini input{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 12px;border-radius:8px;color:var(--accent-3);min-width:260px}
-  .search-gemini button{background:var(--accent-1);color:var(--panel-dark);border:none;padding:8px 10px;border-radius:8px;cursor:pointer}
-
-  /* content frame */
-  .workspace{flex:1;display:grid;grid-template-columns:1fr;gap:16px;margin-top:12px}
-  iframe[name="contentFrame"]{width:100%;height:calc(100vh - 140px);border-radius:var(--radius);border:none;background:transparent}
-
-  /* small helper cards when the sidebar is collapsed */
+  h2{margin:0;color:var(--p3)}
   .quick-cards{display:flex;gap:12px}
-  .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.02)}
+  .card{background:linear-gradient(180deg,rgba(255,255,255,0.9),rgba(255,255,255,0.96));padding:10px;border-radius:10px;border:1px solid rgba(0,0,0,0.06);color:var(--text);box-shadow:0 6px 18px rgba(0,0,0,0.04)}
 
-  /* responsive */
-  @media(max-width:900px){.sidebar{display:none}.main{padding:12px} iframe[name="contentFrame"]{height:calc(100vh - 120px)}}
+  /* iframe area */
+  .workspace{flex:1;margin-top:12px}
+  iframe[name="contentFrame"]{width:100%;height:calc(100vh - 120px);border-radius:12px;border:none;box-shadow:0 8px 30px rgba(15,20,25,0.06)}
+
+  @media(max-width:900px){.sidebar{display:none}.main{padding:12px} iframe[name="contentFrame"]{height:calc(100vh - 100px)}}
 </style>
 </head>
 <body>
 <div class="app">
   <aside class="sidebar" aria-hidden="false">
     <div class="logo">
-      <i class="fas fa-school" style="font-size:20px;color:var(--accent-1)"></i>
+      <i class="fas fa-school" style="font-size:20px;color:var(--bg)"></i>
       <div class="brand">Painel Educação</div>
     </div>
     <nav>
-      <a href="/docs/calendario_municipal.pdf" target="contentFrame"><i class="fas fa-calendar-day"></i><span>Calendário Letivo</span></a>
-      <a href="#notas" onclick="openNotesInFrame();return false;"><i class="fas fa-sticky-note"></i><span>Anotações</span></a>
-      <a href="#sistemas" onclick="openLinksInFrame();return false;"><i class="fas fa-sitemap"></i><span>Sistemas (PROESC / CENSO 2025)</span></a>
-      <a href="#noticias" onclick="openNewsInFrame();return false;"><i class="fas fa-newspaper"></i><span>Notícias Educação</span></a>
-      <a href="#alarme" onclick="openAlarmInFrame();return false;"><i class="fas fa-bell"></i><span>Despertador / Lembretes</span></a>
-      <a href="/" target="_blank"><i class="fas fa-house"></i><span>Ir ao site principal</span></a>
+      <a href="/home.html" target="contentFrame"><i class="fas fa-house"></i><span>Página Inicial</span></a>
+      <a href="/calendario.html" target="contentFrame"><i class="fas fa-calendar"></i><span>Calendário Letivo</span></a>
+      <a href="#documentos"><i class="fas fa-file-alt"></i><span>Geração de Documentos</span></a>
+      <div class="submenu">
+        <a href="/documentos/oficio.html" target="contentFrame">Ofício — /documentos/oficio.html</a>
+        <a href="/documentos/parecer.html" target="contentFrame">Parecer — /documentos/parecer.html</a>
+        <a href="/documentos/relatorio.html" target="contentFrame">Relatório — /documentos/relatorio.html</a>
+        <a href="/documentos/declaracao.html" target="contentFrame">Declaração — /documentos/declaracao.html</a>
+        <a href="/documentos/requerimento.html" target="contentFrame">Requerimento — /documentos/requerimento.html</a>
+        <a href="/documentos/solicitacao.html" target="contentFrame">Solicitação — /documentos/solicitacao.html</a>
+      </div>
+      <a href="/anotacoes.html" target="contentFrame"><i class="fas fa-sticky-note"></i><span>Anotações</span></a>
+      <a href="/sistemas.html" target="contentFrame"><i class="fas fa-sitemap"></i><span>Sistemas Web</span></a>
+      <a href="/noticias.html" target="contentFrame"><i class="fas fa-newspaper"></i><span>Notícias Educação</span></a>
     </nav>
     <div style="flex:1"></div>
-    <div style="padding:14px;color:rgba(255,255,255,0.45);font-size:12px">Usuário: João Irailton<br>Setor: Licitações</div>
+    <div style="padding:14px;color:rgba(255,255,255,0.9);font-size:13px">Usuário: João Irailton<br><span style="font-weight:600">Setor: Licitações</span></div>
   </aside>
 
   <main class="main">
     <header>
       <div style="display:flex;align-items:center;gap:16px">
-        <h2 style="margin:0;color:var(--accent-1)">Página Inicial</h2>
+        <h2>Página Inicial</h2>
         <div class="quick-cards">
-          <div class="card">Calendário Municipal — <a href="/docs/calendario_municipal.pdf" target="_blank" style="color:var(--accent-2)">Abrir</a></div>
-          <div class="card">PROESC — <a href="https://app.proesc.com/login" target="_blank" style="color:var(--accent-2)">Acessar</a></div>
+          <div class="card">Calendário — <a href="/docs/calendario_municipal.pdf" target="_blank" style="color:var(--p3);text-decoration:none">Abrir</a></div>
+          <div class="card">PROESC — <a href="https://proesc.example.gov" target="_blank" style="color:var(--p3);text-decoration:none">Acessar</a></div>
         </div>
-      </div>
-
-      <div class="search-gemini">
-        <input id="geminiQuery" placeholder="Pesquisar rápido no Gemini... (abre a página do Gemini)" aria-label="Pesquisar no Gemini">
-        <button id="btnGemini">Pesquisar</button>
       </div>
     </header>
 
     <section class="workspace">
-      <!-- IFRAME: todas as outras páginas abrirão aqui. Inicialmente carregamos um 'dashboard' via srcdoc -->
-      <iframe name="contentFrame" id="contentFrame" srcdoc='<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dashboard</title><style>body{margin:0;font-family:Inter,Arial;background-image:linear-gradient(180deg, rgba(37,38,30,0.8), rgba(13,13,12,0.9)), url("data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1600\" height=\"900\"><rect width=\"100%\" height=\"100%\" fill=\"%230D0D0C\"/><g opacity=\"0.04\"><circle cx=\"200\" cy=\"120\" r=\"400\" fill=\"%23D9C4B8\"/></g></svg>");background-size:cover;color:#F2E8E4} .wrap{display:grid;grid-template-columns:1fr 380px;gap:16px;padding:22px;height:100vh} .left{display:flex;flex-direction:column;gap:14px} .panel{background:rgba(255,255,255,0.03);padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.04)} h3{margin:0 0 8px 0;color:#D9C4B8} .links a{display:block;padding:6px 0;color:#BFADA3;text-decoration:none} .notes textarea{width:100%;height:180px;background:transparent;border:1px solid rgba(255,255,255,0.06);color:#F2E8E4;padding:8px;border-radius:8px} .news{max-height:320px;overflow:auto} .alarm-controls input, .alarm-controls button{padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:#F2E8E4} .search{display:flex;gap:8px} .search input{flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:#F2E8E4} .small{font-size:13px;color:#BFADA3} a.read{color:#D9C4B8;text-decoration:underline}</style></head><body><div class="wrap"><div class="left"><div class="panel"><h3>Atalhos rápidos</h3><div class="links"><a href="/docs/calendario_municipal.pdf" target="_blank">📅 Calendário Letivo (Abrir PDF)</a><a href="https://app.proesc.com/login" target="_blank">🔗 PROESC</a><a href="https://acesso.inep.gov.br/auth/realms/Producao/protocol/openid-connect/auth?client_id=educacenso&redirect_uri=https%3A%2F%2Feducacenso.inep.gov.br%2Feducacenso%2F%2Fselecionar-entidade&state=8a25e646-4ea5-47f8-8d6a-705ae151906e&nonce=df023055-bad6-4fcc-8843-7e1949145c6c&response_mode=fragment&response_type=code&scope=openid" target="_blank">🔗 CENSO 2025</a></div></div>
-<div class="panel notes"><h3>Anotações rápidas</h3><textarea id="notesArea" placeholder="Suas anotações são salvas automaticamente no navegador..."></textarea><div class="small">Salvo localmente no seu navegador.</div></div>
-<div class="panel"><h3>Notícias sobre Educação (Brasil)</h3><div id="news" class="news"><div class="small">Carregando notícias...</div></div></div>
+      <iframe name="contentFrame" id="contentFrame" srcdoc='<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dashboard</title><style>
+:root{--p1:#F97B8C;--p2:#EB0043;--p3:#007CE4;--p4:#99D9EE;--bg:#F4F4F4;--text:#202428}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Arial;background:linear-gradient(135deg,var(--p4),rgba(255,255,255,0.95)),var(--bg);color:var(--text);padding:22px}
+.wrap{display:grid;grid-template-columns:1fr 360px;gap:16px;height:calc(100vh - 120px)}
+.panel{background:linear-gradient(180deg,rgba(255,255,255,0.98),rgba(255,255,255,0.99));padding:14px;border-radius:12px;border:1px solid rgba(0,0,0,0.04);box-shadow:0 8px 20px rgba(15,20,25,0.03)}
+h3{margin:0 0 8px 0;color:var(--p3)}
+.links a{display:block;padding:6px 0;color:var(--p2);text-decoration:none}
+.notes textarea{width:100%;height:220px;background:transparent;border:1px solid rgba(0,0,0,0.06);color:var(--text);padding:8px;border-radius:8px}
+.small{font-size:13px;color:rgba(32,36,40,0.7)}
+</style></head><body>
+<div class="wrap">
+  <div class="left">
+    <div class="panel"><h3>Atalhos Rápidos</h3>
+      <div class="links">
+        <a href="/docs/calendario_municipal.pdf" target="_blank">📅 Calendário Letivo (Abrir PDF)</a>
+        <a href="https://proesc.example.gov" target="_blank">🔗 PROESC</a>
+        <a href="https://censo2025.example.gov" target="_blank">🔗 CENSO 2025</a>
+      </div>
+    </div>
+
+    <div class="panel notes"><h3>Anotações Rápidas</h3>
+      <textarea id="notesArea" placeholder="Suas anotações são salvas automaticamente no navegador..."></textarea>
+      <div class="small">Salvo localmente no seu navegador.</div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="panel"><h3>Documentos Rápidos</h3>
+      <div class="links">
+        <a href="/documentos/oficio.html" target="_blank">Gerar Ofício</a>
+        <a href="/documentos/parecer.html" target="_blank">Gerar Parecer</a>
+        <a href="/documentos/relatorio.html" target="_blank">Gerar Relatório</a>
+      </div>
+      <div class="small" style="margin-top:10px">Os links abrem em nova aba para facilitar download/edição do documento gerado.</div>
+    </div>
+    <div class="panel"><h3>Sistemas</h3>
+      <div class="links">
+        <a href="https://proesc.example.gov" target="_blank">PROESC</a>
+        <a href="https://censo2025.example.gov" target="_blank">Censo 2025</a>
+      </div>
+    </div>
+  </div>
 </div>
-<div class="right"><div class="panel alarm-controls"><h3>Despertador / Lembrete</h3><div style="display:flex;gap:8px;margin-bottom:8px"><input type="time" id="alarmTime"><input id="alarmLabel" placeholder="Descrição do lembrete" style="flex:1"></div><div style="display:flex;gap:8px"><button id="setAlarm">Programar lembrete</button><button id="clearAlarm">Limpar</button></div><div id="alarmStatus" class="small" style="margin-top:8px">Nenhum lembrete ativo.</div></div>
-<div class="panel"><h3>Pesquisar no Gemini</h3><div class="search"><input id="gq" placeholder="Digite e clique em Pesquisar (abrirá Gemini)"><button id="openGemini">Pesquisar</button></div><div class="small" style="margin-top:8px">Observação: nem sempre é possível enviar a consulta diretamente ao Gemini via URL; este botão abre a interface do Gemini. Consulte suporte para integração via API.</div></div>
-</div></div>
+
 <script>
-// Notes localStorage
+// Notas localStorage
 const notes = document.getElementById('notesArea');
-notes.value = localStorage.getItem('dashboard_notes_v1')||'';
-notes.addEventListener('input', ()=> localStorage.setItem('dashboard_notes_v1', notes.value));
-
-// Alarm
-let alarmTimeout=null;
-const setAlarmBtn=document.getElementById('setAlarm');
-const clearAlarmBtn=document.getElementById('clearAlarm');
-const alarmStatus=document.getElementById('alarmStatus');
-setAlarmBtn.addEventListener('click', ()=>{
-  const t=document.getElementById('alarmTime').value;
-  const label=document.getElementById('alarmLabel').value||'Lembrete';
-  if(!t){alert('Escolha um horário');return}
-  const now=new Date();
-  const [hh,mm]=t.split(':').map(Number);
-  const when=new Date(now.getFullYear(),now.getMonth(),now.getDate(),hh,mm,0);
-  if(when<=now) when.setDate(when.getDate()+1);
-  const ms=when-now;
-  if(alarmTimeout) clearTimeout(alarmTimeout);
-  alarmTimeout=setTimeout(()=>{alert(label);const audio=new Audio();audio.src='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=';audio.play().catch(()=>{});alarmStatus.textContent='Nenhum lembrete ativo.'}, ms);
-  alarmStatus.textContent='Lembrete programado para '+when.toLocaleString();
-});
-clearAlarmBtn.addEventListener('click', ()=>{ if(alarmTimeout) clearTimeout(alarmTimeout); alarmTimeout=null; alarmStatus.textContent='Nenhum lembrete ativo.'});
-
-// Open Gemini (note: direct URL query not supported reliably) -- opens Gemini web app
-document.getElementById('openGemini').addEventListener('click', ()=>{
-  const q=document.getElementById('gq').value.trim();
-  // best-effort: open Gemini app (user may need to paste the query)
-  const url='https://bard.google.com/'; // fallback (Gemini UI location varies)
-  window.open(url, '_blank');
-});
-
-// Fetch news from G1 / Agência Brasil via a CORS proxy (best-effort)
-async function loadNews(){
-  const container=document.getElementById('news');
-  container.innerHTML='<div class="small">Carregando notícias...</div>';
-  const feeds=['https://g1.globo.com/rss/g1/educacao/index.xml','https://agenciabrasil.ebc.com.br/educacao/rss'];
-  try{
-    let items=[];
-    for(const f of feeds){
-      const proxy='https://api.allorigins.win/raw?url=' + encodeURIComponent(f);
-      const res=await fetch(proxy);
-      if(!res.ok) continue;
-      const text=await res.text();
-      const parser=new DOMParser();
-      const xml=parser.parseFromString(text,'application/xml');
-      const rssItems=Array.from(xml.querySelectorAll('item')).slice(0,5);
-      rssItems.forEach(it=>items.push({title:it.querySelector('title')?.textContent||'',link:it.querySelector('link')?.textContent||'',pub:it.querySelector('pubDate')?.textContent||''}));
-    }
-    if(!items.length) throw new Error('Nenhuma notícia');
-    container.innerHTML='';
-    items.slice(0,8).forEach(it=>{
-      const el=document.createElement('div');
-      el.style.marginBottom='10px';
-      el.innerHTML=`<div style="font-weight:600;color:#D9C4B8">${it.title}</div><div class="small">${it.pub}</div><a class="read" href="${it.link}" target="_blank">Abrir notícia</a>`;
-      container.appendChild(el);
-    });
-  }catch(e){
-    container.innerHTML='<div class="small">Não foi possível carregar notícias automaticamente. <a class="read" href="https://g1.globo.com/">Veja no G1</a></div>';
-  }
-}
-loadNews();
-</script></body></html>'></iframe>
-
+notes.value = localStorage.getItem('dashboard_notes_v2')||'';
+notes.addEventListener('input', ()=> localStorage.setItem('dashboard_notes_v2', notes.value));
+</script>
+</body></html>'></iframe>
     </section>
   </main>
 </div>
-
-<script>
-// Sidebar links that open content in the iframe are ordinary anchor targets to name contentFrame.
-// Helper functions invoked by sidebar
-function openNotesInFrame(){
-  const doc = document.getElementById('contentFrame');
-  // load the dashboard and jump to notes is handled inside the iframe; we can just focus it
-  doc.focus();
-}
-function openLinksInFrame(){ document.getElementById('contentFrame').focus(); }
-function openNewsInFrame(){ document.getElementById('contentFrame').focus(); }
-function openAlarmInFrame(){ document.getElementById('contentFrame').focus(); }
-
-// Gemini quick-search in the header (opens Gemini UI; direct URL queries to Gemini are not reliably supported)
-document.getElementById('btnGemini').addEventListener('click', ()=>{
-  const q=document.getElementById('geminiQuery').value.trim();
-  // best-effort: open Gemini/Bard page (user may paste query) — direct URL query not available.
-  window.open('https://bard.google.com/','_blank');
-});
-</script>
 </body>
 </html>
+
 
