@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DEMONSTRATIVO MENSAL MESTRE PACIFICO - DINÂMICO V5</title>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
         /* CONFIGURAÇÃO PARA ORIENTAÇÃO PAISAGEM (IMPRESSÃO) */
         @page {
@@ -455,6 +456,11 @@
         <button onclick="window.print()" style="background-color: #d9534f; margin-top: 20px;">
             &#x1F5B6; Imprimir Documento (A4 Paisagem)
         </button>
+        <div class="botoes-excel">
+            <button onclick="exportarTabelasParaExcel()">📤 Exportar Tabelas</button>
+            <input type="file" id="excelInput" accept=".xlsx, .xls" onchange="importarTabelasExcel(event)">
+        </div>
+
     </div>
     <div class="main-content-area">
         <div class="document-container">
@@ -494,7 +500,7 @@
                 </table>
             </div>
 
-            <div class="data-table">
+            <div class="data-table" id="table-cardapio">
                 <table class="table-cardapio">
                     <thead>
                         <tr>
@@ -516,7 +522,7 @@
                 </table>
             </div>
             
-            <div class="data-table">
+            <div class="data-table" id="table-mapa">
                 <h3 style="text-align: center; font-size: 10pt; font-weight: bold; margin-bottom: 5px;">CONTROLE DE GÊNEROS ALIMENTÍCIOS</h3>
                 <table id="tabela-estoque">
                     <thead>
@@ -562,7 +568,6 @@
 
         </div>
     </div>
-    <!--[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]][[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]][[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]-->
     <script>
         const UNITS = {
             'Açúcar triturado': 'kg', 'Arroz tipo 1': 'kg', 'Biscoito salgado cream cracker': 'pcts',
@@ -605,7 +610,6 @@
             ].reduce((acc, date) => { acc[date] = true; return acc; }, {}),
         };
         
-        // --- Cardápios REGULAR e INTEGRAL ---
         const CARDAPIO_REGULAR = {
             1: {
                 1: "Café com leite e biscoito salgado",
@@ -653,7 +657,6 @@
                 4: "Suco de fruta com pão e carne moída (Manhã) | Peixe ensopado com legumes e farofa (Almoço)",
                 5: "Mingau de milho branco (Manhã) | Strogonoff de frango e arroz (Almoço)",
             },
-            // O cardápio 3 e 4 do integral está como o regular, mantendo a estrutura.
             3: CARDAPIO_REGULAR[3], 
             4: CARDAPIO_REGULAR[4], 
             sabado: "Almoço especial de sábado letivo: Feijoada leve com arroz.",
@@ -676,9 +679,7 @@
         ];
         const CARDAPIO_OPTIONS = [...new Set(ALL_CARDAPIOS_RAW)].sort();
         
-        // CORRIGIDO: O valor inicial deve ser lido do input checked na inicialização
-        let currentCardapioType = document.querySelector('input[name="tipo_cardapio"]:checked')?.value || 'regular'; 
-        // --- FIM: Cardápios ---
+        let currentCardapioType = 'regular'; 
         
         function syncSidebarToTable1() {
             document.getElementById('nome_escola_display').textContent = document.getElementById('nome_escola_input').value;
@@ -734,12 +735,10 @@
             return (week - 1) % 4 + 1;
         }
 
-        // FUNÇÃO CENTRAL PARA CARREGAMENTO DO CARDÁPIO
         function getCardapioForDate(date) {
             const dateISO = date.toISOString().substring(0, 10);
             const dayOfWeek = date.getDay();
             
-            // Usa currentCardapioType para selecionar o conjunto de cardápios
             const CARDAPIOS_SELECIONADOS = currentCardapioType === 'integral' ? CARDAPIO_INTEGRAL : CARDAPIO_REGULAR;
 
             if (dayOfWeek === 6 && CALENDARIO_LETIVO_2025.sabadosLetivos[dateISO]) {
@@ -795,7 +794,6 @@
         }
 
         // --- FUNÇÕES DE EDIÇÃO DA TABELA 3 (ESTOQUE) ---
-        // (Mantidas as alterações da correção anterior)
 
         // Leitor auxiliar para valores numéricos dentro do div.quantity-cell
         const readQuantityP = (cell) => {
@@ -838,8 +836,9 @@
             };
 
             // Replace <p> with input
-            quantityCellDiv.removeChild(currentP);
-            quantityCellDiv.insertBefore(input, unitSpan); // Insere o input antes do span da unidade
+            quantityCellDiv.innerHTML = '';
+            quantityCellDiv.appendChild(input);
+            quantityCellDiv.appendChild(unitSpan); // Re-add the unit span
 
             input.focus();
             input.select();
@@ -857,7 +856,6 @@
                 newValue = numericValue.toFixed(0); // Assumindo quantidades inteiras
             }
 
-            const quantityCellDiv = cell.querySelector('.quantity-cell');
             const unitSpan = cell.querySelector('.unit');
             
             // Create new <p>
@@ -873,83 +871,13 @@
             }
             
             // Replace input with <p>
-            quantityCellDiv.removeChild(input);
-            quantityCellDiv.insertBefore(newP, unitSpan); // Insere o p antes do span da unidade
+            const quantityCellDiv = cell.querySelector('.quantity-cell');
+            quantityCellDiv.innerHTML = '';
+            quantityCellDiv.appendChild(newP);
+            quantityCellDiv.appendChild(unitSpan); 
 
             // Trigger row update/recalculation
             updateTable3Row(cell); 
-        }
-        
-        // MODIFICADO/CORRIGIDO: Função para permitir a edição da unidade de medida
-        function enableUnitEdit(unitSpan) {
-            const currentUnit = unitSpan.textContent.trim();
-
-            // 1. Alert and confirmation
-            const confirmation = confirm(`Deseja realmente alterar a unidade de medida atual "${currentUnit}"? Esta mudança afetará todos os registros deste insumo (Recebido, Consumido, Saldo Anterior e Saldo Atual).`);
-
-            if (!confirmation) {
-                return; // User cancelled
-            }
-
-            // Verifica se o campo de edição já está presente dentro do span
-            if (unitSpan.querySelector('.t3-unit-edit-field')) return;
-            
-            // 2. Cria o input field
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.value = currentUnit;
-            input.className = 't3-unit-edit-field';
-            input.maxLength = 5; 
-            input.placeholder = 'Nova Unidade';
-            
-            // 3. Save on blur or Enter
-            input.onblur = () => saveUnitEdit(input);
-            input.onkeydown = (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    saveUnitEdit(input);
-                }
-            };
-            
-            // 4. Substitui o texto do span pelo input
-            unitSpan.textContent = '';
-            unitSpan.onclick = null; // Desativa o clique no span enquanto edita
-            unitSpan.appendChild(input);
-
-            input.focus();
-            input.select();
-        }
-
-        // CORRIGIDO: Função para salvar a nova unidade de medida
-        function saveUnitEdit(input) {
-            const unitSpan = input.closest('.unit');
-            const row = input.closest('tr');
-            
-            // 1. Obtém e limpa o novo valor
-            let newUnit = input.value.trim().toLowerCase() || 'un';
-            
-            // 2. Encontra o nome do insumo
-            const descriptionCell = row.cells[1];
-            const insumoName = readDescriptionP(descriptionCell);
-
-            // 3. Atualiza o objeto global UNITS
-            UNITS[insumoName] = newUnit;
-
-            // 4. Atualiza TODAS as linhas contendo este insumo (incluindo a que estava sendo editada)
-            document.querySelectorAll('#table-estoque-body tr').forEach(r => {
-                const currentInsumo = readDescriptionP(r.cells[1]);
-                if (currentInsumo === insumoName) {
-                    // Remove o input da célula que estava sendo editada ANTES de chamar updateTable3Row
-                    const spanToClean = r.querySelector('.t3-unit-edit-field');
-                    if (spanToClean) {
-                        const parentSpan = spanToClean.closest('.unit');
-                        if (parentSpan) parentSpan.removeChild(spanToClean);
-                    }
-                    
-                    // Chama a função de atualização, que relê a unidade do objeto UNITS e atualiza os spans
-                    updateTable3Row(r.cells[1]); 
-                }
-            });
         }
 
         function enableSelectEdit(cell) {
@@ -1058,7 +986,6 @@
             updateTable3Row(cell); 
         }
         
-        // CORRIGIDO: Função de atualização da linha (garante que os spans de unidade sejam atualizados)
         function updateTable3Row(element) {
             const row = element.closest('tr');
             if (!row) return;
@@ -1078,36 +1005,11 @@
             const selectedDescription = readDescriptionP(descCell);
             
             // Get and update units
-            // Prioriza a unidade do insumo se já foi definida (inclusive se alterada manualmente)
-            const unit = UNITS[selectedDescription] || 'un'; 
-            
-            // --- C A L C U L A T E   &   U P D A T E   S A L D O   A T U A L   ( C O L . 5 ) ---
-            const saldoAtual = (quant + saldoAnterior) - cons;
-            const finalSaldo = saldoAtual.toFixed(0);
-            const finalSaldoDisplay = finalSaldo === '0' ? '-' : finalSaldo;
-            
-            // Atualiza apenas o <p> tag de valor numérico na célula Saldo Atual
-            const saldoAtualP = saldoAtualDisplay.querySelector('.quantity-cell p');
-            
-            if (saldoAtualP) {
-                saldoAtualP.textContent = finalSaldoDisplay;
-                if (finalSaldoDisplay === '-') {
-                    saldoAtualP.classList.add('center-if-empty');
-                } else {
-                    saldoAtualP.classList.remove('center-if-empty');
-                }
-            }
-            
-            // Acessa o span dentro do div e atualiza o texto/onclick em TODAS as colunas numéricas
-            const unitSpans = row.querySelectorAll('.quantity-cell .unit');
-            unitSpans.forEach(span => {
-                // Verifica se o span já está no modo de edição (se tem input dentro)
-                if (!span.querySelector('.t3-unit-edit-field')) {
-                    span.textContent = unit;
-                    span.onclick = () => enableUnitEdit(span); // Garante que o click está ativo
-                }
-            });
-            
+            const unit = UNITS[selectedDescription] || 'un';
+            quantCell.querySelector('.unit').textContent = unit;
+            consCell.querySelector('.unit').textContent = unit;
+            saldoAnteriorCell.querySelector('.unit').textContent = unit;
+
             // --- U P D A T E   R E L A T Ó R I O   C E N T E R I N G ---
             const relatorioP = relatorioCell.querySelector('p');
             if (relatorioP) {
@@ -1119,6 +1021,11 @@
                     relatorioP.classList.remove('center-if-empty');
                 }
             }
+            
+            // --- C A L C U L A T E ---
+            const saldoAtual = (quant + saldoAnterior) - cons;
+
+            saldoAtualDisplay.textContent = saldoAtual.toFixed(0) + ' ' + unit;
         }
         
         // --- FIM: FUNÇÕES DE EDIÇÃO DA TABELA 3 (ESTOQUE) ---
@@ -1179,9 +1086,7 @@
                     val = newValue;
                 } else {
                     const pTag = attendanceCell.querySelector('p');
-                    // Adiciona verificação para caso a célula ainda esteja no modo de edição (input)
-                    const inputTag = attendanceCell.querySelector('input');
-                    val = pTag ? pTag.textContent.trim() : (inputTag ? inputTag.value.trim() : 'X');
+                    val = pTag ? pTag.textContent.trim() : attendanceCell.querySelector('input').value.trim();
                 }
                 
                 if (val !== 'X' && !isNaN(parseInt(val))) {
@@ -1206,20 +1111,18 @@
 
         function handleCardapioChange(selectElement) {
             const row = selectElement.closest('tr');
-            // Pega a data da célula 1 (index 1)
-            const dateInput = row.cells[1].querySelector('input[type="date"]'); 
+            const dateInput = row.cells[1].querySelector('input[type="date"]');
             
             const justificativaCell = row.cells[7]; 
             const justificativaP = justificativaCell.querySelector('p');
             
-            // Pega o valor atual da justificativa (do P ou do textarea, se estiver em edição)
             const justificativaInput = justificativaCell.querySelector('textarea') || {value: justificativaP ? justificativaP.textContent.replace(/<br>/g, '\n') : '-'};
             
             const dateISO = dateInput.value;
             const selectedCardapio = selectElement.value;
             
             const dateObj = new Date(dateISO + 'T00:00:00');
-            const cardapioPrevisto = getCardapioForDate(dateObj); // Recarrega o previsto para comparação
+            const cardapioPrevisto = getCardapioForDate(dateObj);
             
             const dateDisplay = formatDateToDisplay(dateISO);
             const isSabadoLetivo = dateObj.getDay() === 6 && CALENDARIO_LETIVO_2025.sabadosLetivos[dateISO];
@@ -1232,16 +1135,13 @@
                 
                 const novaJustificativa = `(No dia ${dateDisplay} o cardápio previsto era "${cardapioPrevisto}", mas foi substituido por "${selectedCardapio}")`;
                 
-                // Se a justificativa estiver vazia, ou for a justificativa padrão (sábado letivo ou '-')
                 if (!justificativaInput.value.trim() || justificativaInput.value.trim() === sabadoJust || justificativaInput.value.trim() === '-') {
                     alert(`Atenção: O cardápio original de ${dateDisplay} era "${cardapioPrevisto}" e foi alterado para "${selectedCardapio}". Por favor, justifique no campo ao lado.`);
                     newJustificativa = novaJustificativa;
                 }
 
             } else if (cardapioPrevisto && selectedCardapio === cardapioPrevisto) {
-                // Se o cardápio selecionado for igual ao previsto
                 if (justificativaInput.value.includes('o cardápio previsto era')) {
-                    // Remove a justificativa de alteração, e aplica a de sábado letivo se for o caso
                     newJustificativa = isSabadoLetivo ? sabadoJust : '-';
                 } else if (isSabadoLetivo) {
                     newJustificativa = sabadoJust;
@@ -1250,7 +1150,6 @@
                 }
             }
             
-            // Atualiza o valor na célula de Justificativa (seja P ou textarea)
             if (justificativaCell.querySelector('textarea')) {
                 justificativaInput.value = newJustificativa;
                 autoGrowTextarea(justificativaCell.querySelector('textarea'));
@@ -1425,8 +1324,7 @@
                     const newRow = tbody.insertRow();
                     const dateDisplay = formatDateToDisplay(dateISO);
                     
-                    // CHAMA A FUNÇÃO CENTRAL QUE USA currentCardapioType
-                    const cardapioPrevisto = getCardapioForDate(currentDate); 
+                    const cardapioPrevisto = getCardapioForDate(currentDate);
                     const isSabadoLetivo = currentDate.getDay() === 6;
                     
                     let justificativaInicial = '-';
@@ -1491,27 +1389,14 @@
             updateRowNumbers();
         }
         
-        // CORRIGIDO: Auxiliar para gerar célula numérica T3 editável (colunas 1, 3, 4)
+        // Auxiliar para gerar célula numérica T3
         const generateNumericT3Cell = (value, unit) => {
             const finalValue = value.trim() === '' || value.trim() === '0' ? '-' : value.trim();
             const isCentered = finalValue === '-';
             return `
                 <div class="quantity-cell">
                     <p onclick="enableNumberEdit(this.parentNode.parentNode)" class="${isCentered ? 'center-if-empty' : ''}">${finalValue}</p> 
-                    <span class="unit" onclick="enableUnitEdit(this)">${unit}</span>
-                </div>
-            `;
-        };
-        
-        // NOVO: Auxiliar para gerar célula numérica T3 SOMENTE DE EXIBIÇÃO (coluna 5: Saldo Atual)
-        const generateDisplayT3Cell = (value, unit) => {
-            const finalValue = value.trim() === '' || value.trim() === '0' ? '-' : value.trim();
-            const isCentered = finalValue === '-';
-            // A tag <p> não tem onclick para edição de número, mas o span da unidade sim.
-            return `
-                <div class="quantity-cell">
-                    <p class="${isCentered ? 'center-if-empty' : ''}">${finalValue}</p> 
-                    <span class="unit" onclick="enableUnitEdit(this)">${unit}</span>
+                    <span class="unit">${unit}</span>
                 </div>
             `;
         };
@@ -1535,7 +1420,7 @@
                 <td>${generateSelectT3Cell(defaultItem)}</td>
                 <td>${generateNumericT3Cell('-', defaultUnit)}</td>
                 <td>${generateNumericT3Cell('-', defaultUnit)}</td>
-                <td class="calculated-balance">${generateDisplayT3Cell('0', defaultUnit)}</td>
+                <td class="calculated-balance">0 ${defaultUnit}</td>
                 <td>${relatorioCellContent}</td>
                 <td><button class="remove-row-btn" onclick="removeRow(this, 'table-estoque-body')">&#128465;</button></td>
             `;
@@ -1569,7 +1454,7 @@
                     <td>${generateSelectT3Cell(item)}</td>
                     <td>${generateNumericT3Cell('-', unit)}</td>
                     <td>${generateNumericT3Cell('-', unit)}</td>
-                    <td class="calculated-balance">${generateDisplayT3Cell('0', unit)}</td>
+                    <td class="calculated-balance">0 ${unit}</td>
                     <td>${relatorioCellContent}</td>
                     <td><button class="remove-row-btn" onclick="removeRow(this, 'table-estoque-body')">&#128465;</button></td>
                 `;
@@ -1631,7 +1516,6 @@
                     data.sidebar[input.id] = input.value;
                 }
             });
-            // Pega o tipo de cardápio atual para salvar
             data.sidebar.tipo_cardapio = currentCardapioType; 
             
             // 2. Coleta dos dados da Tabela 2 (Cardápio)
@@ -1670,8 +1554,6 @@
                 const relatorioCell = row.cells[5];
                 
                 const relatorioValue = relatorioCell.querySelector('p') ? relatorioCell.querySelector('p').innerHTML.replace(/<br>/g, '\n') : relatorioCell.querySelector('textarea').value;
-                
-                const unit = UNITS[descricaoText] || 'un'; // Pega a unidade atualizada
 
                 data.table3.push({
                     recebido: readQuantityP(row.cells[0]) === 0 ? '-' : readQuantityP(row.cells[0]).toFixed(0),
@@ -1679,7 +1561,6 @@
                     consumido: readQuantityP(row.cells[2]) === 0 ? '-' : readQuantityP(row.cells[2]).toFixed(0),
                     saldo_anterior: readQuantityP(row.cells[3]) === 0 ? '-' : readQuantityP(row.cells[3]).toFixed(0),
                     relatorio: relatorioValue, 
-                    unidade: unit // Adiciona a unidade atualizada para importação futura
                 });
             });
 
@@ -1740,7 +1621,7 @@
                             const radio = document.querySelector(`input[name="tipo_cardapio"][value="${data.sidebar[id]}"]`);
                             if (radio) {
                                 radio.checked = true;
-                                currentCardapioType = data.sidebar[id]; // Atualiza a variável global
+                                currentCardapioType = data.sidebar[id];
                             }
                         } else {
                             element.value = data.sidebar[id];
@@ -1789,22 +1670,24 @@
                 const tbody = document.getElementById('table-estoque-body');
                 tbody.innerHTML = '';
                 data.table3.forEach(rowData => {
-                    // Atualiza o objeto UNITS com a unidade importada (se houver)
-                    const importedUnit = rowData.unidade || UNITS[rowData.descricao] || 'un';
-                    UNITS[rowData.descricao] = importedUnit;
-                    
                     const newRow = tbody.insertRow();
+                    const unit = UNITS[rowData.descricao] || 'un';
+                    
+                    // NOVO: Adiciona insumo importado à lista UNITS se não existir
+                    if (rowData.descricao !== 'OUTRO (a ser especificado)' && !UNITS.hasOwnProperty(rowData.descricao)) {
+                        UNITS[rowData.descricao] = unit;
+                    }
                     
                     const relatorioPContent = rowData.relatorio.replace(/\n/g, '<br>');
                     const isRelatorioCentered = rowData.relatorio.trim() === '-' || rowData.relatorio.trim() === '';
                     const relatorioCellContent = `<p onclick="enableTextEdit(this.parentNode)" class="${isRelatorioCentered ? 'center-if-empty' : ''}">${relatorioPContent}</p>`;
                     
                     newRow.innerHTML = `
-                        <td>${generateNumericT3Cell(rowData.recebido, importedUnit)}</td>
+                        <td>${generateNumericT3Cell(rowData.recebido, unit)}</td>
                         <td>${generateSelectT3Cell(rowData.descricao)}</td>
-                        <td>${generateNumericT3Cell(rowData.consumido, importedUnit)}</td>
-                        <td>${generateNumericT3Cell(rowData.saldo_anterior, importedUnit)}</td>
-                        <td class="calculated-balance">${generateDisplayT3Cell('0', importedUnit)}</td>
+                        <td>${generateNumericT3Cell(rowData.consumido, unit)}</td>
+                        <td>${generateNumericT3Cell(rowData.saldo_anterior, unit)}</td>
+                        <td class="calculated-balance">0 ${unit}</td>
                         <td>${relatorioCellContent}</td>
                         <td><button class="remove-row-btn" onclick="removeRow(this, 'table-estoque-body')">&#128465;</button></td>
                     `;
@@ -1828,20 +1711,16 @@
             
             document.getElementById('document_date_input').addEventListener('change', updateDocumentDate);
             
-            // Listener para os botões de rádio do cardápio
             const cardapioRadios = document.querySelectorAll('input[name="tipo_cardapio"]');
             cardapioRadios.forEach(radio => {
                 radio.addEventListener('change', (event) => {
-                    // ATUALIZA VARIÁVEL GLOBAL
-                    currentCardapioType = event.target.value; 
-                    // REGENERA A TABELA 2 COM O NOVO CARDÁPIO
+                    currentCardapioType = event.target.value;
                     generateTable2Rows(); 
                 });
             });
 
             syncSidebarToTable1();
-            // Garante que o tipo de cardápio inicial (lido na declaração da variável) seja aplicado
-            generateTable2Rows(); 
+            generateTable2Rows();
             initializeTable3();
 
             const today = new Date().toISOString().split('T')[0];
@@ -1860,6 +1739,101 @@
             window.onbeforeprint = applyPrintFormatting;
             window.onafterprint = restoreOriginalFormatting;
         });
+        
+        function exportarTabelasParaExcel() {
+            const tabela2 = document.getElementById("table-cardapio");
+            const tabela3 = document.getElementById("table-mapa");
+
+            if (!tabela2 || !tabela3) {
+                alert("⚠️ As tabelas 2 e/ou 3 não foram encontradas!");
+                return;
+            }
+
+            try {
+                // Converte cada tabela em uma planilha
+                const planilha2 = XLSX.utils.table_to_sheet(tabela2);
+                const planilha3 = XLSX.utils.table_to_sheet(tabela3);
+
+                // Cria a pasta de trabalho (workbook)
+                const wb = XLSX.utils.book_new();
+
+                // Adiciona as duas planilhas
+                XLSX.utils.book_append_sheet(wb, planilha2, "Tabela 2 - Cardápio");
+                XLSX.utils.book_append_sheet(wb, planilha3, "Tabela 3 - Consumo");
+
+                // Exporta o arquivo
+                XLSX.writeFile(wb, "Tabelas_Cardapio_Consumo.xlsx");
+
+                alert("✅ As tabelas foram exportadas com sucesso!");
+            } catch (erro) {
+                console.error("Erro ao exportar:", erro);
+                alert("❌ Ocorreu um erro ao exportar as tabelas.");
+            }
+        }
+        function importarTabelasExcel(event) {
+            const arquivo = event.target.files[0];
+            if (!arquivo) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const dados = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(dados, { type: "array" });
+
+                // === Ler aba da Tabela 2 ===
+                const sheet2 = workbook.Sheets["Tabela 2 - Cardápio"];
+                if (sheet2) {
+                const json2 = XLSX.utils.sheet_to_json(sheet2, { header: 1 });
+                const tbody2 = document.getElementById("table-cardapio-body");
+                tbody2.innerHTML = "";
+
+                for (let i = 1; i < json2.length; i++) {
+                    const linha = json2[i];
+                    if (!linha.length) continue;
+
+                    const novaLinha = tbody2.insertRow();
+                    novaLinha.innerHTML = `
+                    <td class="row-number">${i}</td>
+                    <td><input type="date" value="${linha[0] || ""}" onchange="validateRowDate(this); atualizarCardapioAutomatico(this)"></td>
+                    <td><p>${linha[1] || ""}</p></td>
+                    <td><p>${linha[2] || ""}</p></td>
+                    <td><p>${linha[3] || ""}</p></td>
+                    <td><p class="cardapio-dia">${linha[4] || ""}</p></td>
+                    <td><button class="remove-row-btn" onclick="removeRow(this, 'table-cardapio-body')">&#128465;</button></td>
+                    <td><p>${linha[5] || ""}</p></td>
+                    `;
+                }
+                }
+
+                // === Ler aba da Tabela 3 ===
+                const sheet3 = workbook.Sheets["Tabela 3 - Consumo"];
+                if (sheet3) {
+                const json3 = XLSX.utils.sheet_to_json(sheet3, { header: 1 });
+                const tbody3 = document.getElementById("table-mapa-body");
+                tbody3.innerHTML = "";
+
+                for (let i = 1; i < json3.length; i++) {
+                    const linha = json3[i];
+                    if (!linha.length) continue;
+
+                    const novaLinha = tbody3.insertRow();
+                    novaLinha.innerHTML = `
+                    <td class="row-number">${i}</td>
+                    <td><p>${linha[0] || ""}</p></td>
+                    <td><p>${linha[1] || ""}</p></td>
+                    <td><p>${linha[2] || ""}</p></td>
+                    <td><p>${linha[3] || ""}</p></td>
+                    <td><button class="remove-row-btn" onclick="removeRow(this, 'table-mapa-body')">&#128465;</button></td>
+                    `;
+                }
+                }
+
+                updateRowNumbers();
+                alert("✅ Arquivo importado com sucesso!");
+            };
+
+            reader.readAsArrayBuffer(arquivo);
+        }
+
     </script>
 </body>
 </html>

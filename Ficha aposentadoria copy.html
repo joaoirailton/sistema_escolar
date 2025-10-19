@@ -673,11 +673,19 @@ function applyCPFFormatToField(id){
 //JUNINHO
 function formatarDataDocumento(data){
   if(!data) return '';
+  // data vem do input type="date" no formato "YYYY-MM-DD"
   const options = { day: '2-digit', month: 'long', year: 'numeric' };
-  const dt = new Date(data);
-  // força mês em minúsculas? toLocale já devolve "outubro" correto.
-  return `${dt.toLocaleDateString('pt-BR', options)}`;
+  const parts = String(data).split('-');
+  let dt;
+  if(parts.length === 3){
+    // cria Date no timezone local com ano, mês-1, dia — evita deslocamento de fuso
+    dt = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+  } else {
+    dt = new Date(data);
+  }
+  return dt.toLocaleDateString('pt-BR', options);
 }
+
 
 /* ---------- REGISTROS 24–28 (lista) ---------- */
 let registros = [];
@@ -804,9 +812,40 @@ document.getElementById('btn_gerar').addEventListener('click', ()=>{
   document.getElementById('td_nasc').textContent = nasc ? (new Date(nasc)).toLocaleDateString('pt-BR') : '—';
   document.getElementById('td_cidade').textContent = cidadeBrasil||'—';
   document.getElementById('td_estado').textContent = estado||'—';
-  document.getElementById('td_registro').textContent = registro||'—';
-  document.getElementById('td_livro').textContent = livro||'—';
-  document.getElementById('td_folha').textContent = folha||'—';
+  // Detecta se é matrícula (certidão nova)
+  // --- Tratamento registro / matrícula (novo modelo com número único) ---
+const registroNumeros = (registro || '').replace(/\D/g, ''); // somente dígitos
+
+// referências aos headers/ths relevantes:
+// linha 4 (ESTADO / REGISTRO / LIVRO) -> queremos alterar o th na posição onde está "REGISTRO DE NASC."
+const thRegistro = document.querySelector('#tbl_identificacao tr:nth-child(4) th:nth-child(5)');
+// a coluna "LIVRO" (na mesma linha, 6ª posição)
+const thLivro = document.querySelector('#tbl_identificacao tr:nth-child(4) th:nth-child(6)');
+// linha 5 (FOLHA) -> th da primeira célula dessa linha
+const thFolhaRow5 = document.querySelector('#tbl_identificacao tr:nth-child(5) th');
+
+// comportamento quando é matrícula longa (>12 dígitos)
+if (registroNumeros.length > 12) {
+  // deixa o cabeçalho do "registro" vazio (conforme pedido)
+  if(thRegistro) thRegistro.textContent = '';
+  if(thLivro) thLivro.textContent = '';
+  // substitui o título "FOLHA" por "NÚMERO DE MATRÍCULA"
+  if(thFolhaRow5) thFolhaRow5.textContent = 'NÚMERO DE MATRÍCULA';
+  // preenche: registro e livro vazios; número de matrícula na célula da folha
+  document.getElementById('td_registro').textContent = '';
+  document.getElementById('td_livro').textContent = '';
+  document.getElementById('td_folha').textContent = registro || '—';
+} else {
+  // restaura textos originais dos cabeçalhos
+  if(thRegistro) thRegistro.textContent = 'REGISTRO DE NASC.';
+  if(thLivro) thLivro.textContent = 'LIVRO';
+  if(thFolhaRow5) thFolhaRow5.textContent = 'FOLHA';
+  // comportamento antigo (campos separados)
+  document.getElementById('td_registro').textContent = registro || '—';
+  document.getElementById('td_livro').textContent = livro || '—';
+  document.getElementById('td_folha').textContent = folha || '—';
+}
+
 
   document.getElementById('td_mae').textContent = mae||'—';
   document.getElementById('td_prof_mae').textContent = profMae||'—';
@@ -935,7 +974,21 @@ document.getElementById('campo_unidade').addEventListener('change', ()=>{
       campoCidade.value = "";
   }
 });
-//hhhhhhhhhhhhhhhhhhh
+// Atualiza label do campo 9 dinamicamente (opcional)
+(function(){
+  const campoReg = document.getElementById('campo_registro');
+  const labelReg = Array.from(document.querySelectorAll('.field label')).find(l => l.textContent.includes('9˚'));
+  if(!campoReg || !labelReg) return;
+  campoReg.addEventListener('input', ()=> {
+    const dig = campoReg.value.replace(/\D/g,'');
+    if(dig.length > 12){
+      labelReg.textContent = '9˚ Nº de Matrícula (Certidão nova)';
+    } else {
+      labelReg.textContent = '9˚ Registro de Nascimento';
+    }
+  });
+})();
+
 
 </script>
 </body>
