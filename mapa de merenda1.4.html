@@ -424,10 +424,10 @@
         
         <label for="periodo_input">PERÍODO (Início e Fim) - Gera as datas da Tabela 2</label>
         <div class="date-pair">
-            <input type="date" id="periodo_inicio_input" value="2025-09-01" onchange="generateTable2Rows()">
-            <input type="date" id="periodo_fim_input" value="2025-09-30" onchange="generateTable2Rows()">
+            <input type="date" id="data-inicial" value="2025-09-01" onchange="generateTable2Rows()">
+            <input type="date" id="data-final" value="2025-09-30" onchange="generateTable2Rows()">
         </div>
-        <button onclick="generateTable2Rows()">Gerar Datas e Cardápios (Tabela 2)</button>
+        <button id="gerar-cardapio" onclick="generateTable2Rows()">Gerar Datas e Cardápios (Tabela 2)</button>
 
         
         <hr style="margin-top: 20px;">
@@ -501,7 +501,7 @@
                         </tbody>
                 </table>
             </div>
-            
+        
             <div class="data-table" id="table-mapa">
                 <h3 style="text-align: center; font-size: 10pt; font-weight: bold; margin-bottom: 5px;">CONTROLE DE GÊNEROS ALIMENTÍCIOS</h3>
                 <table id="tabela-estoque">
@@ -548,6 +548,581 @@
 
         </div>
     </div>
+
+    <script>
+        // Função que atualiza os dados da Tabela 1 com base no sidebar
+        function atualizarTabela1() {
+            // Obter valores dos inputs/selects
+            const nome = document.getElementById("nome_escola_input").value;
+            const endereco = document.getElementById("endereco_escola_input").value;
+            const meio = document.getElementById("meio_escola_input").value;
+            const municipio = document.getElementById("municipio_escola_input").value;
+            const numAlunos = document.getElementById("num_alunos_input").value;
+            const tipoEnsino = document.getElementById("tipo_ensino_input").value;
+
+            // Atualizar spans na tabela
+            document.getElementById("nome_escola_display").textContent = nome;
+            document.getElementById("endereco_escola_display").textContent = endereco;
+            document.getElementById("meio_escola_display").textContent = meio;
+            document.getElementById("municipio_escola_display").textContent = municipio;
+            document.getElementById("num_alunos_display").textContent = numAlunos;
+            document.getElementById("tipo_ensino_display").textContent = tipoEnsino;
+
+            // Atualizar período
+            const inicio = document.getElementById("data-inicial").value;
+            const fim = document.getElementById("data-final").value;
+
+            if (inicio && fim) {
+                // Criar datas sem ajustar fuso (corrigindo o erro de -1 dia)
+                const dataInicio = new Date(inicio + "T00:00:00");
+                const dataFim = new Date(fim + "T00:00:00");
+
+                // Validação: início não pode ser depois do fim
+                if (dataInicio > dataFim) {
+                    alert("⚠️ A data inicial não pode ser maior que a data final!");
+                    document.getElementById("data-inicial").value = "";
+                    document.getElementById("periodo_display").innerHTML = "";
+                    return;
+                }
+
+                // Corrigir diferença de fuso (adiciona 1 dia ao horário UTC)
+                dataInicio.setMinutes(dataInicio.getMinutes() + dataInicio.getTimezoneOffset());
+                dataFim.setMinutes(dataFim.getMinutes() + dataFim.getTimezoneOffset());
+
+                // Formatar datas no formato dd/mm/yyyy
+                const formatoBR = (data) =>
+                    `${String(data.getDate()).padStart(2, "0")}/${String(data.getMonth() + 1).padStart(2, "0")}/${data.getFullYear()}`;
+
+                document.getElementById("periodo_display").innerHTML =
+                    `${formatoBR(dataInicio)}<br>${formatoBR(dataFim)}`;
+            }
+        }
+
+        // Adicionar eventos de escuta para todos os campos relevantes
+        document.getElementById("nome_escola_input").addEventListener("change", atualizarTabela1);
+        document.getElementById("endereco_escola_input").addEventListener("change", atualizarTabela1);
+        document.getElementById("meio_escola_input").addEventListener("change", atualizarTabela1);
+        document.getElementById("municipio_escola_input").addEventListener("change", atualizarTabela1);
+        document.getElementById("num_alunos_input").addEventListener("input", atualizarTabela1);
+        document.getElementById("tipo_ensino_input").addEventListener("change", atualizarTabela1);
+        document.getElementById("data-inicial").addEventListener("change", atualizarTabela1);
+        document.getElementById("data-final").addEventListener("change", atualizarTabela1);
+
+
+
+
+
+
+
+        //[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[TABELA 2]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
+        //       PERMITE AO USUÁRIO MODIFICAR AS DATAS DA COLUNA 2
+        
+        //[[[[[[[[[[[[[[[[[[[[[PREENCHE A TABELA CADÁPIO[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]
+        document.addEventListener("DOMContentLoaded", function () {
+            const tbody = document.getElementById("table-cardapio-body");
+
+            // 🧱 Função para formatar data no padrão BR
+            function formatarDataBR(data) {
+                const d = new Date(data);
+                const dia = String(d.getDate()).padStart(2, "0");
+                const mes = String(d.getMonth() + 1).padStart(2, "0");
+                const ano = d.getFullYear();
+                return `${dia}/${mes}/${ano}`;
+            }
+
+            // 🧩 Função para criar uma linha na tabela
+            function criarLinha(numeroDia, data) {
+                const tr = document.createElement("tr");
+
+                tr.innerHTML = `
+                    <td style="text-align:center;">${numeroDia}</td>
+                    <td style="text-align:center;">${formatarDataBR(data)}</td>
+                    <td style="text-align:center;" class="aluno-creche">X</td>
+                    <td style="text-align:center;" class="aluno-fundamental">X</td>
+                    <td style="text-align:center;" class="aluno-eja">X</td>
+                    <td>
+                        <select class="select-cardapio" style="width:100%;">
+                            <option value="">Selecione o cardápio</option>
+                            <option value="Arroz, Feijão e Frango">Arroz, Feijão e Frango</option>
+                            <option value="Macarronada com Carne Moída">Macarronada com Carne Moída</option>
+                            <option value="Sopa de Legumes">Sopa de Legumes</option>
+                            <option value="Farinha com Peixe Frito">Farinha com Peixe Frito</option>
+                            <option value="Outra opção">Outra opção</option>
+                        </select>
+                    </td>
+                    <td style="text-align:center;">
+                        <button class="remove-row" title="Remover linha" style="background:none; border:none; cursor:pointer; font-size:18px;">
+                            🗑️
+                        </button>
+                    </td>
+                    <td>
+                        <input type="text" placeholder="Justificativa ou observação..." style="width:100%;">
+                    </td>
+                `;
+
+                // 🗑️ Ação de remover linha
+                tr.querySelector(".remove-row").addEventListener("click", () => tr.remove());
+
+                tbody.appendChild(tr);
+            }
+
+            // ⚙️ Função para gerar todas as linhas da tabela com base no período
+            function gerarTabelaCardapio(dataInicial, dataFinal) {
+                tbody.innerHTML = ""; // limpa tabela antes de gerar novas linhas
+
+                // ⚠️ Corrigido para ignorar fuso horário
+                const inicio = new Date(dataInicial + "T00:00:00");
+                const fim = new Date(dataFinal + "T00:00:00");
+
+                if (isNaN(inicio) || isNaN(fim)) {
+                    alert("Selecione um período válido!");
+                    return;
+                }
+
+                let diaAtual = new Date(inicio);
+                let contador = 1;
+
+                // ✅ Garante que o último dia (data final) também seja incluído
+                while (diaAtual <= fim) {
+                    criarLinha(contador, new Date(diaAtual));
+                    diaAtual.setDate(diaAtual.getDate() + 1);
+                    contador++;
+                }
+            }
+
+            // 🔘 Evento do botão "Gerar Datas e Cardápios"
+            const gerarBtn = document.getElementById("gerar-cardapio"); // ID do botão no sidebar
+
+            if (gerarBtn) {
+                gerarBtn.addEventListener("click", function () {
+                    const dataInicial = document.getElementById("data-inicial").value;
+                    const dataFinal = document.getElementById("data-final").value;
+
+                    gerarTabelaCardapio(dataInicial, dataFinal);
+                });
+            }
+        });
+
+
+
+
+
+
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const tbody = document.getElementById("table-cardapio-body");
+
+            function formatarDataBR(data) {
+                const d = new Date(data);
+                const dia = String(d.getDate()).padStart(2, "0");
+                const mes = String(d.getMonth() + 1).padStart(2, "0");
+                const ano = d.getFullYear();
+                return `${dia}/${mes}/${ano}`;
+            }
+
+            // Cria linha com todas as funcionalidades
+            function criarLinha(numeroDia, data, periodoMin, periodoMax) {
+                const tr = document.createElement("tr");
+
+                // Cria a célula da frequência com <p>
+                const tdFreq = document.createElement("td");
+                tdFreq.style.textAlign = "center";
+                const p = document.createElement("p");
+                p.textContent = formatarDataBR(data);
+                p.style.cursor = "pointer";
+                p.style.margin = "0";
+                tdFreq.appendChild(p);
+
+                // Evento de clique no <p>
+                p.addEventListener("click", function () {
+                    const input = document.createElement("input");
+                    input.type = "date";
+                    input.value = data.toISOString().split("T")[0];
+                    input.min = periodoMin.toISOString().split("T")[0];
+                    input.max = periodoMax.toISOString().split("T")[0];
+                    input.style.width = "100%";
+
+                    tdFreq.innerHTML = ""; // limpa o <p>
+                    tdFreq.appendChild(input);
+                    input.focus();
+
+                    input.addEventListener("blur", function () {
+                        const novaData = new Date(input.value + "T00:00:00");
+                        p.textContent = formatarDataBR(novaData);
+                        tdFreq.innerHTML = "";
+                        tdFreq.appendChild(p);
+                    });
+                });
+
+                // Cria as outras células
+                function criarCelula(valor = "X", classe = "") {
+                    const td = document.createElement("td");
+                    td.style.textAlign = "center";
+                    td.className = classe;
+                    td.textContent = valor;
+                    return td;
+                }
+
+                const tdCreche = criarCelula("X", "aluno-creche");
+                const tdFund = criarCelula("X", "aluno-fundamental");
+                const tdEJA = criarCelula("X", "aluno-eja");
+
+                // Cardápio
+                const tdCardapio = document.createElement("td");
+                const select = document.createElement("select");
+                select.style.width = "100%";
+                ["","Arroz, Feijão e Frango","Macarronada com Carne Moída","Sopa de Legumes","Farinha com Peixe Frito","Outra opção"].forEach(op => {
+                    const option = document.createElement("option");
+                    option.value = op;
+                    option.textContent = op;
+                    select.appendChild(option);
+                });
+                tdCardapio.appendChild(select);
+
+                // Botão remover
+                const tdRemove = document.createElement("td");
+                tdRemove.style.textAlign = "center";
+                const btnRemove = document.createElement("button");
+                btnRemove.className = "remove-row";
+                btnRemove.title = "Remover linha";
+                btnRemove.style.background = "none";
+                btnRemove.style.border = "none";
+                btnRemove.style.cursor = "pointer";
+                btnRemove.style.fontSize = "18px";
+                btnRemove.textContent = "🗑️";
+                btnRemove.addEventListener("click", () => tr.remove());
+                tdRemove.appendChild(btnRemove);
+
+                // Justificativa
+                const tdJust = document.createElement("td");
+                const inputJust = document.createElement("input");
+                inputJust.type = "text";
+                inputJust.placeholder = "Justificativa ou observação...";
+                inputJust.style.width = "100%";
+                tdJust.appendChild(inputJust);
+
+                // Adiciona todas as células na linha
+                tr.appendChild(document.createElement("td")).textContent = numeroDia;
+                tr.appendChild(tdFreq);
+                tr.appendChild(tdCreche);
+                tr.appendChild(tdFund);
+                tr.appendChild(tdEJA);
+                tr.appendChild(tdCardapio);
+                tr.appendChild(tdRemove);
+                tr.appendChild(tdJust);
+
+                tbody.appendChild(tr);
+            }
+
+            // Função para gerar todas as linhas da tabela
+            function gerarTabelaCardapio(dataInicial, dataFinal) {
+                tbody.innerHTML = "";
+                const inicio = new Date(dataInicial + "T00:00:00");
+                const fim = new Date(dataFinal + "T00:00:00");
+                if (isNaN(inicio) || isNaN(fim)) { alert("Selecione um período válido!"); return; }
+
+                let diaAtual = new Date(inicio);
+                let contador = 1;
+
+                while (diaAtual <= fim) {
+                    criarLinha(contador, new Date(diaAtual), inicio, fim);
+                    diaAtual.setDate(diaAtual.getDate() + 1);
+                    contador++;
+                }
+            }
+
+            // Evento do botão Gerar Datas e Cardápios
+            const gerarBtn = document.getElementById("gerar-cardapio");
+            if (gerarBtn) {
+                gerarBtn.addEventListener("click", function () {
+                    const dataInicial = document.getElementById("data-inicial").value;
+                    const dataFinal = document.getElementById("data-final").value;
+                    gerarTabelaCardapio(dataInicial, dataFinal);
+                });
+            }
+        });
+
+
+
+
+
+
+        
+        // Lista de dias letivos (você pode expandir à vontade)
+        const diasLetivos = [
+            "10/02/2025","11/02/2025","12/02/2025","13/02/2025","14/02/2025",
+            "17/02/2025","18/02/2025","19/02/2025","20/02/2025","21/02/2025",
+            "24/02/2025","25/02/2025","26/02/2025","27/02/2025","28/02/2025",
+            "03/03/2025","06/03/2025","07/03/2025","10/03/2025","11/03/2025",
+            "12/03/2025","13/03/2025","14/03/2025","02/05/2025","03/05/2025",
+            "05/05/2025","06/05/2025","07/05/2025","08/05/2025","09/05/2025",
+            "12/05/2025","13/05/2025","14/05/2025","15/05/2025","16/05/2025",
+            "17/05/2025","19/05/2025","20/05/2025","21/05/2025","22/05/2025",
+            "23/05/2025","26/05/2025","27/05/2025","28/05/2025","29/05/2025",
+            "30/05/2025","02/06/2025","03/06/2025","05/06/2025","06/06/2025",
+            "07/06/2025","09/06/2025","10/06/2025","11/06/2025","12/06/2025",
+            "13/06/2025","16/06/2025","17/06/2025","18/06/2025","20/06/2025",
+            "23/06/2025","24/06/2025","25/06/2025","26/06/2025","27/06/2025",
+            "28/06/2025","30/06/2025","01/07/2025","02/07/2025","03/07/2025",
+            "04/07/2025","05/07/2025","07/07/2025","08/07/2025","09/07/2025",
+            "10/07/2025","11/07/2025","14/07/2025","15/07/2025","16/07/2025",
+            "17/07/2025","18/07/2025","19/07/2025","21/07/2025","22/07/2025",
+            "23/07/2025","24/07/2025","25/07/2025","28/07/2025","29/07/2025",
+            "30/07/2025","31/07/2025","01/08/2025","02/08/2025","04/08/2025",
+            "05/08/2025","06/08/2025","07/08/2025","08/08/2025","11/08/2025",
+            "12/08/2025","13/08/2025","14/08/2025","18/08/2025","19/08/2025",
+            "20/08/2025","21/08/2025","22/08/2025","23/08/2025","25/08/2025",
+            "26/08/2025","27/08/2025","28/08/2025","29/08/2025","01/09/2025",
+            "02/09/2025","03/09/2025","04/09/2025","05/09/2025","06/09/2025",
+            "08/09/2025","09/09/2025","10/09/2025","11/09/2025","12/09/2025",
+            "15/09/2025","16/09/2025","17/09/2025","18/09/2025","19/09/2025",
+            "20/09/2025","22/09/2025","23/09/2025","24/09/2025","25/09/2025",
+            "26/09/2025","29/09/2025","30/09/2025","01/10/2025","03/10/2025",
+            "04/10/2025","06/10/2025","07/10/2025","08/10/2025","09/10/2025",
+            "10/10/2025","13/10/2025","14/10/2025","16/10/2025","17/10/2025",
+            "18/10/2025","20/10/2025","21/10/2025","22/10/2025","23/10/2025",
+            "24/10/2025","27/10/2025","29/10/2025","30/10/2025","31/10/2025",
+            "03/11/2025","04/11/2025","05/11/2025","06/11/2025","07/11/2025",
+            "08/11/2025","10/11/2025","11/11/2025","12/11/2025","13/11/2025",
+            "14/11/2025","17/11/2025","18/11/2025","19/11/2025","21/11/2025",
+            "22/11/2025","24/11/2025","25/11/2025","26/11/2025","27/11/2025",
+            "28/11/2025","01/12/2025","02/12/2025","03/12/2025","04/12/2025",
+            "05/12/2025","06/12/2025","08/12/2025","09/12/2025","10/12/2025",
+            "11/12/2025","12/12/2025","15/12/2025","16/12/2025","17/12/2025",
+            "18/12/2025","19/12/2025","20/12/2025","22/12/2025","23/12/2025"
+        ];
+
+        function generateTable2Rows() {
+            const tbody = document.getElementById("table-cardapio-body");
+            const dataInicial = document.getElementById("data-inicial").value;
+            const dataFinal = document.getElementById("data-final").value;
+
+            if (!dataInicial || !dataFinal) {
+                alert("⚠️ Defina o período no sidebar antes de gerar as datas!");
+                return;
+            }
+
+            tbody.innerHTML = "";
+
+            const inicio = new Date(dataInicial + "T00:00:00");
+            const fim = new Date(dataFinal + "T00:00:00");
+
+            // converte lista de letivos para formato Date
+            const letivosNoPeriodo = diasLetivos
+                .map(d => {
+                    const [dia, mes, ano] = d.split("/");
+                    return new Date(`${ano}-${mes}-${dia}T00:00:00`);
+                })
+                .filter(d => d >= inicio && d <= fim && d.getDay() !== 0); // exclui domingos
+
+            function formatarDataBR(data) {
+                const dia = String(data.getDate()).padStart(2, "0");
+                const mes = String(data.getMonth() + 1).padStart(2, "0");
+                const ano = data.getFullYear();
+                return `${dia}/${mes}/${ano}`;
+            }
+
+            letivosNoPeriodo.sort((a, b) => a - b); // ordem crescente
+
+            letivosNoPeriodo.forEach((data, index) => {
+                const tr = document.createElement("tr");
+
+                // nº do dia
+                const tdNum = document.createElement("td");
+                tdNum.textContent = index + 1;
+                tdNum.style.textAlign = "center";
+
+                // coluna data
+                const tdData = document.createElement("td");
+                const p = document.createElement("p");
+                p.textContent = formatarDataBR(data);
+                p.style.cursor = "pointer";
+                p.style.margin = "0";
+                p.style.textAlign = "center";
+
+                // editar data ao clicar
+                p.addEventListener("click", function () {
+                    const input = document.createElement("input");
+                    input.type = "date";
+                    input.value = data.toISOString().split("T")[0];
+                    input.min = dataInicial;
+                    input.max = dataFinal;
+                    input.style.width = "100%";
+                    input.addEventListener("blur", function () {
+                        const nova = new Date(input.value + "T00:00:00");
+                        const formato = formatarDataBR(nova);
+                        if (!diasLetivos.includes(formato)) {
+                            alert("⚠️ Essa data não é um dia letivo!");
+                            tdData.innerHTML = "";
+                            tdData.appendChild(p);
+                            return;
+                        }
+                        p.textContent = formato;
+                        tdData.innerHTML = "";
+                        tdData.appendChild(p);
+                    });
+                    tdData.innerHTML = "";
+                    tdData.appendChild(input);
+                    input.focus();
+                });
+
+                tdData.appendChild(p);
+
+                // colunas de alunos
+                function criarCelulaX() {
+                    const td = document.createElement("td");
+                    td.textContent = "X";
+                    td.style.textAlign = "center";
+                    return td;
+                }
+
+                const tdCreche = criarCelulaX();
+                const tdFund = criarCelulaX();
+                const tdEja = criarCelulaX();
+
+                // cardápio
+                const tdCardapio = document.createElement("td");
+                const select = document.createElement("select");
+                [
+                    "",
+                    "Arroz, Feijão e Frango",
+                    "Macarronada com Carne Moída",
+                    "Sopa de Legumes",
+                    "Peixe Frito e Acompanhamentos",
+                    "Outra opção"
+                ].forEach(op => {
+                    const opt = document.createElement("option");
+                    opt.value = op;
+                    opt.textContent = op || "Selecione o cardápio";
+                    select.appendChild(opt);
+                });
+                tdCardapio.appendChild(select);
+
+                // botão remover
+                const tdRemove = document.createElement("td");
+                const btn = document.createElement("button");
+                btn.innerHTML = "🗑️";
+                btn.style.background = "none";
+                btn.style.border = "none";
+                btn.style.cursor = "pointer";
+                btn.style.fontSize = "18px";
+                btn.onclick = () => tr.remove();
+                tdRemove.style.textAlign = "center";
+                tdRemove.appendChild(btn);
+
+                // justificativa
+                const tdJust = document.createElement("td");
+                const inputJust = document.createElement("input");
+                inputJust.type = "text";
+                inputJust.placeholder = "Justificativa ou observação...";
+                inputJust.style.width = "100%";
+                tdJust.appendChild(inputJust);
+
+                tr.append(tdNum, tdData, tdCreche, tdFund, tdEja, tdCardapio, tdRemove, tdJust);
+                tbody.appendChild(tr);
+            });
+
+            if (letivosNoPeriodo.length === 0) {
+                alert("⚠️ Não há dias letivos dentro do período selecionado.");
+            }
+        }
+
+
+
+
+
+
+
+
+        // Função auxiliar para obter o número total de alunos do sidebar
+        function getTotalAlunosPermitidos() {
+            const sidebarInput = document.getElementById("numAlunosMatriculados");
+            let totalSidebar = sidebarInput ? parseInt(sidebarInput.value) || 0 : 0;
+
+            // Se também tiver na tabela 1, pode pegar o valor lá
+            const tabela1Input = document.querySelector("#table1 input[name='numAlunos']");
+            let totalTabela1 = tabela1Input ? parseInt(tabela1Input.value) || 0 : 0;
+
+            return Math.max(totalSidebar, totalTabela1);
+        }
+
+        // Função para permitir edição e validar soma total de alunos atendidos
+        function enableEditableAlunos() {
+            const table = document.getElementById("table-cardapio-body");
+            const totalPermitido = getTotalAlunosPermitidos();
+
+            table.querySelectorAll(".editable-x").forEach(cell => {
+                cell.addEventListener("click", function () {
+                    const p = this.querySelector("p");
+                    if (!p) return;
+
+                    const currentValue = p.textContent.trim() === "X" ? "" : p.textContent.trim();
+                    const input = document.createElement("input");
+                    input.type = "number";
+                    input.min = 0;
+                    input.value = currentValue;
+                    input.style.width = "80%";
+                    input.style.textAlign = "center";
+
+                    p.replaceWith(input);
+                    input.focus();
+
+                    input.addEventListener("blur", () => {
+                        const row = input.closest("tr");
+                        const inputs = row.querySelectorAll(".editable-x input, .editable-x p");
+                        let soma = 0;
+
+                        inputs.forEach(el => {
+                            const val = el.tagName === "INPUT" ? parseInt(el.value) || 0 : parseInt(el.textContent) || 0;
+                            soma += val;
+                        });
+
+                        if (soma > totalPermitido) {
+                            alert(`⚠️ O total de alunos atendidos (${soma}) não pode ultrapassar o limite de ${totalPermitido}.`);
+                            input.value = "";
+                        }
+
+                        const valorFinal = input.value.trim() === "" ? "X" : input.value;
+                        const novoP = document.createElement("p");
+                        novoP.textContent = valorFinal;
+                        novoP.style.textAlign = "center";
+                        input.replaceWith(novoP);
+                    });
+                });
+            });
+        }
+
+        tr.innerHTML = `
+            <td>${i + 1}</td>
+            <td><p class="data-dia">${dataFormatada}</p></td>
+            <td class="editable-x"><p>X</p></td>
+            <td class="editable-x"><p>X</p></td>
+            <td class="editable-x"><p>X</p></td>
+            <td>
+                <select>
+                    <option value="">Selecione o cardápio</option>
+                    <option value="Arroz com feijão e frango">Arroz com feijão e frango</option>
+                    <option value="Macarronada">Macarronada</option>
+                    <option value="Sopa nutritiva">Sopa nutritiva</option>
+                </select>
+            </td>
+            <td><button class="remove-row"><i class="fas fa-trash"></i></button></td>
+            <td><textarea placeholder="Digite aqui..."></textarea></td>
+        `;
+        enableEditableAlunos();
+
+
+
+
+
+
+
+
+
+
+
+    </script>
 
 
 </body>
