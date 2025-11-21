@@ -564,11 +564,95 @@ function createEstoqueRow(data) {
 
   sel.addEventListener('change', () => {
     if (sel.value === '__OUTRO__') {
-      alert('Use a opção "Outro" apenas para cadastrar novos itens com unidade.');
-      return;
+
+        // Evita abrir várias caixas se já estiver aberta
+        if (tdDisc._outroShown) return;
+
+        const div = document.createElement('div');
+        div.style.display = 'flex';
+        div.style.flexDirection = 'column';
+        div.style.marginTop = '6px';
+        div.style.padding = '6px';
+        div.style.border = '1px solid #ccc';
+        div.style.borderRadius = '6px';
+        div.style.background = '#f9f9f9';
+        div.style.gap = '6px';
+
+        // Inputs
+        const nameIn = document.createElement('input');
+        nameIn.type = 'text';
+        nameIn.placeholder = 'Nome do novo item';
+
+        const unitIn = document.createElement('input');
+        unitIn.type = 'text';
+        unitIn.placeholder = 'Unidade de medida (ex: kg, L, un...)';
+
+        // Botões
+        const buttons = document.createElement('div');
+        buttons.style.display = 'flex';
+        buttons.style.gap = '6px';
+
+        const ok = document.createElement('button');
+        ok.type = 'button';
+        ok.textContent = 'OK';
+
+        const cancel = document.createElement('button');
+        cancel.type = 'button';
+        cancel.textContent = 'Cancelar';
+
+        // AÇÕES
+        ok.addEventListener('click', () => {
+            const nm = nameIn.value.trim();
+            const uni = unitIn.value.trim();
+
+            if (!nm) {
+                alert('Informe o nome do item.');
+                return;
+            }
+
+            // Adiciona item à lista
+            estoqueItems.push({ name: nm, unit: uni });
+
+            // Reconstrói o select
+            sel.innerHTML = '';
+            sel.appendChild(new Option('-- selecione --', ''));
+            estoqueItems.forEach(it => sel.appendChild(new Option(it.name, it.name)));
+            sel.appendChild(new Option('Outro', '__OUTRO__'));
+
+            // Seleciona automaticamente o novo item
+            sel.value = nm;
+
+            // Atualiza unidade nas colunas
+            updateUnitsEverywhere();
+
+            // Remove caixa
+            div.remove();
+            tdDisc._outroShown = false;
+        });
+
+        cancel.addEventListener('click', () => {
+            div.remove();
+            tdDisc._outroShown = false;
+            sel.value = '';
+        });
+
+        buttons.appendChild(ok);
+        buttons.appendChild(cancel);
+
+        // Monta caixa
+        div.appendChild(nameIn);
+        div.appendChild(unitIn);
+        div.appendChild(buttons);
+
+        tdDisc.appendChild(div);
+        tdDisc._outroShown = true;
+        return;
     }
+
+    // Se não for "Outro", apenas atualiza as unidades
     updateUnitsEverywhere();
-  });
+});
+
 
   // CÁLCULO AUTOMÁTICO DO CONSUMO
   function computeCons() {
