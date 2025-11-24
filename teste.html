@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Mapa de Frequência - Escola Mestre Pacífico</title>
+    <style>
+        /* ========================================================== */
+        /* GERAL & FORMATO PAISAGEM (A4) */
+        /* ========================================================== */
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0; 
+            font-size: 10pt; 
+            color: #000;
+        }
+
+        /* Contêiner de Entrada de Dados (Interface do Usuário) */
+        #input-interface {
+            width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border: 1px solid #ccc;
+        }
+
+        /* Estilos do Formulário */
+        .form-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #eee;
+        }
+
+        .form-section h3 {
+            margin-top: 0;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+
+        .input-group, .employee-occurrence {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .input-item {
+            display: flex;
+            flex-direction: column;
+            min-width: 200px;
+            flex-grow: 1;
+        }
+
+        .input-item label {
+            font-size: 9pt;
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        .input-item input, .input-item select, .input-item textarea {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .employee-occurrence {
+            border: 1px dashed #aaa;
+            padding: 10px;
+            flex-direction: column;
+        }
+
+        .occurrence-checks {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .occurrence-checks label {
+            font-weight: normal;
+        }
+
+        #generate-button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        /* ========================================================== */
+        /* LAYOUT DE PÁGINAS (Para impressão) */
+        /* ========================================================== */
+
+        /* Oculta a interface de entrada ao gerar o documento */
+        .generated-document #input-interface {
+            display: none;
+        }
+        
+        /* Contêiner de Página (Formato Paisagem - A4 Invertido) */
+        .page {
+            width: 297mm; 
+            height: 210mm; 
+            margin: 20px auto;
+            background: #fff;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            padding: 20px; 
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- Cabeçalho e Rodapé Comuns --- */
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 0 0 10px 0;
+            border-bottom: 1px solid #000; 
+        }
+
+        .logo-section, .semed-section, .school-info {
+            width: 30%;
+        }
+        
+        .logo-section { display: flex; align-items: flex-start; }
+        .logo-text { font-size: 7pt; text-align: center; line-height: 1.2; margin-left: 5px; }
+        .logo-text p { margin: 0; }
+        .logo-text .main-title { font-size: 12pt; font-weight: bold; }
+        .logo-img { width: 45px; height: 45px; background-color: #f0f0f0; border: 1px solid #ccc; }
+
+        .semed-section { text-align: center; margin-top: 5px; }
+        .semed-section h2 { margin: 0; font-size: 18pt; color: #2a6889; font-weight: bold; }
+        .semed-section p { margin: 0; font-size: 7pt; color: #555; font-weight: bold; }
+
+        .school-info { font-size: 7pt; line-height: 1.4; text-align: right; }
+        .school-info p { margin: 0; }
+        .school-info p:first-child { font-weight: bold; }
+
+        .footer-section {
+            border-top: 1px solid #000;
+            padding: 5px 0 0 0;
+            font-size: 7pt;
+            margin-top: auto; 
+        }
+
+        .footer-details { display: flex; justify-content: space-between; align-items: flex-start; }
+        .semed-contact { line-height: 1.5; width: 55%; }
+        .semed-contact p { margin: 0; }
+        .semed-contact .bold { font-weight: bold; }
+
+        .quality-management { width: 40%; text-align: right; }
+        .quality-management p { font-weight: bold; margin-top: 0; }
+        .seals { display: flex; justify-content: flex-end; align-items: center; gap: 5px; }
+        .seal-img { width: 50px; height: 50px; background-color: #f0f0f0; border: 1px solid #ccc; }
+
+        /* --- Estilos da Página 1: Capa --- */
+        .page-cover .document-title {
+            text-align: center;
+            padding: 50px 40px; 
+            flex-grow: 1; 
+        }
+
+        .page-cover .document-title h1, .page-cover .document-title h2, .page-cover .document-title h3 {
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            text-transform: uppercase;
+            line-height: 1.2;
+            margin: 0;
+        }
+
+        /* Configuração solicitada: Arial 26pt */
+        .page-cover .document-title h1 { 
+            font-size: 26pt; 
+            margin-bottom: 5pt;
+        }
+
+        .page-cover .document-title h1:nth-child(2) {
+            margin-bottom: 50pt; 
+        }
+
+        .page-cover .document-title h2 {
+            font-size: 18pt; 
+            margin-bottom: 20pt;
+        }
+
+        .page-cover .document-title h3 { 
+            font-size: 28pt; 
+        }
+
+        /* --- Estilos das Páginas de Dados (2 a 5) --- */
+        .page-data-header {
+            text-align: right;
+            font-size: 8pt;
+            margin-top: 10px;
+            line-height: 1.5;
+            padding: 0;
+        }
+        
+        .mapa-titulo {
+            text-align: center;
+            margin: 10px 0;
+            font-size: 8pt;
+            font-weight: bold;
+        }
+
+        .mapa-titulo span {
+            padding: 2px 10px;
+            border: 1px solid #000;
+            margin: 0 5px;
+            background-color: #ccc;
+        }
+        
+        .mapa-unidade {
+            text-align: center;
+            font-size: 9pt;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 7pt; 
+            table-layout: fixed; 
+            text-align: center;
+        }
+
+        .data-table th, .data-table td {
+            border: 1px solid #000;
+            padding: 3px; 
+            height: 30px; 
+            vertical-align: middle;
+        }
+
+        /* Larguras da Tabela Docente (Docente Frequência e Info) */
+        .mapa-docente-freq th:nth-child(1) { width: 8%; } 
+        .mapa-docente-freq th:nth-child(2) { width: 22%; } 
+        .mapa-docente-freq th:nth-child(3) { width: 9%; } 
+        /* Carga Horária */
+        .mapa-docente-freq th:nth-child(4), .mapa-docente-freq th:nth-child(5), .mapa-docente-freq th:nth-child(6) { width: 5.5%; } 
+        .mapa-docente-freq th:nth-child(7) { width: 7%; } 
+        /* Ocorrências */
+        .mapa-docente-freq th:nth-child(8), .mapa-docente-freq th:nth-child(9), .mapa-docente-freq th:nth-child(10), .mapa-docente-freq th:nth-child(11), .mapa-docente-freq th:nth-child(12), .mapa-docente-freq th:nth-child(13) { width: 6%; } 
+        .mapa-docente-freq th:nth-child(14) { width: 5%; } /* OBS */
+
+        /* Larguras da Tabela Apoio (Apoio Frequência) */
+        .mapa-apoio-freq th:nth-child(1) { width: 8%; } 
+        .mapa-apoio-freq th:nth-child(2) { width: 22%; } 
+        .mapa-apoio-freq th:nth-child(3) { width: 9%; } 
+        .mapa-apoio-freq th:nth-child(4) { width: 7%; } 
+        .mapa-apoio-freq th:nth-child(5), .mapa-apoio-freq th:nth-child(6) { width: 5%; }
+        /* Ocorrências */
+        .mapa-apoio-freq th:nth-child(7), .mapa-apoio-freq th:nth-child(8), .mapa-apoio-freq th:nth-child(9), .mapa-apoio-freq th:nth-child(10), .mapa-apoio-freq th:nth-child(11), .mapa-apoio-freq th:nth-child(12) { width: 6%; } 
+        .mapa-apoio-freq th:nth-child(13) { width: 5%; } /* OBS */
+
+        /* Larguras das Tabelas de Informações Complementares */
+        .mapa-info th:nth-child(1) { width: 10%; } 
+        .mapa-info th:nth-child(2) { width: 25%; } 
+        .mapa-info th:nth-child(3) { width: 65%; text-align: left; padding-left: 5px; } 
+
+        .mapa-info td:last-child {
+            text-align: left;
+            padding: 5px;
+        }
+
+        .local-data {
+            font-size: 8pt;
+            margin-top: 10px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .assinaturas {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            font-size: 7pt;
+            margin-top: 30px; 
+        }
+
+        .assinaturas div {
+            width: 30%;
+        }
+
+        .assinaturas p {
+            margin: 0;
+            border-top: 1px solid #000;
+            padding-top: 5px;
+            font-weight: bold;
+        }
+
+        /* Estilos de impressão para garantir o formato paisagem no PDF */
+        @media print {
+            @page {
+                size: a4 landscape;
+                margin: 10mm;
+            }
+
+            body {
+                margin: 0;
+            }
+
+            .page {
+                width: 297mm;
+                height: 210mm;
+                margin: 0;
+                box-shadow: none;
+                page-break-after: always;
+                border: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="input-interface">
+        <h2>Sistema de Geração de Mapa de Frequência</h2>
+        <form id="frequency-form">
+            <div class="form-section">
+                <h3>1. Informações Gerais</h3>
+                <div class="input-group">
+                    <div class="input-item">
+                        <label for="school-name">Nome da Escola</label>
+                        <input type="text" id="school-name" value="ESCOLA MUNICIPAL DE EDUCAÇÃO INFANTIL E ENSINO FUNDAMENTAL MESTRE PACÍFICO." required>
+                    </div>
+                    <div class="input-item">
+                        <label for="month-ref">Mês de Referência (Ex: OUTUBRO/2025)</label>
+                        <input type="text" id="month-ref" value="OUTUBRO/2025" required>
+                    </div>
+                    <div class="input-item">
+                        <label for="apuration-period">Período de Apuração (Ex: 01 a 30/09/2025)</label>
+                        <input type="text" id="apuration-period" value="01 a 30/09/2025" required>
+                    </div>
+                    <div class="input-item">
+                        <label for="doc-date">Data do Documento (Ex: ÓBIDOS (PA), 01 DE OUTUBRO DE 2025)</label>
+                        <input type="text" id="doc-date" value="ÓBIDOS (PA), 01 DE OUTUBRO DE 2025." required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>2. Assinaturas</h3>
+                <div class="input-group">
+                    <div class="input-item">
+                        <label for="sec-name">Secretário Escolar (Nome)</label>
+                        <input type="text" id="sec-name" value="João Irailton de Jesus Ramos Júnior">
+                    </div>
+                    <div class="input-item">
+                        <label for="sec-decree">Secretário Escolar (Decreto)</label>
+                        <input type="text" id="sec-decree" value="Decreto nº 538/2025-GAB">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <div class="input-item">
+                        <label for="dir-name">Diretor(a) (Nome)</label>
+                        <input type="text" id="dir-name" value="Ideneide Garcia da Rocha">
+                    </div>
+                    <div class="input-item">
+                        <label for="dir-decree">Diretor(a) (Decreto)</label>
+                        <input type="text" id="dir-decree" value="Decreto Nº 142/2025">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <div class="input-item">
+                        <label for="mun-sec-name">Secretário(a) Municipal (Nome)</label>
+                        <input type="text" id="mun-sec-name" value="Maria Zilda Bentes Souza">
+                    </div>
+                    <div class="input-item">
+                        <label for="mun-sec-decree">Secretário(a) Municipal (Decreto)</label>
+                        <input type="text" id="mun-sec-decree" value="Decreto Nº 022/2025">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>3. Ocorrências (Docente Efetivo)</h3>
+                <div class="input-group">
+                    <div class="input-item">
+                        <label for="employee-select-docente">Selecionar Funcionário</label>
+                        <select id="employee-select-docente" onchange="updateEmployeeFields('docente')">
+                            <option value="">-- Selecione um Docente --</option>
+                        </select>
+                    </div>
+                    <div class="input-item">
+                        <label for="matricula-docente">Matrícula</label>
+                        <input type="text" id="matricula-docente" disabled>
+                    </div>
+                    <div class="input-item">
+                        <label for="cargo-docente">Cargo/Função</label>
+                        <input type="text" id="cargo-docente" disabled>
+                    </div>
+                    <div class="input-item">
+                        <label for="ch-docente">Carga Horária (Base)</label>
+                        <input type="text" id="ch-docente" disabled>
+                    </div>
+                </div>
+                <div class="employee-occurrence">
+                    <label>Informar Ocorrência Mensal:</label>
+                    <div class="occurrence-checks">
+                        <input type="checkbox" id="subst-docente" value="SUBST"><label for="subst-docente">Substituição (h)</label>
+                        <input type="checkbox" id="falta-docente" value="FALTA"><label for="falta-docente">Falta (d)</label>
+                        <input type="checkbox" id="ferias-docente" value="FERIAS"><label for="ferias-docente">Férias</label>
+                        <input type="checkbox" id="lic-mat-docente" value="LIC_MAT"><label for="lic-mat-docente">Licença Maternidade</label>
+                        <input type="checkbox" id="lic-premio-docente" value="LIC_PREMIO"><label for="lic-premio-docente">Licença Prêmio</label>
+                    </div>
+                    <div class="input-item">
+                        <label for="info-docente">Informações Complementares (Texto Livre/Observações)</label>
+                        <textarea id="info-docente" rows="3"></textarea>
+                    </div>
+                    <button type="button" onclick="addOccurrence('docente')" style="background-color: #28a745; color: white; padding: 5px; border: none; margin-top: 10px;">Adicionar Ocorrência</button>
+                    <div id="current-docente-occurrences" style="margin-top: 10px; font-size: 9pt; color: #555;"></div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>4. Ocorrências (Apoio/Administrativo Efetivo)</h3>
+                <div class="input-group">
+                    <div class="input-item">
+                        <label for="employee-select-apoio">Selecionar Funcionário</label>
+                        <select id="employee-select-apoio" onchange="updateEmployeeFields('apoio')">
+                            <option value="">-- Selecione um Apoio/Admin --</option>
+                        </select>
+                    </div>
+                    <div class="input-item">
+                        <label for="matricula-apoio">Matrícula</label>
+                        <input type="text" id="matricula-apoio" disabled>
+                    </div>
+                    <div class="input-item">
+                        <label for="cargo-apoio">Cargo/Função</label>
+                        <input type="text" id="cargo-apoio" disabled>
+                    </div>
+                    <div class="input-item">
+                        <label for="ch-apoio">Carga Horária (Base)</label>
+                        <input type="text" id="ch-apoio" disabled>
+                    </div>
+                </div>
+                <div class="employee-occurrence">
+                    <label>Informar Ocorrência Mensal:</label>
+                    <div class="occurrence-checks">
+                        <input type="checkbox" id="horas-extra-apoio" value="HORAS_EXTRA"><label for="horas-extra-apoio">Horas Extras</label>
+                        <input type="checkbox" id="falta-apoio" value="FALTA"><label for="falta-apoio">Falta (d)</label>
+                        <input type="checkbox" id="ferias-apoio" value="FERIAS"><label for="ferias-apoio">Férias</label>
+                        <input type="checkbox" id="lic-mat-apoio" value="LIC_MAT"><label for="lic-mat-apoio">Licença Maternidade</label>
+                        <input type="checkbox" id="lic-premio-apoio" value="LIC_PREMIO"><label for="lic-premio-apoio">Licença Prêmio</label>
+                    </div>
+                    <div class="input-item">
+                        <label for="info-apoio">Informações Complementares (Texto Livre/Observações)</label>
+                        <textarea id="info-apoio" rows="3"></textarea>
+                    </div>
+                    <button type="button" onclick="addOccurrence('apoio')" style="background-color: #28a745; color: white; padding: 5px; border: none; margin-top: 10px;">Adicionar Ocorrência</button>
+                    <div id="current-apoio-occurrences" style="margin-top: 10px; font-size: 9pt; color: #555;"></div>
+                </div>
+            </div>
+
+            <button type="button" id="generate-button" onclick="generateDocument()">GERAR DOCUMENTO (5 PÁGINAS)</button>
+        </form>
+    </div>
+
+    <div id="document-output"></div>
+
+    <script>
+        // ==========================================================
+        // 3. ESTRUTURA DE DADOS (SIMULAÇÃO DE BANCO DE DADOS)
+        // ==========================================================
+        const initialData = {
+            general: {
+                schoolName: "ESCOLA MUNICIPAL DE EDUCAÇÃO INFANTIL E ENSINO FUNDAMENTAL MESTRE PACÍFICO.",
+                monthRef: "OUTUBRO/2025",
+                apurationPeriod: "01 a 30/09/2025",
+                docDate: "ÓBIDOS (PA), 01 DE OUTUBRO DE 2025.",
+            },
+            signatures: {
+                secName: "João Irailton de Jesus Ramos Júnior",
+                secDecree: "Decreto nº 538/2025-GAB",
+                dirName: "Ideneide Garcia da Rocha",
+                dirDecree: "Decreto Nº 142/2025",
+                munSecName: "Maria Zilda Bentes Souza",
+                munSecDecree: "Decreto Nº 022/2025",
+            },
+            employees: {
+                docente: [
+                    { id: '101229-1', name: 'Clenison Ribeiro Cardoso', cargo: 'PROF. N/M', ch_docente: '100h', ch_inf: '-', ch_eja: '-', occurrences: { SUBST: '-', FALTA: '-', FERIAS: '-', LIC_MAT: '-', LIC_PREMIO: '-', OBS: 'X' }, info_comp: 'Conforme Portaria Nº. 1192/2025 foi autorizado CESSÃO, sem ônus para o erário público municipal, do referido servidor, lotado na Escola Mestre Pacifico, no período de 1º de janeiro de 2025 a 31 de dezembro de 2028.' },
+                    { id: '103749-8', name: 'José Aprígio Ribeiro', cargo: 'PROF.N/S', ch_docente: '100h', ch_inf: '-', ch_eja: '-', occurrences: { SUBST: '125h', FALTA: '-', FERIAS: '-', LIC_MAT: '-', LIC_PREMIO: '-', OBS: 'X' }, info_comp: 'O servidor está de Auxilio por Incapacidade Temporária, conforme Requerimento Nº. 106/2025, aguardando agendamento junto ao INSS.' },
+                    { id: '103430-8', name: 'Dayvid dos Santos Pereira', cargo: 'PROF.N/S', ch_docente: '100h', ch_inf: '-', ch_eja: '-', occurrences: { SUBST: '33h', FALTA: '-', FERIAS: '-', LIC_MAT: '-', LIC_PREMIO: '-', OBS: 'X' }, info_comp: 'O referido servidor solicita pagamento de 33h referente ao período de 01 a 10/10/2025 em substituição ao servidor José Aprígio Ribeiro que se encontra de auxílio por incapacidade temporária e mais 66h de substituição referente ao período de 10 a 30/09/2025 que por um equívoco não foi informado na folha anterior.' },
+                ],
+                apoio: [
+                    { id: '1036114', name: 'Dalva Bentes Mendonça Pereira', cargo: 'Aux. Adm.', ch_base: '200h', occurrences: { HORAS_EXTRA: '-', FALTA: '-', FERIAS: '-', LIC_MAT: '-', LIC_PREMIO: 'X', OBS: 'X' }, info_comp: 'Informamos que a referida servidora dispõe de concessão de Licença Prêmio, conforme Portaria Nº. 1270/2025, com início em 01 de agosto de 2025 e término em 29 de outubro de 2025.' },
+                    { id: '1004506', name: 'Deusalina Batista Bentes', cargo: 'A.S.G', ch_base: '200h', occurrences: { HORAS_EXTRA: '-', FALTA: '-', FERIAS: '-', LIC_MAT: '-', LIC_PREMIO: '-', OBS: 'X' }, info_comp: 'A servidora está de Auxilio por Incapacidade Temporária, conforme Requerimento Nº. 106/2025, aguardando agendamento junto ao INSS.' },
+                    { id: '1026127', name: 'Antônio Pinto Ribeiro', cargo: 'Vigia', ch_base: '180h', occurrences: { HORAS_EXTRA: '-', FALTA: '-', FERIAS: 'X', LIC_MAT: '-', LIC_PREMIO: '-', OBS: 'X' }, info_comp: 'O referido servidor encontra-se de concessão férias conforme portaria de Nº. 1861/2025, a serem gozadas no período de 01 de outubro de 2025 e término em 30 de outubro de 2025. Informamos que o referido servidor já recebeu 1/3 de suas férias no mês de setembro de 2025.' },
+                    { id: '0653387', name: 'Deusivaldo Costa de Jesus', cargo: 'Vigia', ch_base: '180h', occurrences: { HORAS_EXTRA: '-', FALTA: '-', FERIAS: '-', LIC_MAT: '-', LIC_PREMIO: '-', OBS: 'X' }, info_comp: 'O referido servidor passou a exercer sua função no turno noturno, a partir de 01 de outubro de 2025 a 30 de outubro de 2025, por motivo do servidor Antônio Pinto Rabelo que se encontra de férias.' },
+                ]
+            },
+            // Dados inseridos pelo usuário no formulário
+            userOccurrences: {
+                docente: [],
+                apoio: []
+            }
+        };
+
+        // Função para carregar os selects e dados iniciais
+        function loadInitialData() {
+            const selectDocente = document.getElementById('employee-select-docente');
+            const selectApoio = document.getElementById('employee-select-apoio');
+
+            initialData.employees.docente.forEach(emp => {
+                selectDocente.options.add(new Option(emp.name, emp.id));
+            });
+
+            initialData.employees.apoio.forEach(emp => {
+                selectApoio.options.add(new Option(emp.name, emp.id));
+            });
+        }
+
+        // Função para atualizar os campos de matrícula, cargo e CH
+        function updateEmployeeFields(type) {
+            const selectId = `employee-select-${type}`;
+            const matriculaId = `matricula-${type}`;
+            const cargoId = `cargo-${type}`;
+            const chId = `ch-${type}`;
+
+            const selectedId = document.getElementById(selectId).value;
+            const employee = initialData.employees[type].find(e => e.id === selectedId);
+
+            if (employee) {
+                document.getElementById(matriculaId).value = employee.id;
+                document.getElementById(cargoId).value = employee.cargo;
+                document.getElementById(chId).value = employee.ch_base || employee.ch_docente;
+            } else {
+                document.getElementById(matriculaId).value = '';
+                document.getElementById(cargoId).value = '';
+                document.getElementById(chId).value = '';
+            }
+        }
+
+        // Função para adicionar ocorrência à lista de usuário
+        function addOccurrence(type) {
+            const selectElement = document.getElementById(`employee-select-${type}`);
+            const employeeId = selectElement.value;
+            const employeeName = selectElement.options[selectElement.selectedIndex].text;
+            const infoComp = document.getElementById(`info-${type}`).value.trim();
+
+            if (!employeeId) {
+                alert('Selecione um funcionário primeiro.');
+                return;
+            }
+
+            const newOccurrence = {
+                id: employeeId,
+                name: employeeName,
+                cargo: document.getElementById(`cargo-${type}`).value,
+                ch_base: document.getElementById(`ch-${type}`).value,
+                info_comp: infoComp,
+                occurrences: {}
+            };
+
+            // Coleta ocorrências marcadas
+            document.querySelectorAll(`.employee-occurrence input[type="checkbox"]`).forEach(checkbox => {
+                if (checkbox.id.includes(type)) {
+                    // Valor padrão para preencher a tabela de frequência
+                    newOccurrence.occurrences[checkbox.value] = checkbox.checked ? 'X' : '-';
+                }
+            });
+
+            // Adiciona ou substitui no array de ocorrências do usuário
+            const existingIndex = initialData.userOccurrences[type].findIndex(o => o.id === employeeId);
+            if (existingIndex > -1) {
+                initialData.userOccurrences[type][existingIndex] = newOccurrence;
+            } else {
+                initialData.userOccurrences[type].push(newOccurrence);
+            }
+
+            updateOccurrenceList(type);
+            alert(`Ocorrência de ${employeeName} atualizada/adicionada!`);
+        }
+
+        // Função para exibir as ocorrências atuais
+        function updateOccurrenceList(type) {
+            const listElement = document.getElementById(`current-${type}-occurrences`);
+            listElement.innerHTML = '';
+            initialData.userOccurrences[type].forEach(occ => {
+                const info = occ.info_comp ? ` | Info: ${occ.info_comp.substring(0, 40)}...` : '';
+                listElement.innerHTML += `<p>• ${occ.name}: ${Object.entries(occ.occurrences).filter(([, v]) => v === 'X').map(([k]) => k).join(', ')}${info}</p>`;
+            });
+        }
+
+        // ==========================================================
+        // 4. LÓGICA DE GERAÇÃO DO DOCUMENTO FINAL
+        // ==========================================================
+
+        function generateDocument() {
+            // 1. Coleta dados do formulário
+            const general = {
+                schoolName: document.getElementById('school-name').value,
+                monthRef: document.getElementById('month-ref').value,
+                apurationPeriod: document.getElementById('apuration-period').value,
+                docDate: document.getElementById('doc-date').value,
+            };
+
+            const signatures = {
+                secName: document.getElementById('sec-name').value,
+                secDecree: document.getElementById('sec-decree').value,
+                dirName: document.getElementById('dir-name').value,
+                dirDecree: document.getElementById('dir-decree').value,
+                munSecName: document.getElementById('mun-sec-name').value,
+                munSecDecree: document.getElementById('mun-sec-decree').value,
+            };
+
+            // 2. Prepara o HTML das páginas
+            let outputHTML = '';
+            
+            // --- Página 1: Capa ---
+            outputHTML += generateCoverPage(general, signatures);
+
+            // --- Página 2: Docente - Frequência ---
+            outputHTML += generateDataPage(general, signatures, 'docente', 'Frequência');
+
+            // --- Página 3: Docente - Informações Complementares ---
+            outputHTML += generateDataPage(general, signatures, 'docente', 'Info');
+
+            // --- Página 4: Apoio - Frequência ---
+            outputHTML += generateDataPage(general, signatures, 'apoio', 'Frequência');
+            
+            // --- Página 5: Apoio - Informações Complementares ---
+            outputHTML += generateDataPage(general, signatures, 'apoio', 'Info');
+
+
+            // 3. Renderiza e aplica classe de visualização
+            document.getElementById('document-output').innerHTML = outputHTML;
+            document.body.classList.add('generated-document');
+            
+            // 4. Opção de impressão/PDF
+            alert("Documento gerado com sucesso! Utilize o Ctrl+P (ou Cmd+P) para salvar como PDF no formato PAISAGEM.");
+        }
+
+        // Helper: Gera o HTML do Cabeçalho
+        function getHeader(general) {
+            return `
+                <header class="header-top">
+                    <div class="logo-section">
+                        <div class="logo-img"></div>
+                        <div class="logo-text">
+                            <p>PREFEITURA DE</p>
+                            <p class="main-title">ÓBIDOS</p>
+                            <p>TEMPO DE CUIDADO E TRABALHO</p>
+                        </div>
+                    </div>
+
+                    <div class="semed-section">
+                        <h2>SEMED</h2>
+                        <p>SECRETARIA MUNICIPAL DE EDUCAÇÃO</p>
+                    </div>
+
+                    <div class="school-info">
+                        <p>${general.schoolName}.</p>
+                        <p>Horário de Atendimento: Segunda a Sexta das 8h às 12h e 13h às 17h</p>
+                        <p>Telefone: (00)981198157</p>
+                        <p>E-mail: escola.pacifico2014@gmail.com</p>
+                        <p>Endereço: Agrovila Igarapé Açu, Bairro: São Francisco - CEP: 68.250-000</p>
+                    </div>
+                </header>`;
+        }
+
+        // Helper: Gera o HTML do Rodapé de Contato/Selos
+        function getFooter() {
+            return `
+                <footer class="footer-section">
+                    <div class="footer-details">
+                        <div class="semed-contact">
+                            <p class="bold">SEDE DA SECRETARIA MUNICIPAL DE EDUCAÇÃO</p>
+                            <p>CNPJ: 23.714.191/0001-58 / 00.971.207/0001-51</p>
+                            <p>Horário de Atendimento: Segunda a Sexta das 7h às 12h e 13h às 18h</p>
+                            <p>Telefones: (93) 99214-6198 | (93) 99214-9431</p>
+                            <p>Ouvidoria Prefeitura de Óbidos: (93) 99115-8259</p>
+                            <p>E-mail: semed.obidos@hotmail.com</p>
+                            <p>Endereço: Travessa Rui Barbosa, Nº 483 - Bairro: Centro - CEP: 68.250-000</p>
+                        </div>
+                        <div class="quality-management">
+                            <p>Gestão de qualidade:</p>
+                            <div class="seals">
+                                <div class="seal-img" title="SELO DIAMANTE EM QUALIDADE E TRANSPARÊNCIA"></div>
+                                <div class="seal-img" title="SELO UNICEF 2021/2024"></div>
+                                <div class="seal-img" title="SELO NACIONAL COMPROMISSO COM A ALFABETIZAÇÃO"></div>
+                            </div>
+                        </div>
+                    </div>
+                </footer>`;
+        }
+
+        // Helper: Gera a Página 1 (Capa)
+        function generateCoverPage(general) {
+            const [month, year] = general.monthRef.split('/');
+            return `
+                <div class="page page-cover">
+                    ${getHeader(general)}
+                    <main class="document-title">
+                        <h1>MAPA DE FREQUÊNCIA</h1>
+                        <h1>${general.schoolName.toUpperCase()}</h1>
+                        <h2>MÊS DE REFERÊNCIA</h2>
+                        <h3>${month || ''}</h3>
+                        <h3>${year || ''}</h3>
+                    </main>
+                    ${getFooter()}
+                </div>
+            `;
+        }
+        
+        // Helper: Gera as Páginas de Dados (2 a 5)
+        function generateDataPage(general, signatures, type, template) {
+            const isDocente = type === 'docente';
+            const employeesList = initialData.employees[type];
+            const userOccurrencesList = initialData.userOccurrences[type];
+
+            // Junta dados iniciais com as ocorrências do usuário
+            const finalEmployees = employeesList.map(emp => {
+                const userOcc = userOccurrencesList.find(o => o.id === emp.id);
+                if (userOcc) {
+                    return { ...emp, occurrences: userOcc.occurrences, info_comp: userOcc.info_comp };
+                }
+                return emp;
+            });
+
+            const pessoalType = isDocente ? 'DOCENTE EFETIVO' : 'APOIO/ADMINISTRATIVO / EFETIVO';
+
+            return `
+                <div class="page page-data page-${type}-${template}">
+                    ${getHeader(general)}
+                    
+                    <div class="page-data-header">
+                        <p>MÊS DE FREQUÊNCIA: ${general.monthRef}</p>
+                        <p>PERÍODO DE APURAÇÃO: ${general.apurationPeriod}</p>
+                        <p>PREVISÃO DE PAGAMENTO: ${general.monthRef}</p>
+                    </div>
+                    
+                    <div class="mapa-titulo">
+                        <span style="background-color: #f0f0f0;">MAPA DE FREQUÊNCIA</span>
+                        <span style="background-color: #f0f0f0;">PESSOAL - ${pessoalType}</span>
+                    </div>
+                    
+                    <div class="mapa-unidade">
+                        UNIDADE ESCOLAR / ADMINISTRATIVA: ${general.schoolName.toUpperCase()}.
+                    </div>
+
+                    ${template === 'Frequência' ? generateFrequencyTable(finalEmployees, isDocente) : generateInfoTable(finalEmployees)}
+                    
+                    <div class="local-data">
+                        ${general.docDate}
+                    </div>
+
+                    <div class="assinaturas">
+                        <div>
+                            <p>${signatures.secName}</p>
+                            <p>Secretário Escolar</p>
+                            <p>${signatures.secDecree}</p>
+                        </div>
+                        <div>
+                            <p>${signatures.dirName}</p>
+                            <p>Diretora Escolar/Polo 5</p>
+                            <p>${signatures.dirDecree}</p>
+                        </div>
+                        <div>
+                            <p>${signatures.munSecName}</p>
+                            <p>Secretária Municipal de Educação</p>
+                            <p>${signatures.munSecDecree}</p>
+                        </div>
+                    </div>
+
+                    ${getFooter()}
+                </div>
+            `;
+        }
+
+        // Helper: Gera a Tabela de Frequência
+        function generateFrequencyTable(employees, isDocente) {
+            if (isDocente) {
+                return `
+                    <table class="data-table mapa-docente-freq">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">MATRÍCULA</th>
+                                <th rowspan="2">NOME DO SERVIDOR</th>
+                                <th rowspan="2">CARGO FUNÇÃO</th>
+                                <th colspan="3">CARGA HORÁRIA</th>
+                                <th rowspan="2">TOTAL DE CARGA HOR.</th>
+                                <th colspan="6">OCORRÊNCIA MENSAL</th>
+                                <th rowspan="2">OBS</th>
+                            </tr>
+                            <tr>
+                                <th>EDUC INF</th>
+                                <th>ENS FUND</th>
+                                <th>E.J.A</th>
+                                <th>SUBST</th>
+                                <th>FALTA</th>
+                                <th>FÉRIAS</th>
+                                <th>LIC. MAT</th>
+                                <th>LIC. PRÊMIO</th>
+                                <th>OBS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${employees.map(emp => `
+                                <tr>
+                                    <td>${emp.id}</td>
+                                    <td style="text-align: left; padding-left: 5px;">${emp.name}</td>
+                                    <td>${emp.cargo}</td>
+                                    <td>${emp.ch_inf || '-'}</td>
+                                    <td>${emp.ch_docente || '-'}</td>
+                                    <td>${emp.ch_eja || '-'}</td>
+                                    <td>${emp.ch_docente || emp.ch_inf || '-'}</td>
+                                    <td>${emp.occurrences.SUBST || '-'}</td>
+                                    <td>${emp.occurrences.FALTA || '-'}</td>
+                                    <td>${emp.occurrences.FERIAS || '-'}</td>
+                                    <td>${emp.occurrences.LIC_MAT || '-'}</td>
+                                    <td>${emp.occurrences.LIC_PREMIO || '-'}</td>
+                                    <td>-</td>
+                                    <td>${emp.occurrences.OBS || '-'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>`;
+            } else { // Apoio
+                return `
+                    <table class="data-table mapa-apoio-freq">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">MATRÍCULA</th>
+                                <th rowspan="2">NOME DO SERVIDOR</th>
+                                <th rowspan="2">CARGO FUNÇÃO</th>
+                                <th rowspan="2">CARGA HORÁRIA</th>
+                                <th colspan="2">HORAS EXTRAS</th>
+                                <th colspan="6">OCORRÊNCIAS DO MÊS</th>
+                                <th rowspan="2">OBS</th>
+                            </tr>
+                            <tr>
+                                <th>DIUR</th>
+                                <th>NOT.</th>
+                                <th>SUBST</th>
+                                <th>FALTA</th>
+                                <th>FÉRIAS</th>
+                                <th>LIC. MAT</th>
+                                <th>LIC. PRÊMIO</th>
+                                <th>OBS:</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${employees.map(emp => `
+                                <tr>
+                                    <td>${emp.id}</td>
+                                    <td style="text-align: left; padding-left: 5px;">${emp.name}</td>
+                                    <td>${emp.cargo}</td>
+                                    <td>${emp.ch_base || '-'}</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>${emp.occurrences.SUBST || '-'}</td>
+                                    <td>${emp.occurrences.FALTA || '-'}</td>
+                                    <td>${emp.occurrences.FERIAS || '-'}</td>
+                                    <td>${emp.occurrences.LIC_MAT || '-'}</td>
+                                    <td>${emp.occurrences.LIC_PREMIO || '-'}</td>
+                                    <td>-</td>
+                                    <td>${emp.occurrences.OBS || '-'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>`;
+            }
+        }
+
+        // Helper: Gera a Tabela de Informações Complementares
+        function generateInfoTable(employees) {
+            return `
+                <table class="data-table mapa-info">
+                    <thead>
+                        <tr>
+                            <th>MAT. SERV.</th>
+                            <th>NOME DO SERVIDOR</th>
+                            <th>INFORMAÇÕES COMPLEMENTARES</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${employees.map(emp => `
+                            <tr>
+                                <td>${emp.id}</td>
+                                <td style="text-align: left; padding-left: 5px;">${emp.name}</td>
+                                <td>${emp.info_comp || 'Sem informações complementares.'}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>`;
+        }
+
+        // Inicialização do sistema
+        window.onload = loadInitialData;
+    </script>
+</body>
+</html>
