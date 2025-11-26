@@ -199,6 +199,56 @@
     border-radius: 8px;
     padding: 8px;
   }
+
+  /*[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
+  */
+  /* -------------------------------------
+        CONFIGURAÇÕES DE IMPRESSÃO
+  -------------------------------------- */
+  @media print {
+
+      /* Mantém TODAS as cores na impressão */
+      * {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+          color-adjust: exact !important;
+      }
+
+      /* Remove margens automáticas do navegador */
+      @page {
+          size: A4;
+          margin: 0;
+      }
+
+      /* Mantém layout igual ao da tela */
+      body {
+          
+          background: white !important;
+          zoom: 100% !important;
+          font-family: inherit !important;
+      }
+
+      /* FORÇAR IMPRESSÃO EM DUAS PÁGINAS */
+      /* Página 1 vai ATÉ a assinatura do pai */
+      #pagina1 {
+          page-break-after: always;
+      }
+
+      /* Página 2 começa após o elemento acima */
+      #pagina2 {
+          page-break-before: always;
+      }
+
+      /* Remover botões na impressão */
+      button, .no-print {
+          display: none !important;
+      }
+      #sidebar, .sidebar {
+        display: none !important;
+        visibility: hidden !important;
+      }
+  }
+
 </style>
 </head>
 <body>
@@ -556,74 +606,71 @@
 
   <!-- DOCUMENTO (meio) -->
   <main class="documento-wrap" id="documento_wrap" role="main" aria-label="Documento">
-    <header class="doc-header">
-      <h2>PREFEITURA MUNICIPAL DE ÓBIDOS</h2>
-      <h2>SECRETARIA MUNICIPAL DE EDUCAÇÃO</h2>
-      <h2>DIRETORIA DE ENSINO</h2>
-      <h2>DOCUMENTAÇÃO ESCOLAR</h2>
-      <p>CNPJ Nº. 05.131.180/0001-64, Tv. Bom Jesus, s/n, Centro</p>
-    </header>
-
-    <div class="titulo">FICHA DE MATRÍCULA</div>
-
-    <!-- Tabelas preenchíveis -->
-    <table class="doc-table" id="tbl_ident_unidade">
-      <tr>
-        <th colspan="2">UNIDADE ESCOLAR</th>
-        <td id="td_unidade" colspan="4">E.M.E.I.E.F. “MESTRE PACÍFICO”</td>
-      </tr>
-      <tr>
-        <th colspan="2">ENDEREÇO</th>
-        <td id="td_endereco" colspan="4">COMUNIDADE IGARAPÉ-AÇÚ</td>
-      </tr>
-      <tr>
-        <th colspan="2">MUNICÍPIO</th>
-        <td id="td_municipio" colspan="4">ÓBIDOS</td>
-      </tr>
-    </table>
-
-    <table class="doc-table" id="tbl_identificacao">
-      <tr><th colspan="6">IDENTIFICAÇÃO</th></tr>
-      <tr><th>NOME DO ALUNO</th><td id="td_nome_aluno" colspan="5"></td></tr>
-      <tr><th>SEXO</th><td id="td_sexo"> </td><th>DATA DE NASCIMENTO</th><td id="td_nasc"> </td><th>CIDADE</th><td id="td_cidade"> </td></tr>
-      <tr><th>ESTADO</th><td id="td_estado"> </td><th>REGISTRO DE NASC.</th><td id="td_registro"> </td><th>LIVRO</th><td id="td_livro"> </td></tr>
-      <tr><th>FOLHA</th><td id="td_folha" colspan="5"></td></tr>
-    </table>
-
-    <table class="doc-table" id="tbl_filiacao">
-      <tr><th colspan="6">FILIAÇÃO</th></tr>
-      <tr><th>MÃE</th><td id="td_mae" colspan="5"></td></tr>
-      <tr><th>PROFISSÃO</th><td id="td_prof_mae"></td><th>RG</th><td id="td_rg_mae"></td><th>CPF</th><td id="td_cpf_mae"></td></tr>
-      <tr><th>PAI</th><td id="td_pai" colspan="5"></td></tr>
-      <tr><th>PROFISSÃO</th><td id="td_prof_pai"></td><th>RG</th><td id="td_rg_pai"></td><th>CPF</th><td id="td_cpf_pai"></td></tr>
-    </table>
-
-    <table class="doc-table" id="tbl_residencia">
-      <tr><th>RESIDENTE EM</th><td id="td_residencia" colspan="5"></td></tr>
-      <tr><th>MUNICÍPIO</th><td id="td_cidade_resid" ></td><th>ESTADO</th><td id="td_estado_resid" colspan="3"></td></tr>
-    </table>
-
-    <!-- Assinatura do responsável pelo preenchimento aparece acima da data -->
-    <div class="assinaturas">
-      <span class="assinatura-line" id="assinatura_preench">ASSINATURA DO RESPONSÁVEL PELO PREENCHIMENTO</span>
-      <p id="paragrafo_data">ÓBIDOS – PA, <span id="td_data_doc"></span></p>
-      <span class="assinatura-line" id="assinatura_pai">ASSINATURA DO PAI OU RESPONSÁVEL</span>
+    <div id="pagina1">
+      <header class="doc-header">
+        <h2>PREFEITURA MUNICIPAL DE ÓBIDOS</h2>
+        <h2>SECRETARIA MUNICIPAL DE EDUCAÇÃO</h2>
+        <h2>DIRETORIA DE ENSINO</h2>
+        <h2>DOCUMENTAÇÃO ESCOLAR</h2>
+        <p>CNPJ Nº. 05.131.180/0001-64, Tv. Bom Jesus, s/n, Centro</p>
+      </header>
+      <div class="titulo">FICHA DE MATRÍCULA</div>
+      <!-- Tabelas preenchíveis -->
+      <table class="doc-table" id="tbl_ident_unidade">
+        <tr>
+          <th colspan="2">UNIDADE ESCOLAR</th>
+          <td id="td_unidade" colspan="4">E.M.E.I.E.F. “MESTRE PACÍFICO”</td>
+        </tr>
+        <tr>
+          <th colspan="2">ENDEREÇO</th>
+          <td id="td_endereco" colspan="4">COMUNIDADE IGARAPÉ-AÇÚ</td>
+        </tr>
+        <tr>
+          <th colspan="2">MUNICÍPIO</th>
+          <td id="td_municipio" colspan="4">ÓBIDOS</td>
+        </tr>
+      </table>
+      <table class="doc-table" id="tbl_identificacao">
+        <tr><th colspan="6">IDENTIFICAÇÃO</th></tr>
+        <tr><th>NOME DO ALUNO</th><td id="td_nome_aluno" colspan="5"></td></tr>
+        <tr><th>SEXO</th><td id="td_sexo"> </td><th>DATA DE NASCIMENTO</th><td id="td_nasc"> </td><th>CIDADE</th><td id="td_cidade"> </td></tr>
+        <tr><th>ESTADO</th><td id="td_estado"> </td><th>REGISTRO DE NASC.</th><td id="td_registro"> </td><th id="th_folha">LIVRO</th><td id="td_livro"> </td></tr>
+        <tr><th>FOLHA</th><td id="td_folha" colspan="5"></td></tr>
+      </table>
+      <table class="doc-table" id="tbl_filiacao">
+        <tr><th colspan="6">FILIAÇÃO</th></tr>
+        <tr><th>MÃE</th><td id="td_mae" colspan="5"></td></tr>
+        <tr><th>PROFISSÃO</th><td id="td_prof_mae"></td><th>RG</th><td id="td_rg_mae"></td><th>CPF</th><td id="td_cpf_mae"></td></tr>
+        <tr><th>PAI</th><td id="td_pai" colspan="5"></td></tr>
+        <tr><th>PROFISSÃO</th><td id="td_prof_pai"></td><th>RG</th><td id="td_rg_pai"></td><th>CPF</th><td id="td_cpf_pai"></td></tr>
+      </table>
+      <table class="doc-table" id="tbl_residencia">
+        <tr><th>RESIDENTE EM</th><td id="td_residencia" colspan="5"></td></tr>
+        <tr><th>MUNICÍPIO</th><td id="td_cidade_resid" ></td><th>ESTADO</th><td id="td_estado_resid" colspan="3"></td></tr>
+      </table>
+      <!-- Assinatura do responsável pelo preenchimento aparece acima da data -->
+      <div class="assinaturas">
+        <span class="assinatura-line" id="assinatura_preench">ASSINATURA DO RESPONSÁVEL PELO PREENCHIMENTO</span>
+        <p id="paragrafo_data">ÓBIDOS – PA, <span id="td_data_doc"></span></p>
+        <span class="assinatura-line" id="assinatura_pai">ASSINATURA DO PAI OU RESPONSÁVEL</span>
+      </div>
     </div>
 
     <!-- Histórico Escolar (registros 24-28) -->
-    <table class="doc-table" id="tbl_historico">
-      <thead>
-        <tr>
-          <th>ANO</th><th>SÉRIE</th><th>CURSO</th><th>ESCOLA - COMUNIDADE</th><th>RESULTADO</th>
-        </tr>
-      </thead>
-      <tbody id="tbody_historico">
-        <!-- linhas adicionadas dinamicamente -->
-      </tbody>
-    </table>
-
-    <div class="rodape">
-      OBS: Estas informações foram retiradas do nosso arquivo PASSIVO que fica à disposição do INSS para qualquer fiscalização ou esclarecimento.
+    <div id="pagina2">
+      <table class="doc-table" id="tbl_historico">
+        <thead>
+          <tr>
+            <th>ANO</th><th>SÉRIE</th><th>CURSO</th><th>ESCOLA - COMUNIDADE</th><th>RESULTADO</th>
+          </tr>
+        </thead>
+        <tbody id="tbody_historico">
+          <!-- linhas adicionadas dinamicamente -->
+        </tbody>
+      </table>
+      <div class="rodape">
+        OBS: Estas informações foram retiradas do nosso arquivo PASSIVO que fica à disposição do INSS para qualquer fiscalização ou esclarecimento.
+      </div>
     </div>
   </main>
 
@@ -631,11 +678,11 @@
   <aside class="panel-actions" aria-label="Ações">
     <button id="btn_novo" class="btn muted"><i class="fa fa-file"></i> Novo</button>
     <button id="btn_salvar" class="btn btn-primary"><i class="fa fa-download"></i> Salvar</button>
-    <button id="btn_imprimir" class="btn btn-red"><i class="fa fa-print"></i> Imprimir</button>
+    <button onclick="imprimirFicha()" id="btn_imprimir" class="btn btn-red"><i class="fa fa-print"></i> Imprimir</button>
   </aside>
 
 </div>
-
+<!--
 <script>
 /* ---------- UTILITÁRIOS ---------- */
 function formatCPFString(v){
@@ -991,5 +1038,8 @@ document.getElementById('campo_unidade').addEventListener('change', ()=>{
 
 
 </script>
+
+-->
+<script src="aposentadoria-script01.js"></script>
 </body>
 </html>
