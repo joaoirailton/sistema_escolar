@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Verificador de Idade Escolar</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f6f8;
+    margin:0;
+    padding:20px;
+}
+
+.container{
+    max-width:600px;
+    background:#fff;
+    margin:auto;
+    padding:20px;
+    border-radius:8px;
+    box-shadow:0 4px 12px rgba(0,0,0,.1);
+}
+
+h1{
+    text-align:center;
+    color:#002366;
+}
+
+.field{
+    margin-bottom:15px;
+}
+
+label{
+    font-weight:bold;
+    display:block;
+    margin-bottom:5px;
+}
+
+input{
+    width:100%;
+    padding:8px;
+    font-size:16px;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    font-size:16px;
+    font-weight:bold;
+    background:#002366;
+    color:#fff;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#1e90ff;
+}
+
+.resultado{
+    margin-top:20px;
+    padding:15px;
+    border-radius:6px;
+    font-size:15px;
+}
+
+.ok{
+    background:#e8f5e9;
+    border-left:5px solid #2e7d32;
+}
+
+.alerta{
+    background:#fff3e0;
+    border-left:5px solid #ef6c00;
+}
+
+.erro{
+    background:#ffebee;
+    border-left:5px solid #c62828;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>Idade Escolar do Aluno</h1>
+
+    <div class="field">
+        <label>Data de Nascimento</label>
+        <input type="date" id="nascimento">
+    </div>
+
+    <div class="field">
+        <label>Ano Letivo</label>
+        <input type="number" id="anoLetivo" placeholder="Ex: 2025">
+    </div>
+
+    <button onclick="verificarIdade()">Verificar</button>
+
+    <div id="resultado"></div>
+</div>
+
+<script>
+function verificarIdade(){
+    const nasc = document.getElementById('nascimento').value;
+    const ano = document.getElementById('anoLetivo').value;
+    const resultado = document.getElementById('resultado');
+
+    if(!nasc || !ano){
+        resultado.innerHTML = '<div class="resultado erro">Preencha todos os campos.</div>';
+        return;
+    }
+
+    // Data de corte: 31 de março
+    const dataCorte = new Date(ano, 2, 31);
+    const dataNasc = new Date(nasc);
+
+    let idade = dataCorte.getFullYear() - dataNasc.getFullYear();
+    if (
+        dataCorte.getMonth() < dataNasc.getMonth() ||
+        (dataCorte.getMonth() === dataNasc.getMonth() && dataCorte.getDate() < dataNasc.getDate())
+    ) {
+        idade--;
+    }
+
+    let etapa = '';
+    let classe = 'ok';
+
+    if(idade < 4){
+        etapa = 'Creche';
+    } else if(idade === 4){
+        etapa = 'Pré I';
+    } else if(idade === 5){
+        etapa = 'Pré II';
+    } else if(idade === 6){
+        etapa = '1º Ano do Ensino Fundamental';
+    } else if(idade > 6 && idade <= 14){
+        etapa = `${idade - 5}º Ano do Ensino Fundamental`;
+    } else {
+        etapa = 'Verificar EJA ou regularização';
+        classe = 'alerta';
+    }
+
+    resultado.innerHTML = `
+        <div class="resultado ${classe}">
+            <strong>Idade em 31/03/${ano}:</strong> ${idade} anos<br><br>
+            <strong>Etapa recomendada:</strong> ${etapa}
+        </div>
+    `;
+}
+</script>
+
+</body>
+</html>
