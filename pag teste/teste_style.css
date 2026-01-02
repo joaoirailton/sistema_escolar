@@ -1,0 +1,121 @@
+:root {
+  --cor-principal: #2563eb;
+  --cinza-bg: #f4f6f8;
+  --cinza-borda: #d1d5db;
+  --texto: #111827;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: var(--cinza-bg);
+  color: var(--texto);
+}
+
+/* ====== HEADER ====== */
+header {
+  background: var(--cor-principal);
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+/* ====== CONTAINER ====== */
+.container {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 10px;
+}
+
+/* ====== CARD ====== */
+.card {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+/* ====== FORM ====== */
+.card h3 {
+  margin-top: 0;
+  border-left: 5px solid var(--cor-principal);
+  padding-left: 10px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+}
+
+label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid var(--cinza-borda);
+  font-size: 14px;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--cor-principal);
+}
+
+/* ====== BOTÕES ====== */
+.botoes {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+button {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.salvar {
+  background: var(--cor-principal);
+  color: white;
+}
+
+.exportar {
+  background: #16a34a;
+  color: white;
+}
+
+/* ====== TABELA ====== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+th {
+  background: var(--cor-principal);
+  color: white;
+  padding: 10px;
+  font-size: 13px;
+}
+
+td {
+  padding: 8px;
+  border-bottom: 1px solid var(--cinza-borda);
+  font-size: 13px;
+}
+
+tr:hover {
+  background: #f1f5f9;
+}

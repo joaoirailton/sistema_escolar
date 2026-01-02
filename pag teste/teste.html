@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Sistema de Funcionários – Polo Escolar</title>
+<link rel="stylesheet" href="style2.css">
+</head>
+
+<body>
+
+<header>
+  <h2>Sistema de Cadastro de Funcionários</h2>
+  <p>Polo Escolar – Gestão Administrativa</p>
+</header>
+
+<div class="container">
+
+<form id="formFuncionario">
+
+<div class="card">
+    <h3>Identificação</h3>
+    <div class="form-grid">
+    <input placeholder="Nome completo" name="nome" required>
+    <input type="date" name="nascimento">
+    <input placeholder="RG" name="rg">
+    <input type="text" name="cpf" id="cpf" placeholder="CPF">
+    <input placeholder="Naturalidade" name="naturalidade">
+    <select name="cor">
+    <option value="">Selecione a cor</option>
+    <option>Branca</option>
+    <option>Preta</option>
+    <option>Parda</option>
+    <option>Amarela</option>
+    <option>Indígena</option>
+    <option>Não declarada</option>
+    </select>
+</div>
+</div>
+
+<div class="card">
+<h3>Vínculo Funcional</h3>
+<div class="form-grid">
+<input placeholder="Matrícula" name="matricula">
+<input type="date" name="admissao">
+<input placeholder="Situação funcional" name="situacao">
+<input placeholder="Decreto" name="decreto">
+<input placeholder="Portaria" name="portaria">
+<input placeholder="Cargo" name="cargo">
+</div>
+</div>
+
+<div class="card">
+<h3>Formação</h3>
+<div class="form-grid">
+<input placeholder="Formação" name="formacao">
+<input placeholder="Especialização" name="especializacao">
+<input placeholder="Cursando" name="cursando">
+</div>
+</div>
+
+<div class="card">
+<h3>Atuação</h3>
+<div class="form-grid">
+<input placeholder="Componente curricular" name="componente">
+<input name="ano_serie_etapa" placeholder="Ano / Série / Etapa">
+<input placeholder="Turno" name="turno">
+<input placeholder="Carga horária" name="ch">
+<input placeholder="Carga horária total" name="ch_total">
+</div>
+</div>
+
+<div class="card">
+<h3>Contato e Complementos</h3>
+<div class="form-grid">
+<input placeholder="Endereço" name="endereco">
+<input placeholder="Localização" name="localizacao">
+<input type="text" name="telefone" id="telefone" placeholder="Telefone">
+<input type="email" placeholder="E-mail" name="email">
+
+<select name="escola">
+  <option value="">Selecione a escola</option>
+  <option>Escola Municipal de Educação Infantil e Ensino Fundamental Mestre Pacífico</option>
+  <option>Escola Municipal de Educação Infantil e Ensino Fundamental João Fernandes</option>
+  <option>Escola Municipal de Educação Infantil e Ensino Fundamental Marilda Carvalho</option>
+</select>
+
+
+<textarea placeholder="Observações" name="obs"></textarea>
+</div>
+
+<div class="botoes">
+<button class="salvar" type="submit">Salvar Funcionário</button>
+<button class="exportar" type="button" onclick="exportarCSV()">Exportar CSV</button>
+</div>
+</div>
+
+</form>
+
+<div class="card">
+<h3>Funcionários Cadastrados</h3>
+<table>
+<thead>
+<tr>
+<th>Nome</th>
+<th>Matrícula</th>
+<th>Cargo</th>
+<th>Escola</th>
+</tr>
+</thead>
+<tbody id="tabela"></tbody>
+</table>
+</div>
+
+</div>
+
+<script src="teste_script.js"></script>
+
+</body>
+</html>
