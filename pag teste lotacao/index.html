@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mapa de Lotação de Professores</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1, h2 { margin-top: 20px; }
+    form { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
+    label { font-weight: bold; }
+    input, select, button { padding: 6px; }
+    button { cursor: pointer; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #000; padding: 6px; text-align: center; font-size: 12px; }
+    th { background: #eee; }
+    .alerta { color: red; font-weight: bold; }
+    @media print {
+      body { margin: 10px; }
+      @page { size: landscape; }
+      button, form { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<h1>Mapa de Lotação de Professores</h1>
+
+<h2>Cadastro do Professor</h2>
+<form id="formProfessor">
+  <div>
+    <label>Nome do Professor</label>
+    <input type="text" id="nome" required />
+  </div>
+  <div>
+    <label>Etapa</label>
+    <select id="etapa">
+      <option value="anosIniciais">Ensino Fundamental Anos Iniciais (1º ao 5º)</option>
+      <option value="anosFinais">Ensino Fundamental Anos Finais (6º ao 9º)</option>
+    </select>
+  </div>
+  <div>
+    <label>Componente Curricular</label>
+    <select id="disciplina">
+      <option value="Português">Português</option>
+      <option value="Matemática">Matemática</option>
+      <option value="Arte">Arte</option>
+      <option value="Língua Inglesa">Língua Inglesa</option>
+      <option value="Educação Física">Educação Física</option>
+      <option value="Geografia">Geografia</option>
+      <option value="História">História</option>
+      <option value="Estudos Amazônicos">Estudos Amazônicos</option>
+      <option value="História de Óbidos">História de Óbidos</option>
+      <option value="Ensino Religioso">Ensino Religioso</option>
+      <option value="Ciências">Ciências</option>
+      <option value="Professor Regente (1º ao 5º)">Professor Regente (1º ao 5º)</option>
+    </select>
+  </div>
+  <div>
+    <label>Carga Horária Externa (horas)</label>
+    <input type="number" id="externa" value="0" />
+  </div>
+  <div>
+    <button type="submit">Adicionar</button>
+  </div>
+</form>
+
+<button onclick="exportar()">Exportar Dados</button>
+<input type="file" onchange="importar(event)" />
+<button onclick="window.print()">Imprimir</button>
+
+<h2>Tabela de Lotação</h2>
+<table id="tabela">
+  <thead>
+    <tr>
+      <th>Professor</th>
+      <th>Disciplina</th>
+      <th>Carga Interna</th>
+      <th>Carga Externa</th>
+      <th>Total</th>
+      <th>Alerta</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+const matriz = {
+  'Português': 20,
+  'Matemática': 20,
+  'Arte': 8,
+  'Língua Inglesa': 9,
+  'Educação Física': 8,
+  'Geografia': 10,
+  'História': 11,
+  'Estudos Amazônicos': 8,
+  'História de Óbidos': 8,
+  'Ensino Religioso': 4,
+  'Ciências': 10,
+  'Professor Regente (1º ao 5º)': 100
+};
+
+let dados = [];
+
+function atualizarTabela() {
+  const tbody = document.querySelector('#tabela tbody');
+  tbody.innerHTML = '';
+
+  dados.forEach(d => {
+    const total = d.interna + d.externa;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${d.nome}</td>
+      <td>${d.disciplina}</td>
+      <td>${d.interna}</td>
+      <td>${d.externa}</td>
+      <td>${total}</td>
+      <td class="alerta">${total > 200 ? 'Ultrapassa 200h' : ''}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+formProfessor.addEventListener('submit', e => {
+  e.preventDefault();
+  const nome = nome.value;
+  const disciplina = document.getElementById('disciplina').value;
+  const externa = parseInt(document.getElementById('externa').value || 0);
+  const interna = matriz[disciplina] || 0;
+
+  dados.push({ nome, disciplina, interna, externa });
+  atualizarTabela();
+  formProfessor.reset();
+});
+
+function exportar() {
+  const blob = new Blob([JSON.stringify(dados)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'mapa_lotacao.json';
+  a.click();
+}
+
+function importar(event) {
+  const file = event.target.files[0];
+  const reader = new FileReader();
+  reader.onload = e => {
+    dados = JSON.parse(e.target.result);
+    atualizarTabela();
+  };
+  reader.readAsText(file);
+}
+</script>
+
+</body>
+</html>
