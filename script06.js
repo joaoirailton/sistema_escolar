@@ -105,8 +105,8 @@ const estoqueItems = [
   {name:"Peito de frango", unit:"kg"},
   {name:"Polpa de frutas", unit:"pcts"},
   {name:"Sal moído", unit:"kg"},
-  {name:"Vinagre de álcool", unit:"gfrs"}
-  {name:"Tomate in natura", unit:"kg"},
+  {name:"Vinagre de álcool", unit:"gfrs"},
+  {name:"Tomate in natura", unit:"kg"}
   
 ];
 
