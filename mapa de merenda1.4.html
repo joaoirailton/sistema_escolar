@@ -137,6 +137,43 @@
                 margin: 0;
                 box-shadow: none;
             }
+            .remove-row-btn {
+                display: none !important;
+            }
+            button {
+                display: none !important;
+            }
+            .quantity-cell select{
+                display:none !important;
+            }
+            /* remove botões gerais */
+            button,
+            .remove-row-btn{
+                display: none !important;
+            }
+
+            /* remove aparência dos selects */
+            select{
+                appearance: none !important;
+                -webkit-appearance: none !important;
+                -moz-appearance: none !important;
+                border: none !important;
+                background: transparent !important;
+            }
+
+            /* remove setinhas de input number */
+            input[type=number]{
+                appearance: textfield !important;
+                -moz-appearance: textfield !important;
+                border: none !important;
+                background: transparent !important;
+            }
+
+            input[type=number]::-webkit-outer-spin-button,
+            input[type=number]::-webkit-inner-spin-button{
+                -webkit-appearance: none;
+                margin: 0;
+            }
         }
         
         /* ---------------------------------------------------- */
@@ -365,6 +402,7 @@
             border: 1px solid #000;
             text-align: center;
         }
+
     </style>
 </head>
 <body>
