@@ -1,0 +1,275 @@
+<!--<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard com Sidebar Expandida</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+
+  .main {
+    display: flex;
+    height: 100vh;
+  }
+
+  /* Sidebar colapsada */
+  .sidebar {
+    width: 60px; /* Apenas ícones */
+    background: #002366; /* Azul escuro */
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+    transition: width 0.3s;
+    overflow: hidden;
+  }
+
+  /* Expande a sidebar ao passar o mouse */
+  .sidebar:hover {
+    width: 340px;
+  }
+
+  .sidebar a {
+    padding: 15px 20px;
+    text-decoration: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    transition: background 0.3s;
+    border-left: 4px solid transparent;
+  }
+
+  .sidebar a i {
+    min-width: 20px;
+    text-align: center;
+    margin-right: 10px;
+    font-size: 18px;
+  }
+
+  .sidebar a span {
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  /* Mostra o texto quando expandido */
+  .sidebar:hover a span {
+    opacity: 1;
+  }
+
+  .sidebar a:hover {
+    background: #ff0000; /* Vermelho ao passar o mouse */
+    border-left: 4px solid #ffffff; /* Branco na borda */
+  }
+
+  .content {
+    flex: 1;
+    background: #f0f2f5;
+    padding: 20px;
+  }
+
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 10px;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+</style>
+</head>
+<body>
+
+<div class="main">
+  <div class="sidebar">
+    <a href="gerador de termo de responsabilidade.html" target="contentFrame">
+      <i class="fas fa-user-slash"></i> <span>TERMO DESISTÊNCIA</span>
+    </a>
+    <a href="gerador de requerimento.html" target="contentFrame">
+      <i class="fas fa-exchange-alt"></i> <span>REQUERIMENTO TRANSFERÊNCIA</span>
+    </a>
+    <a href="termo de acompanhamento.html" target="contentFrame">
+      <i class="fas fa-calendar-check"></i> <span>TERMO DE ACOMPANHAMENTO</span>
+    </a>
+    <a href="termo de danos.html" target="contentFrame">
+      <i class="fas fa-tools"></i> <span>TERMO DE DANOS</span>
+    </a>
+    <a href="Ficha aposentadoria.html" target="contentFrame">
+      <i class="fas fa-file-alt"></i> <span>FICHA APOSENTADORIA</span>
+    </a>
+    <a href="mapa de merenda.html" target="contentFrame">
+      <i class="fas fa-file-alt"></i> <span>MAPA DE MERENDA</span>
+    </a>
+    <a href="Censo2025.html" target="contentFrame">
+      <i class="fas fa-file-alt"></i> <span>CALCULO CENSO 2025</span>
+    </a>
+  </div>
+
+
+  <div class="content">
+    <iframe name="contentFrame" src="">Seja bem vindo a página do João Irailton!</iframe>
+  </div>
+</div>
+
+</body>
+</html>-->
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard com Sidebar Expandida</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+  :root {
+    --azul-escuro: #071340;
+    --azul-medio: #0E2780;
+    --azul-vivo: #1C4EFF;
+    --fundo: #f5f7fb;
+    --texto: #1e1e1e;
+  }
+
+  body {
+    margin: 0;
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--fundo);
+    color: var(--texto);
+  }
+
+  .main {
+    display: flex;
+    height: 100vh;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: 70px;
+    background: linear-gradient(180deg, var(--azul-medio) 0%, var(--azul-escuro) 100%);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+    transition: width 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+    box-shadow: 4px 0 14px rgba(0, 0, 0, 0.15);
+    border-right: 2px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .sidebar:hover {
+    width: 340px;
+  }
+
+  .sidebar a {
+    padding: 15px 20px;
+    text-decoration: none;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    transition: background 0.3s, transform 0.2s;
+    border-left: 4px solid transparent;
+    border-radius: 6px;
+    margin: 4px 8px;
+  }
+
+  .sidebar a i {
+    min-width: 25px;
+    text-align: center;
+    margin-right: 12px;
+    font-size: 18px;
+  }
+
+  .sidebar a span {
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .sidebar:hover a span {
+    opacity: 1;
+  }
+
+  .sidebar a:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-left: 4px solid var(--azul-vivo);
+    transform: translateX(3px);
+  }
+
+  /* Conteúdo principal */
+  .content {
+    flex: 1;
+    background: var(--fundo);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  iframe {
+    flex: 1;
+    width: 100%;
+    border: none;
+    border-radius: 12px;
+    background: #fff url('https://cdn.pixabay.com/photo/2017/06/29/09/34/desk-2451844_1280.jpg') center/cover no-repeat;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.3s ease;
+  }
+
+  iframe:hover {
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Responsivo */
+  @media (max-width: 900px) {
+    .sidebar {
+      width: 60px;
+    }
+    .sidebar:hover {
+      width: 240px;
+    }
+    .content {
+      padding: 12px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="main">
+  <div class="sidebar">
+    <a href="gerador de termo de responsabilidade.html" target="contentFrame">
+      <i class="fa-solid fa-file-signature"></i> <span>TERMO DESISTÊNCIA</span>
+    </a>
+    <a href="gerador de requerimento.html" target="contentFrame">
+      <i class="fa-solid fa-file-pen"></i> <span>REQUERIMENTO TRANSFERÊNCIA</span>
+    </a>
+    <a href="termo de acompanhamento.html" target="contentFrame">
+      <i class="fa-solid fa-user-check"></i> <span>TERMO DE ACOMPANHAMENTO</span>
+    </a>
+    <a href="termo de danos.html" target="contentFrame">
+      <i class="fa-solid fa-hammer"></i> <span>TERMO DE DANOS</span>
+    </a>
+    <a href="Ficha aposentadoria 01.html" target="contentFrame">
+      <i class="fa-solid fa-file-invoice-dollar"></i> <span>FICHA APOSENTADORIA</span>
+    </a>
+    <a href="mapa_merenda/html/mapa de merenda1.5.html" target="contentFrame">
+      <i class="fa-solid fa-utensils"></i> <span>MAPA DE MERENDA</span>
+    </a>
+    <a href="Censo2025.html" target="contentFrame">
+      <i class="fa-solid fa-chart-line"></i> <span>CALCULO CENSO 2025</span>
+    </a>
+    <a href="matricula na idade certa.html" target="contentFrame">
+      <i class="fa-solid fa-graduation-cap"></i> <span>MATRÍCULA NA IDADE CERTA</span>
+    </a>
+  </div>
+
+  <div class="content">
+    <iframe name="contentFrame" src=""><p>teste</p></iframe>
+  </div>
+</div>
+
+</body>
+</html>
+
+
