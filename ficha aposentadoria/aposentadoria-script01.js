@@ -193,8 +193,8 @@ if (registroNumeros.length > 12) {
   // substitui o título "FOLHA" por "NÚMERO DE MATRÍCULA"
   if(thFolhaRow5) thFolhaRow5.textContent = 'NÚMERO DE MATRÍCULA';
   // preenche: registro e livro vazios; número de matrícula na célula da folha
-  document.getElementById('td_registro').textContent = '';
-  document.getElementById('td_livro').textContent = '';
+  document.getElementById('td_registro').textContent = 'XXX';
+  document.getElementById('td_livro').textContent = 'XXX';
   document.getElementById('td_folha').textContent = registro || '—';
 } else {
   // restaura textos originais dos cabeçalhos
@@ -202,25 +202,25 @@ if (registroNumeros.length > 12) {
   if(thLivro) thLivro.textContent = 'LIVRO';
   if(thFolhaRow5) thFolhaRow5.textContent = 'FOLHA';
   // comportamento antigo (campos separados)
-  document.getElementById('td_registro').textContent = registro || '—';
-  document.getElementById('td_livro').textContent = livro || '—';
-  document.getElementById('td_folha').textContent = folha || '—';
+  document.getElementById('td_registro').textContent = registro || 'XXX';
+  document.getElementById('td_livro').textContent = livro || 'XXX';
+  document.getElementById('td_folha').textContent = folha || 'XXX';
 }
 
 
-  document.getElementById('td_mae').textContent = mae||'—';
-  document.getElementById('td_prof_mae').textContent = profMae||'—';
-  document.getElementById('td_rg_mae').textContent = rgMae||'—';
-  document.getElementById('td_cpf_mae').textContent = cpfMae||'—';
+  document.getElementById('td_mae').textContent = mae||'XXX';
+  document.getElementById('td_prof_mae').textContent = profMae||'XXX';
+  document.getElementById('td_rg_mae').textContent = rgMae||'XXX';
+  document.getElementById('td_cpf_mae').textContent = cpfMae||'XXX';
 
-  document.getElementById('td_pai').textContent = pai||'—';
-  document.getElementById('td_prof_pai').textContent = profPai||'—';
-  document.getElementById('td_rg_pai').textContent = rgPai||'—';
-  document.getElementById('td_cpf_pai').textContent = cpfPai||'—';
+  document.getElementById('td_pai').textContent = pai||'XXX';
+  document.getElementById('td_prof_pai').textContent = profPai||'XXX';
+  document.getElementById('td_rg_pai').textContent = rgPai||'XXX';
+  document.getElementById('td_cpf_pai').textContent = cpfPai||'XXX';
 
-  document.getElementById('td_residencia').textContent = resid||'—';
-  document.getElementById('td_cidade_resid').textContent = cidadeResid||'—';
-  document.getElementById('td_estado_resid').textContent = estadoResid||'—';
+  document.getElementById('td_residencia').textContent = resid||'XXX';
+  document.getElementById('td_cidade_resid').textContent = cidadeResid||'XXX';
+  document.getElementById('td_estado_resid').textContent = estadoResid||'XXX';
 
   document.getElementById('td_data_doc').textContent = dataDoc ? formatarDataDocumento(dataDoc) : '';
 
@@ -327,15 +327,15 @@ document.getElementById('campo_unidade').addEventListener('change', ()=>{
 
   switch(unidade){
     case "E.M.E.I.E.F. MESTRE PACÍFICO":
-      campoEndereco.value = "Rua São Francisco - S/N, Agrovila Igarapé-Açu, CEP: 68.250-000";
+      campoEndereco.value = "COMUNIDADE IGARAPÉ-AÇU";
       campoCidade.value = "ÓBIDOS";
       break;
     case "E.M.E.I.E.F. JOÃO FERNANDES":
-      campoEndereco.value = "Agrovila Andirobal, CEP 68.250-000";
+      campoEndereco.value = "COMUNIDADE ANDIROBAL";
       campoCidade.value = "ÓBIDOS";
       break;
     case "E.M.E.I.E.F. MARILDA CARVALHO":
-      campoEndereco.value = "Agrovila Ipixuna, CEP 68.250-000";
+      campoEndereco.value = "COMUNIDADE IPIXUNA";
       campoCidade.value = "ÓBIDOS";
       break;
     default:
