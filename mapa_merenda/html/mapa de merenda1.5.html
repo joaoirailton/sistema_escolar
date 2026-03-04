@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEMONSTRATIVO MENSAL MESTRE PACIFICO - DINÂMICO V5</title>
+    <link rel="stylesheet" href="estilo01.css">
+</head>
+<body>
+
+    <div class="sidebar">
+        <h4>1. Detalhes da Escola (Tabela 1)</h4>
+
+        <label for="nome_escola_input">NOME DA ESCOLA</label>
+        <select id="nome_escola_input">
+            <option value="Escola Mestre Pacífico" selected>Escola Mestre Pacífico</option>
+            <option value="Escola João Fernandes de Oliveira">Escola João Fernandes de Oliveira</option>
+            <option value="Escola Marilda Carvalho">Escola Marilda Carvalho</option>
+            <option value="Escola Raimundo Pereira">Escola Raimundo Pereira</option>
+            <option value="Escola Mestre Pacífico - CEMEP">Escola Mestre Pacífico - CEMEP</option>
+            <option value="Escola Mestre Pacífico - INTEGRAL">Escola Mestre Pacífico - INTEGRAL</option>
+        </select>
+
+        <label for="endereco_escola_input">ENDEREÇO</label>
+        <select id="endereco_escola_input">
+            <option value="Comunidade Igarapé Açu" selected>Comunidade Igarapé Açu</option>
+            <option value="Comunidade Ipixuna">Comunidade Ipixuna</option>
+            <option value="Comunidade Arumã">Comunidade Arumã</option>
+            <option value="Comunidade Andirobal">Comunidade Andirobal</option>
+        </select>
+        
+        <label for="meio_escola_input">ÁREA</label>
+        <select id="meio_escola_input">
+            <option value="Terra Firme" selected>Terra Firme</option>
+            <option value="Terra Varzea">Várzea</option>
+        </select>
+
+        <label for="municipio_escola_input">MUNICÍPIO</label>
+        <select id="municipio_escola_input">
+            <option value="Óbidos" selected>Óbidos</option>
+        </select>
+
+        <label for="num_alunos_input">N° DE ALUNOS MATRICULADOS</label>
+        <input type="number" id="num_alunos_input" value="100">
+        
+        <label for="tipo_ensino_input">TIPO DE ENSINO</label>
+        <select id="tipo_ensino_input">
+            <option value="Ed. Inf. E Ens. Fund." selected>Ed. Inf. E Ens. Fund.</option>
+            <option value="Ed. Infantil">Ed. Infantil</option>
+            <option value="Ens. Fundamental">Ens. Fundamental</option>
+        </select>
+        <h5>Seleção de Cardápio</h5>
+        <div style="margin-bottom: 10px; display: flex; justify-content: space-around;">
+            <div>
+                <input type="radio" id="cardapio_regular" name="tipo_cardapio" value="regular" checked>
+                <label for="cardapio_regular" style="display: inline; width: auto; margin-left: 5px;">Regular</label>
+            </div>
+            <div>
+                <input type="radio" id="cardapio_integral" name="tipo_cardapio" value="integral">
+                <label for="cardapio_integral" style="display: inline; width: auto; margin-left: 5px;">Integral</label>
+            </div>
+        </div>
+        
+        <label for="periodo_input">PERÍODO (Início e Fim) - Gera as datas da Tabela 2</label>
+        <div class="date-pair">
+            <input type="date" id="data-inicial" value="2025-09-01" onchange="generateTable2Rows()">
+            <input type="date" id="data-final" value="2025-09-30" onchange="generateTable2Rows()">
+        </div>
+        <button id="gerar-cardapio" onclick="generateTable2Rows()">Gerar Datas e Cardápios (Tabela 2)</button>
+        <button onclick="gerarTabelaCardapio()">Gerar </button>
+
+
+        
+        <hr style="margin-top: 20px;">
+        
+        <h5>Data do Documento</h5>
+        <input type="date" id="document_date_input" class="data-input">
+
+        <hr style="margin-top: 20px;">
+
+        <h5>Gerenciamento de Linhas</h5>
+        <button class="add-row-btn" onclick="addRowTable2()">+ Adicionar Linha (Tabela 2)</button>
+        <button class="add-row-btn" onclick="addRowTable3()">+ Adicionar Linha (Tabela 3)</button>
+
+    </div>
+    <div class="main-content-area">
+        <div class="document-container">
+
+            <div class="header-institutional">
+                <img id="timbre-imagem" src="timbre.png" alt="Logotipo da Instituição">
+            </div>
+
+            <h2 style="text-align: center; font-size: 11pt; margin: 10px 0; text-decoration: underline;">DEMONSTRATIVO MENSAL DA DISTRIBUIÇÃO DE REFEIÇÕES E CONSUMO DE GÊNEROS ALIMENTÍCIOS NA ESCOLA</h2>
+
+            <div class="data-table">
+                <table id="tabela-detalhes">
+                    <thead>
+                        <tr>
+                            <th style="width: 15%;">NOME DA ESCOLA</th>
+                            <th style="width: 18%;">ENDEREÇO</th>
+                            <th style="width: 8%;">MEIO</th>
+                            <th style="width: 10%;">MUNICÍPIO</th>
+                            <th style="width: 13%;">DEPENDÊNCIA ADMINISTRATIVA</th>
+                            <th style="width: 10%;">N° DE ALUNOS MATRICULADOS</th>
+                            <th style="width: 13%;">TIPO DE ENSINO</th>
+                            <th style="width: 13%;">PERÍODO</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span id="nome_escola_display">Escola Mestre Pacífico</span></td>
+                            <td><span id="endereco_escola_display">Comunidade Igarapé Açu</span></td>
+                            <td><span id="meio_escola_display">Terra Firme</span></td>
+                            <td><span id="municipio_escola_display">Óbidos</span></td>
+                            <td>Municipal</td>
+                            <td><span id="num_alunos_display">330</span></td>
+                            <td><span id="tipo_ensino_display">Ed. Inf. E Ens. Fund.</span></td>
+                            <td><span id="periodo_display">01/09/2025<br>30/09/2025</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="data-table" id="table-cardapio">
+                <table class="table-cardapio">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" style="width: 5%;">QUANT. DIAS</th>
+                            <th rowspan="2" style="width: 9%;">FREQ. DO DIA/<br>DATA</th>
+                            <th colspan="3">ALUNOS ATENDIDOS</th>
+                            <th rowspan="2" style="width: 32%;">CARDÁPIO</th>
+                            <th rowspan="2" style="width: 33%;">JUSTIFICATIVA / OBSERVAÇÃO</th>
+                            <th rowspan="2" style="width: 15px;"></th>
+                        </tr>
+                        <tr>
+                            <th style="width: 8%; font-size: 8pt;">CRECHE</th>
+                            <th style="width: 8%; font-size: 8pt;">ED. INF. E FUNDAMENTAL</th>
+                            <th style="width: 8%;">EJA</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-cardapio-body">
+                        </tbody>
+                </table>
+            </div>
+        
+            <div class="data-table" id="table-mapa">
+                <h3 style="text-align: center; font-size: 10pt; font-weight: bold; margin-bottom: 5px;">CONTROLE DE GÊNEROS ALIMENTÍCIOS</h3>
+                <table id="tabela-estoque">
+                    <thead>
+                        <tr>
+                            <th colspan="2" style="width: 80%;">GÊNEROS RECEBIDOS DO PROGRAMA</th>
+                            <th rowspan="2" style="width: 20%;">QUANT. DE ALIM. CONS.</th>
+                            <th rowspan="2" style="width: 20%;">QUANT. DE ALIM. JÁ EM ESTOQUE (antes da entrega)</th>
+                            <th rowspan="2" style="width: 20%;">SALDO ATUAL</th>
+                            <th rowspan="2" style="width: 80%;">RELATÓRIO</th>
+                            <th rowspan="2" style="width: 16px;"></th></tr>
+                        <tr>
+                            <th style="width: 2%;">QUANT.</th>
+                            <th style="width: 20%;">DISCRIMINAÇÃO</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-estoque-body">
+                        </tbody>
+                </table>
+                <p style="text-align: right; margin-bottom: 30px;">Óbidos (PA), <span id="document_date_display">22 de agosto de 2025</span>.</p>
+            </div>
+
+            <div class="footer-document">
+                <div class="signatures">
+                    <div>
+                        <hr>
+                        <p>Diretor(a) da Escola</p>
+                    </div>
+                    <div>
+                        <hr>
+                        <p>Responsável pelo Depósito</p>
+                    </div>
+                    <div>
+                        <hr>
+                        <p>Responsável pelo preenchimento</p>
+                    </div>
+                </div>
+
+                <div class="footer-semed">
+                   <img id="rodape-imagem" src="rodape.png" alt="Rodapé Institucional">
+                </div>
+            </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="script07.js"></script>
+
+</body>
+</html>

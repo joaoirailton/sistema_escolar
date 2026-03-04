@@ -1,0 +1,408 @@
+
+/* CONFIGURAÇÃO PARA ORIENTAÇÃO PAISAGEM (IMPRESSÃO) */
+@page {
+    size: A4 landscape;
+    margin: 10mm;
+}
+
+/* Estilos Globais e do Corpo do Documento */
+body {
+    font-family: 'Times New Roman', serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0; 
+    font-size: 12pt;
+    color: #000;
+}
+
+/* ---------------------------------------------------- */
+/* SIDEBAR (PAINEL DE EDIÇÃO) - FIXA */
+/* ---------------------------------------------------- */
+.sidebar {
+    background-color: #f7f7f7;
+    border-right: 1px solid #ddd;
+    padding: 15mm 15px; 
+    font-size: 9pt;
+    overflow-y: auto;
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    bottom: 0; 
+    width: 320px; 
+    z-index: 1000; 
+    box-sizing: border-box;
+}
+
+.sidebar h4 {
+    color: #004a99;
+    border-bottom: 2px solid #004a99;
+    padding-bottom: 5px;
+    margin-top: 20px;
+    font-size: 11pt;
+}
+.sidebar h5 {
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-size: 10pt;
+}
+
+.sidebar label {
+    display: block;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 3px;
+    font-size: 9pt;
+}
+
+.sidebar input[type="text"],
+.sidebar input[type="number"],
+.sidebar input[type="date"],
+.sidebar select {
+    width: 95%;
+    padding: 3px;
+    border: 1px solid #aaa;
+    border-radius: 3px;
+    box-sizing: border-box;
+    font-size: 8pt;
+    margin-bottom: 5px;
+}
+.sidebar .date-pair {
+    display: flex;
+    justify-content: space-between;
+}
+.sidebar .date-pair input {
+    width: 48%;
+}
+
+.sidebar button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 9pt;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+.sidebar button:hover {
+    background-color: #45a049;
+}
+/* Botões de adicionar linha mantidos na sidebar */
+.sidebar .add-row-btn {
+        background-color: #004a99;
+        margin-bottom: 5px;
+}
+.sidebar .add-row-btn:hover {
+        background-color: #003066;
+}
+
+
+/* ---------------------------------------------------- */
+/* CONTEÚDO PRINCIPAL - AGORA FLUTUANTE */
+/* ---------------------------------------------------- */
+.main-content-area {
+    margin-left: 320px; 
+    padding: 0 30px; 
+    min-height: 100vh;
+}
+
+.document-container {
+    width: 297mm;
+    min-height: 210mm;
+    margin: 30px auto; 
+    padding: 0mm 5mm;
+    background: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
+}
+
+/* ---------------------------------------------------- */
+/* ESTILOS DE TABELA DINÂMICA */
+/* ---------------------------------------------------- */
+.data-table table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    margin-bottom: 15px;
+}
+.data-table th, .data-table td {
+    border: 1px solid #000;
+    padding: 2px;
+    text-align: center;
+    font-size: 11pt;
+    word-break: break-word; 
+    white-space: normal !important;
+    vertical-align: middle;
+}
+.data-table th {
+    font-weight: bold;
+    background-color: #e0e0e0;
+}
+
+/* Adicionar estilos para o Timbre (Cabeçalho Institucional) */
+.header-institutional {
+    text-align: center;
+    margin-bottom: 20px; /* Espaço entre o timbre e o título */
+    padding-top: 10px;
+}
+
+#timbre-imagem {
+    max-width: 100%;
+    display: block; /* Garante o alinhamento central */
+}
+/* Estilos para INPUTs e SELECTs dentro das CÉLULAS */
+.data-table input[type="text"],
+.data-table input[type="number"],
+.data-table input[type="date"],
+.data-table select {
+    width: 50%;
+    padding: 0;
+    margin: 0;
+    border: none;
+    text-align: center;
+    font-size: 9.5pt;
+    background: transparent;
+}
+
+/* Tabela 2 - Estilo de Texto/Lista para Cardápio e Observações */
+#table-cardapio-body td:nth-child(6) select {
+    width: 98%;
+    text-align: left;
+}
+#table-cardapio-body td:nth-child(8) input {
+        width: 98%;
+        text-align: left;
+}
+
+/* NOVO: Estilo para centralizar número e unidade na mesma linha (Tabela 3) */
+#tabela-estoque .quantity-cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+#tabela-estoque .quantity-cell input {
+    width: 70%; 
+    text-align: right;
+    padding-right: 2px;
+}
+#tabela-estoque .quantity-cell .unit {
+    width: 30%;
+    text-align: left;
+    padding-left: 2px;
+}
+/* Ajuste específico para a descrição do gênero */
+#tabela-estoque td:nth-child(2) select {
+    width: 98%;
+    text-align: left;
+}
+
+
+/* Estilo para o botão de remoção */
+.remove-row-btn {
+    background: none;
+    border: none;
+    color: red;
+    cursor: pointer;
+    font-size: 9pt;
+    padding: 0 2px;
+    line-height: 1;
+}
+.remove-row-btn:hover {
+    color: darkred;
+}
+
+/* ---------------------------------------------------- */
+/* ESTILOS DO DOCUMENTO (MANTIDOS/AJUSTADOS) */
+/* ---------------------------------------------------- */
+
+#tabela-detalhes td {
+    height: 30px; 
+    vertical-align: middle;
+}
+#tabela-estoque th, #tabela-estoque td {
+    text-align: left;
+}
+#tabela-estoque td:nth-child(1), #tabela-estoque td:nth-child(3), #tabela-estoque td:nth-child(4), #tabela-estoque td:nth-child(5) {
+    text-align: center;
+}
+.footer-document {
+    margin-top: 50px;
+    padding-top: 10px;
+}
+.signatures {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.signatures div {
+    width: 30%;
+}
+.signatures hr {
+    border: 0;
+    border-top: 1px solid #000;
+    margin-bottom: 1px;
+}
+.signatures p {
+    margin-top: 3px;
+}
+#tabela-detalhes span {
+    display: block;
+    width: 100%;
+}
+
+/* Adicionar estilos para o Rodapé Institucional */
+.footer-semed {
+    text-align: center;
+    margin-top: 15px; /* Espaçamento entre as assinaturas e o rodapé */
+}
+
+#rodape-imagem {
+    width: 100%; /* Garante que o rodapé ocupe a largura total do container */
+    display: block;
+}
+
+/* 1. Permite que as linhas da tabela cresçam conforme o conteúdo */
+#table-cardapio-body tr,
+#table-estoque-body tr {
+    height: auto !important;
+}
+
+/* 2. Estilo para as células clicáveis */
+#table-cardapio-body td:nth-child(3), /* NOVA: Freq Creche */
+#table-cardapio-body td:nth-child(4), /* NOVA: Freq Ed Inf/Fund */
+#table-cardapio-body td:nth-child(5), /* NOVA: Freq EJA */
+#table-cardapio-body td:nth-child(6), /* Cardápio */
+#table-cardapio-body td:nth-child(8), /* Justificativa */
+#table-estoque-body td:nth-child(6) { /* Relatório */
+    vertical-align: top;
+    padding: 0; 
+    cursor: pointer; 
+    text-align: center; /* CENTRALIZAÇÃO: Centraliza as colunas de frequência */
+}
+
+/* 3. Estilo para a tag <p> (Modo de visualização) */
+#table-cardapio-body td p,
+#table-estoque-body td p {
+    margin: 0;
+    min-height: 10px; /* Altura mínima para não colapsar a linha */
+    padding: 4px 5px;
+    border: 1px solid transparent; 
+    transition: background-color 0.2s;
+    text-align: left;
+    white-space: pre-wrap; /* Permite quebras de linha e texto envolvente */
+}
+
+/* Efeito visual ao passar o mouse */
+#table-cardapio-body td:hover p,
+#table-estoque-body td:hover p {
+    background-color: #f0f0f0;
+}
+
+/* 4. Estilos para os campos dinâmicos (Modo de edição) */
+#table-cardapio-body select.edit-field,
+#table-cardapio-body textarea.edit-field,
+#table-estoque-body textarea.edit-field {
+    width: 100%;
+    height: auto; /* Altura controlada pelo JS */
+    box-sizing: border-box;
+    padding: 2px;
+    margin: 0;
+    border: 1px solid #000;
+    resize: vertical; /* Permite que o usuário redimensione a altura */
+    min-height: 40px; 
+    overflow-y: hidden;
+    line-height: 1.2;
+}
+
+/* Garante que o select ocupe a altura mínima para ser visível */
+#table-cardapio-body select.edit-field {
+    min-height: 30px;
+}
+
+/* 5. Centralização para conteúdo vazio (NOVA REGRA) */
+#table-cardapio-body td .center-if-empty,
+#table-estoque-body td .center-if-empty {
+    text-align: center !important;
+}
+/* 3.1 Estilo específico para as tags <p> de Frequência (NOVO) */
+#table-cardapio-body td:nth-child(3) p, 
+#table-cardapio-body td:nth-child(4) p, 
+#table-cardapio-body td:nth-child(5) p {
+    text-align: center; 
+    white-space: nowrap; /* Não quebra linha em números curtos/X */
+}
+
+/* 4.1 Estilo específico para o input de Frequência (NOVO) */
+#table-cardapio-body input.attendance-edit-field {
+    width: 100%;
+    height: 30px; 
+    box-sizing: border-box;
+    padding: 2px;
+    margin: 0;
+    border: 1px solid #000;
+    text-align: center;
+}
+
+/* Impede que a sidebar apareça na impressão */
+@media print {
+    .sidebar {
+        display: none;
+    }
+    .main-content-area {
+        margin-left: 0;
+    }
+    .document-container {
+        margin: 0;
+        box-shadow: none;
+    }
+    .remove-row-btn {
+        display: none !important;
+    }
+    button {
+        display: none !important;
+    }
+    .quantity-cell select{
+        display:none !important;
+    }
+    /* remove botões gerais */
+    button,
+    .remove-row-btn{
+        display: none !important;
+    }
+
+    /* remove aparência dos selects */
+    select{
+        appearance: none !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        border: none !important;
+        background: transparent !important;
+    }
+
+    /* remove setinhas de input number */
+    input[type=number]{
+        appearance: textfield !important;
+        -moz-appearance: textfield !important;
+        border: none !important;
+        background: transparent !important;
+    }
+
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button{
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    /* Remove a coluna dos botões nas tabelas ao imprimir */
+    #tabela-estoque th:last-child,
+    #tabela-estoque td:last-child,
+    .table-cardapio th:last-child,
+    .table-cardapio td:last-child{
+        display: none !important;
+    }
+}
