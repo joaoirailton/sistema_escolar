@@ -4,7 +4,7 @@ import time
 pa.FAILSAFE = True
 pa.PAUSE = 1
 
-"""
+
 pa.keyDown('command')
 pa.press('space')
 pa.keyUp('command')
@@ -21,10 +21,9 @@ pa.click(100, 469)
 pa.click(95, 541)
 pa.click(112,571)
 time.sleep(4)
-"""
-time.sleep(2)
+
 lu=457
-for i in range(5):
+for i in range(16):
     pa.click(283,475)
     time.sleep(2)
     pa.click(553,455)
