@@ -860,4 +860,62 @@ document.addEventListener('DOMContentLoaded', () => {
     rows.forEach(tr => checkRowSum(tr));
   });
 });
-//FIM
+
+
+//O CÓDIGO A SEGUIR PREENCHE COM IFEM AS CAMPOS DA TABELA QUE NÃO TEM VALOR NUMÉRICO
+let celulasAlteradas = [];
+
+window.addEventListener("beforeprint", function () {
+
+    const celulas = document.querySelectorAll("#tabela-estoque td");
+
+    celulas.forEach(celula => {
+
+        const input = celula.querySelector("input");
+        const select = celula.querySelector("select");
+
+        if (input && select) {
+
+            if (input.value.trim() === "") {
+
+                // guarda o estado original
+                celulasAlteradas.push({
+                    celula: celula,
+                    input: input,
+                    select: select
+                });
+
+                input.style.display = "none";
+                select.style.display = "none";
+
+                const hifen = document.createElement("span");
+                hifen.textContent = "-";
+                hifen.classList.add("hifen-impressao");
+
+                celula.appendChild(hifen);
+            }
+
+        }
+
+    });
+
+});
+
+window.addEventListener("afterprint", function () {
+
+    celulasAlteradas.forEach(item => {
+
+        item.input.style.display = "";
+        item.select.style.display = "";
+
+        const hifen = item.celula.querySelector(".hifen-impressao");
+
+        if (hifen) {
+            hifen.remove();
+        }
+
+    });
+
+    celulasAlteradas = [];
+
+});

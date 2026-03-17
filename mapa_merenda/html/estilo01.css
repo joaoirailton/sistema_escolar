@@ -412,23 +412,18 @@ body {
     .header-institutional, .footer-semed{
         display: none;
     }
+
+
+
+
+    .hifen-impressao{
+        display:block;
+        text-align:center;
+        width:100%;
+        font-weight:bold;
+    }
+    
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* CABEÇALHO E RODAPÉ SOMENTE NA IMPRESSÃO */
 .print-header,
