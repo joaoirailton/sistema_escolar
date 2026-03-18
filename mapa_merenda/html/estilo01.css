@@ -432,83 +432,43 @@ body {
 }
 
 @media print {
-/*
+
+    @page{
+        size: A4 landscape;
+        margin:10mm;
+    }
+
+    body{
+        margin:0;
+        padding-top:140px;    /* espaço do cabeçalho */
+        padding-bottom:100px; /* espaço do rodapé */
+    }
+
     .print-header{
-        display:block;
-        position:fixed;
+        position: fixed;
         top:0;
         left:0;
-        right:0;
-        height:80px;
+        width:100%;
+        height:120px;
+        display:block;
+    }
+
+    .print-header img{
+        width:100%;
+        height:auto;
     }
 
     .print-footer{
-        display:block;
-        position:fixed;
+        position: fixed;
         bottom:0;
         left:0;
-        right:0;
+        width:100%;
         height:80px;
     }
 
-    .document-container{
-        margin-top:150px;
-        margin-bottom:10px;
-    }
-*/
-
-    .header-institutional{
-        page-break-inside: avoid;
-        break-inside: avoid;
-        margin-bottom: 15px;
+    .print-footer img{
+        width:100%;
+        height:auto;
     }
 
-    #timbre-imagem{
-        width: 100%;
-        height: auto;
-        max-height: 120px;
-        object-fit: contain;
-    }
-    table{
-        page-break-inside: auto;
-    }
-
-    tr{
-        page-break-inside: avoid;
-        page-break-after: auto;
-    }
-    
-
-
-
-
-    /* margem da página para reservar espaço */
-@page{
-    size: A4 landscape;
-    margin: 10px 10px 10px 10px; /* topo direita baixo esquerda */
-}
-
-/* cabeçalho */
-.print-header{
-    display:block;
-    position:relative;
-    top:100;
-    left:0;
-    width: 100%;
-}
-
-/* rodapé 
-.print-footer{
-    display:block;
-    position:fixed;
-    bottom:-100;
-    left:0;
-    right:0;
-    height:70px;
-}*/
-
-/* remove margens extras do container */
-.document-container{
-    margin:0;
-}
 }
