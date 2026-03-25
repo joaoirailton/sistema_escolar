@@ -170,7 +170,15 @@ document.getElementById('btn_gerar').addEventListener('click', ()=>{
 
   document.getElementById('td_nome_aluno').textContent = nomeAluno||'—';
   document.getElementById('td_sexo').textContent = sexo||'—';
-  document.getElementById('td_nasc').textContent = nasc ? (new Date(nasc)).toLocaleDateString('pt-BR') : '—';
+  //document.getElementById('td_nasc').textContent = nasc ? (new Date(nasc)).toLocaleDateString('pt-BR') : '—';
+  if(nasc){
+    const partes = nasc.split('-');
+    const dataLocal = new Date(partes[0], partes[1]-1, partes[2]);
+    document.getElementById('td_nasc').textContent = dataLocal.toLocaleDateString('pt-BR');
+  }else{
+    document.getElementById('td_nasc').textContent = '—';
+  }
+  //[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
   document.getElementById('td_cidade').textContent = cidadeBrasil||'—';
   document.getElementById('td_estado').textContent = estado||'—';
   // Detecta se é matrícula (certidão nova)
