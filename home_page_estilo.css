@@ -2,6 +2,14 @@ body {
 margin: 0;
 font-family: Arial, sans-serif;
 background: #f4f6f9;
+position: relative;
+min-height: 100vh;
+}
+body::before{
+    content:"";
+    position: fixed;
+    background-image: url(imagens/images.png);
+    z-index: -1;
 }
 
 /* Sidebar recolhível */
@@ -92,6 +100,9 @@ font-weight: bold;
 }
 .card button:hover {
 background: #0d47a1;
+}
+.ico{
+    width: 100px;
 }
 
 
