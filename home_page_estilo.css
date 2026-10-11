@@ -3,6 +3,10 @@ margin: 0;
 font-family: Arial, sans-serif;
 background: #f4f6f9;
 position: relative;
+background-image: url(imagens/images.png);
+background-repeat: no-repeat;
+background-size: cover;
+background-position: center;
 }
 
 /*body::before{
@@ -19,8 +23,8 @@ position: fixed;
 top: 0;
 left: 0;
 height: 100%;
-width: 40px;
-background: #2c3e50;
+width: 44px;
+background: #16194b;
 overflow-x: hidden;
 transition: 0.3s;
 padding-top: 20px;
@@ -38,7 +42,7 @@ align-items: center;
 transition: 0.3s;
 }
 .sidebar a i {
-margin-right: 12px;
+margin-right: 16px;
 font-size: 18px;
 width: 25px;
 text-align: center;

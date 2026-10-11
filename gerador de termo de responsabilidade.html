@@ -87,6 +87,11 @@
     .btn-imprimir { background-color: #43a047; color: #fff; }
     .btn-salvar { background-color: #c62828; color: #fff; }
     .buttons button:hover { opacity: 0.85; }
+    
+    #documento div{
+      display: flex;
+      justify-content: space-around;
+    }
     #documento {
       flex: 2;
       background: #fff;
@@ -109,6 +114,8 @@
       text-align: justify;
     }
     .assinatura {
+      display: flex;
+      flex-direction: column;
       text-align: center;
       margin-top: 50px;
       font-weight: bold;
@@ -120,7 +127,11 @@
     }
     #timbre{
       display: block;
-      max-width: 100%;
+      max-width: 68%;
+    }
+    #content{
+      display: flex;
+      flex-direction: column;
     }
     
   </style>
@@ -128,7 +139,7 @@
 </head>
 <body>
   <header>
-    Sistema de Geração de Termo de Desistência
+    Termo de Desistência
   </header>
 
   <div class="container">
@@ -198,9 +209,13 @@
 
     <!-- Documento-->
     <div id="documento">
-      <img id="timbre" src="timbre.png" alt="Timbre">
+      <div>
+        <img id="timbre" src="timbre.png" alt="Timbre">
+      </div>
       <h2>TERMO DE RESPONSABILIDADE DE DESISTÊNCIA</h2>
-      <p>Preencha os dados ao lado e clique em <b>Gerar Termo</b> para visualizar aqui o documento.</p>
+      <div id="content">
+        <p>Preencha os dados ao lado e clique em <b>Gerar Termo</b> para visualizar aqui o documento.</p>
+      </div>
     </div>
   </div>
 
@@ -213,22 +228,22 @@
     }
 
     function gerarDocumento() {
-      const aluno = document.getElementById("aluno").value;
-      const responsavel = document.getElementById("responsavel").value;
-      const rg = document.getElementById("rg").value;
-      const cpf = document.getElementById("cpf").value;
-      const parentesco = document.getElementById("parentesco").value;
-      const serie = document.getElementById("serie").value;
-      const dataDoc = document.getElementById("dataDoc").value;
+      let aluno = document.getElementById("aluno").value;
+      let responsavel = document.getElementById("responsavel").value;
+      let rg = document.getElementById("rg").value;
+      let cpf = document.getElementById("cpf").value;
+      let parentesco = document.getElementById("parentesco").value;
+      let serie = document.getElementById("serie").value;
+      let dataDoc = document.getElementById("dataDoc").value;
 
       if (!aluno || !responsavel || !rg || !cpf || !parentesco || !serie || !dataDoc) {
         alert("Por favor, preencha todos os campos!");
         return;
       }
-        const partes = dataDoc.split("-");
-        const ano = partes[0];
-        const mes = partes[1];
-        const dia = partes[2];
+        let partes = dataDoc.split("-");
+        let ano = partes[0];
+        let mes = partes[1];
+        let dia = partes[2];
 
         // meses por extenso
         const meses = [
@@ -239,15 +254,13 @@
 const dataFormatada = `${dia} de ${meses[parseInt(mes)-1]} de ${ano}`;
 
       const documento = `
-      <img id="timbre" src="timbre.png" alt="Timbre">
-      <h2><b>TERMO DE RESPONSABILIDADE DE DESISTÊNCIA</b></h2>
       <p>Pelo presente termo, Eu, <b>${responsavel}</b>, RG nº ${rg}, CPF nº ${cpf}, na condição de ${parentesco} do(a) aluno(a) <b>${aluno}</b>, regularmente matriculado(a) na série/turma ${serie}, DECLARO, para os devidos fins, que estou ciente e assumo integralmente a responsabilidade pela <b>desistência escolar</b> do(a) referido(a) aluno(a).</p>
       <p>Estou ciente de que a decisão foi tomada por motivos pessoais e que compete exclusivamente à família a responsabilidade pelas consequências decorrentes desta desistência, eximindo a escola e a Secretaria Municipal de Educação de quaisquer responsabilidades adicionais.</p>
       <div class="data">Óbidos/PA, ${dataFormatada}.</div>
-      <div class="assinatura">_______________________________________<br><b>${responsavel}</b></div>
+      <div class="assinatura">_______________________________________ <br> <b>${responsavel}</b></div>
       `;
 
-      document.getElementById("documento").innerHTML = documento;
+      document.getElementById("content").innerHTML = documento;
     }
     // Pré-preenche o campo data com hoje
     window.onload = function() {
