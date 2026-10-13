@@ -9,14 +9,6 @@ background-size: cover;
 background-position: center;
 }
 
-/*body::before{
-    content:"";
-    width: 100vh;
-    height: 100vh;
-    position: fixed;
-    background-image: url(imagens/images.png);
-}*/
-
 /* Sidebar recolhível */
 .sidebar {
 position: fixed;
