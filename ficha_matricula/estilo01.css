@@ -5,6 +5,7 @@
 }
 body{
     background-color: beige;
+    position: relative;
 }
 main{
     background-color: white;
@@ -107,6 +108,19 @@ th, td{
     width: 660px;
 }
 
+#formulario{
+    width: 700px;
+    height: 700px;
+    background-color: aqua;
+    position: absolute;
+    top: 400px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    position: fixed;
+    border-radius: 8px;
+    box-shadow: 5px 5px 20px 4px rgba(0, 0, 0, 0.234);
+}
 
 @media print{
     @page{
