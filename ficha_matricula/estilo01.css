@@ -3,6 +3,13 @@
     padding: 0;
     box-sizing: border-box;
 }
+:root{
+    --cor01:#e4a691;
+    --cor02:#f7efd8;
+    --cor03:#c8c8a9;
+    --cor04:#556270;
+    --cor05:#273142;
+}
 body{
     background-color: beige;
     position: relative;
@@ -108,10 +115,12 @@ th, td{
     width: 660px;
 }
 
+/*CONFIGURAÇÕES DE ESTILO PARA O FORMULÁRIO*/
+
 #formulario{
     width: 700px;
     height: 700px;
-    background-color: aqua;
+    background-color: var(--cor03);
     position: absolute;
     top: 400px;
     left: 50%;
@@ -120,8 +129,29 @@ th, td{
     position: fixed;
     border-radius: 8px;
     box-shadow: 5px 5px 20px 4px rgba(0, 0, 0, 0.234);
+    visibility: visible;
+    padding: 30px;
+}
+#formulario form h5{
+    font-size: 20px;
+    text-align: center;
+}
+#bloco-identificacao{
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+}
+#bloco-especial{
+    margin-top: 20px;
+}
+#bloco-assistencialismo{
+    margin-top: 20px;
+}
+#bloco-responsaveis{
+    margin-top: 20px;
 }
 
+/*CONFIGURAÇÕES DE ESTILO PARA IMPRESSÃO DO DOCUMENTO*/
 @media print{
     @page{
         size: A4 landscape;
