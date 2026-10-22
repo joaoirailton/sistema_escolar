@@ -4,14 +4,14 @@
     box-sizing: border-box;
 }
 :root{
-    --cor01:#e4a691;
-    --cor02:#f7efd8;
-    --cor03:#c8c8a9;
-    --cor04:#556270;
-    --cor05:#273142;
+    --cor01:#266AA6;
+    --cor02:#1A90D9;
+    --cor03:#0CB1F2;
+    --cor04:#05C7F2;
+    --cor05:#F2F2F2;
 }
 body{
-    background-color: beige;
+    background-color: var(--cor04);
     position: relative;
     font-family: Arial, Helvetica, sans-serif;
 }
@@ -116,11 +116,16 @@ th, td{
     width: 660px;
 }
 
+
+
+
+
+
 /*CONFIGURAÇÕES DE ESTILO PARA O FORMULÁRIO*/
 
 #formulario{
     width: 700px;
-    height: 1000px;
+    height: 1300px;
     background-color: var(--cor03);
     position: absolute;
     top: 100px;
@@ -131,7 +136,7 @@ th, td{
     box-shadow: 5px 5px 20px 4px rgba(0, 0, 0, 0.234);
     visibility: visible;
     padding: 30px;
-    color: var(--cor05);
+    color: black;
 }
 input, select{
     height: 28px;
@@ -139,10 +144,11 @@ input, select{
     border-radius: 3px;
     box-shadow: 2px 1px 20px 0px rgba(0, 0, 0, 0.135);
     font-size: 14px;
-    color: var(--cor05);
+    color: rgb(50, 50, 50);
 }
 .rotulo{
     font-weight: bold;
+    margin-right: 3px;
 }
 #formulario form h5{
     font-size: 20px;
@@ -150,43 +156,136 @@ input, select{
 }
 #bloco-identificacao{
     margin-top: 20px;
-    display: block;
-    
+    display: flex;
+    flex-wrap: wrap;
 }
 #bloco-especial{
     margin-top: 20px;
-    display: flex;
-    flex-direction: column;
+    border-top: 1px solid var(--cor01);
+    padding-top: 8px;
 }
 #bloco-assistencialismo{
     margin-top: 20px;
+    border-bottom: 1px solid var(--cor01);
+}
+select[name="cor"]{
+    width: 100px;
+}
+#aluno{
+    width: 511px;
+}
+#sexo{
+   
+}
+#sexo > label{
+    display: flex;
+    align-items: center;
+    width: 89px;
+}
+input[name="sexo"]{
+    margin: 0px 4px 0px 0px;
+}
+#bloco-identificacao > div{
+    padding: 7px 0px;
+    display: flex;
+    align-items: center;
+    width: auto;
+}
+#nacionalidade{
+    width: 150px;
+    margin-right: 9px;
+}
+#natural-localidade{
+    width: 189px;
+}
+#cidade{
+    width: 240px;
+    margin-right: 8px;
+}
+#estado{
+    width: 195px;
+}
+#endereco{
+    width: 310px;
+    margin-right: 8px;
+}
+#bairro{
+    width: 182px;
+}
+#telefone{
+    width: 200px;
+    margin-right: 8px;
+}
+#nis{
+    width: 190px;
+}
+#bloco-especial > div{
+    margin-bottom: 15px;
+}
+#bloco-especial label{
+    display: flex;
+    align-items: center;
+}
+input[type="radio"], [type="checkbox"] {
+    width: 20px;
+}
+input[name="atendimento-especial"], [name="laudo"], [name="aluno-deficiente"], [type="checkbox"] {
+    margin-right: 6px;
+}
+ul{
+    list-style-type: none;
+}
+#list-form-deficiencia{
+    column-count: 3;
+}
+#list-form-transtorno{
+    column-count: 2;
+}
+#bloco-especial div > span{
+    display: block;
+    margin-top: 15px;
+}
+#bloco-assistencialismo div{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 8px;
+}
+#bloco-assistencialismo label{
+    display: flex;
+    align-items: center;
+}
+input[name="bpc"],[name="pbf"] {
+    margin-right: 4px;
 }
 #bloco-responsaveis{
     margin-top: 20px;
     display: flex;
     flex-direction: column;
 }
-select[name="cor"]{
-    width: 100px;
+#bloco-responsaveis > div{
+    margin-bottom: 20px;
 }
-#aluno{
-    width: 510px;
+#pai, #mae, #auxiliar{
+    width: 500px;
 }
-#sexo{
+#controle{
     display: flex;
-    align-items: center;
+    justify-content: center;
+    gap: 20px;
 }
-#sexo p{
-    margin-right: 10px;
+#controle button{
+    width: 80px;
+    height: 30px;
+    transition: 0.2s;
 }
-#sexo > label{
-    display: flex;
-    align-items: center;
-    width: 100px;
+#controle button:hover{
+    background-color: var(--cor01);
+    border: 1px solid var(--cor05);
+    border-radius: 3px;
+    font-weight: bold;
+    color: white;
 }
-input[name="sexo"]{
-    margin: 0px 4px 0px 0px;
-}
+
 
 /*CONFIGURAÇÕES DE ESTILO PARA IMPRESSÃO DO DOCUMENTO*/
 @media print{

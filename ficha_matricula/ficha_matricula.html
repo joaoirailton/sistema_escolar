@@ -431,20 +431,24 @@
             </section>
         </section>
 
-        <!--SEÇÃO DE FORMULÁRIO PARA PREENCHIMENTO DO DOCUMENTO-->
+        <!--SEÇÃO DE FORMULÁRIO PARA PREENCHIMENTO DO DOCUMENTO--> 
         <div id="formulario">
             <form action="#">
                 <h5>PREENCHIMENTO DE FICHA DE MATRÍCULA</h5>
                 <div id="bloco-identificacao">
-                    <label class="rotulo" for="unidade">Unidade de Ensino:</label>
-                    <select name="unidade" id="unidade" required>
-                        <option value="0">ESC. MUN. DE EDU. INF. E ENS. FUN. MESTRE PACÍFICO</option>
-                        <option value="1">ESC. MUN. DE EDU. INF. E ENS. FUN. MARILDA CARVALHO</option>
-                        <option value="2">ESC. MUN. DE EDU. INF. E ENS. FUN. JOÃO FERNANDES DE OLIVEIRA</option>
-                    </select>
-                    <label class="rotulo" for="aluno">Nome do Aluno:</label>
-                    <input id="aluno" type="text">
-                    <span id="sexo">
+                    <div>
+                        <label class="rotulo" for="unidade">Unidade de Ensino:</label>
+                        <select name="unidade" id="unidade" required>
+                            <option value="0">ESC. MUN. DE EDU. INF. E ENS. FUN. MESTRE PACÍFICO</option>
+                            <option value="1">ESC. MUN. DE EDU. INF. E ENS. FUN. MARILDA CARVALHO</option>
+                            <option value="2">ESC. MUN. DE EDU. INF. E ENS. FUN. JOÃO FERNANDES DE OLIVEIRA</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="rotulo" for="aluno">Nome do Aluno:</label>
+                        <input id="aluno" type="text">
+                    </div>
+                    <div id="sexo">
                         <p class="rotulo">Sexo:</p>
                         <label for="masculino">
                             <input type="radio" name="sexo" value="masculino" id="masculino">
@@ -454,158 +458,229 @@
                             <input type="radio" name="sexo" value="feminino" id="feminino">
                             Feminino
                         </label>
-                    </span>
+                    </div>
                     
-                    <label class="rotulo" for="cor">Cor:</label>
-                    <select name="cor" id="cor">
-                        <option value="branca">Branca</option>
-                        <option value="preta">Preta</option>
-                        <option value="parda">Parda</option>
-                        <option value="amarela">Amarela</option>
-                        <option value="indigena">Indígena</option>
-                    </select>
-                    <label class="rotulo" for="nascimento">Data de Nascimento:</label>
-                    <input type="date" id="nascimento" name="nascimento">
-                    <label class="rotulo" for="nacionalidade">Nacionalidade:</label>
-                    <input type="text" name="nacionalidade" id="nacionalidade" value="BRASILEIRA">
-                    <label class="rotulo" for="natural-localidade">Naturalidade:Localidade:</label>
-                    <input type="text" id="natural-localidade">
-                    <label class="rotulo" for="natural-municipio">Município/Cidade:</label>
-                    <select name="natural" id="natural">
-                        <option value="obidos">Óbidos</option>
-                        <option value="curua">Curuá</option>
-                        <option value="oriximina">Oriximiná</option>
-                        <option value="manaus">Manaus</option>
-                        <option value="alenquer">Alenquer</option>
-                        <option value="belem">Belém</option>
-                        <option value="santarem">Santarém</option>
-                        <option value="outro">Outro</option>
-                    </select>
-                    <label class="rotulo" for="estado">Estado:</label>
-                    <select name="estado" id="estado">
-                        <option value="para">Pará</option>
-                        <option value="amazonas">Amazonas</option>
-                        <option value="outro">Outro</option>
-                    </select>
-                    <label class="rotulo" for="endereco">Endereço:</label>
-                    <input type="text" id="endereco" placeholder="Rua São Francisco, S/N">
-                    <label class="rotulo" for="bairro">Bairro:</label>
-                    <input type="text" id="bairro" name="endereco">
-                    <label class="rotulo" for="telefone">Telefone:</label>
-                    <input type="number" id="telefone" name="telefone" placeholder="(93) 99999-0000">
-                    <label class="rotulo" for="nis">NIS:</label>
-                    <input type="number" id="nis" name="nis">
+                    <div>
+                        <label class="rotulo" for="cor">Cor:</label>
+                        <select name="cor" id="cor">
+                            <option value="branca">Branca</option>
+                            <option value="preta">Preta</option>
+                            <option value="parda">Parda</option>
+                            <option value="amarela">Amarela</option>
+                            <option value="indigena">Indígena</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="rotulo" for="nascimento">Data de Nascimento:</label>
+                        <input type="date" id="nascimento" name="nascimento">
+                    </div>
+                    <div>
+                        <label class="rotulo" for="nacionalidade">Nacionalidade:</label>
+                        <input type="text" name="nacionalidade" id="nacionalidade" value="BRASILEIRA">
+                    </div>
+                    <div>
+                        <label class="rotulo" for="natural-localidade">Naturalidade:Localidade:</label>
+                        <input type="text" id="natural-localidade">
+                    </div>
+                    <div>
+                        <label class="rotulo" for="cidade">Município/Cidade:</label>
+                        <select name="natural" id="cidade">
+                            <option value="obidos">Óbidos</option>
+                            <option value="curua">Curuá</option>
+                            <option value="oriximina">Oriximiná</option>
+                            <option value="manaus">Manaus</option>
+                            <option value="alenquer">Alenquer</option>
+                            <option value="belem">Belém</option>
+                            <option value="santarem">Santarém</option>
+                            <option value="outro">Outro</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="rotulo" for="estado">Estado:</label>
+                        <select name="estado" id="estado">
+                            <option value="para">Pará</option>
+                            <option value="amazonas">Amazonas</option>
+                            <option value="outro">Outro</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="rotulo" for="endereco">Endereço:</label>
+                        <input type="text" id="endereco" placeholder="Rua São Francisco, S/N">
+                    </div>
+                    <div>
+                        <label class="rotulo" for="bairro">Bairro:</label>
+                        <input type="text" id="bairro" name="endereco">
+                    </div>
+                    <div>
+                        <label class="rotulo" for="telefone">Telefone:</label>
+                        <input type="number" id="telefone" name="telefone" placeholder="(93) 99999-0000">
+                    </div>
+                    <div>
+                        <label class="rotulo" for="nis">NIS:</label>
+                        <input type="text" id="nis" name="nis">
+                    </div>
                 </div>
 
                 <div id="bloco-especial">
-                    <p class="rotulo">Necessita de Atendimento Especializado(Apoio pedagógico)?</p>
-                    <label for="atendimento-sim">
-                        <input type="radio" id="atendimento-sim" name="atendimento-especial" value="sim">
-                        SIM
-                    </label>
-                    <label for="atendimento-nao">
-                        <input type="radio" id="atendimento-nao" name="atendimento-especial" value="nao">
-                        NÃO
-                    </label>
+                    <div>
+                        <p class="rotulo">Necessita de Atendimento Especializado(Apoio pedagógico)?</p>
+                        <label for="atendimento-sim">
+                            <input type="radio" id="atendimento-sim" name="atendimento-especial" value="sim">
+                            SIM
+                        </label>
+                        <label for="atendimento-nao">
+                            <input type="radio" id="atendimento-nao" name="atendimento-especial" value="nao">
+                            NÃO
+                        </label>
+                    </div>
                     
-                    <p class="rotulo">O aluno possui laudo médico?</p>
-                    <label for="laudo-sim">
-                        <input type="radio" id="laudo-sim" name="laudo">SIM
-                    </label>
-                    <label for="laudo-nao">
-                        <input type="radio" id="laudo-nao" name="laudo">NÃO
-                    </label>
+                    <div>
+                        <p class="rotulo">O aluno possui laudo médico?</p>
+                        <label for="laudo-sim">
+                            <input type="radio" id="laudo-sim" name="laudo">SIM
+                        </label>
+                        <label for="laudo-nao">
+                            <input type="radio" id="laudo-nao" name="laudo">NÃO
+                        </label>
+                    </div>
                     
-                    <p class="rotulo">Aluno com deficiência?</p>
-                    <label for="aluno-deficiente-sim">
-                        <input type="radio" id="aluno-deficiente-sim" name="aluno-deficiente">SIM
-                    </label>
-                    <label for="aluno-defeciente-nao">
-                        <input type="radio" id="aluno-deficiente-nao" name="aluno-deficiente">NÃO
-                    </label>
+                    <div>
+                        <p class="rotulo">Aluno com deficiência?</p>
+                        <label for="aluno-deficiente-sim">
+                            <input type="radio" id="aluno-deficiente-sim" name="aluno-deficiente">SIM
+                        </label>
+                        <label for="aluno-defeciente-nao">
+                            <input type="radio" id="aluno-deficiente-nao" name="aluno-deficiente">NÃO
+                        </label>
+                    </div>
                     <div>
                         <span>
                             <p class="rotulo">Deficiência</p>
-                            <label for="">
-                                <input type="checkbox" name="deficiencia" value=""> Cegueira
-                            </label>
-                            <label for="">
-                                <input type="checkbox" name="deficiencia" value=""> Deficiência Auditiva
-                            </label>
-                            <label for="">
-                                <input type="checkbox" name="deficiencia" value=""> Deficiência Intelectual
-                            </label>
-                            <label for="">
-                                <input type="checkbox" name="deficiencia" value=""> Baixa Visão
-                            </label>
-                            <label for="">
-                                <input type="checkbox" name="deficiencia" value=""> Surdocegueira
-                            </label>
-                            <label for="">
-                                <input type="checkbox" name="deficiencia" value=""> Deficiência Multipla
-                            </label>
-                            <label for="">
-                                <input type="checkbox" name="deficiencia" value=""> Surdez
-                            </label>
-                            <label for="">
-                                <input type="checkbox" name="deficiencia" value=""> Deficiência Física
-                            </label>
+                            <ul id="list-form-deficiencia">
+                                <li>
+                                    <label for="">
+                                        <input type="checkbox" name="deficiencia" value=""> Cegueira
+                                    </label>
+                                </li>
+                                <li>
+                                    <label for="">
+                                        <input type="checkbox" name="deficiencia" value=""> Deficiência Auditiva
+                                    </label>
+                                </li>
+                                <li>
+                                    <label for="">
+                                        <input type="checkbox" name="deficiencia" value=""> Deficiência Intelectual
+                                    </label>
+                                </li>
+                                <li>
+                                    <label for="">
+                                        <input type="checkbox" name="deficiencia" value=""> Baixa Visão
+                                    </label>
+                                </li>
+                                <li>
+                                    <label for="">
+                                        <input type="checkbox" name="deficiencia" value=""> Surdocegueira
+                                    </label>
+                                </li>
+                                <li>
+                                    <label for="">
+                                        <input type="checkbox" name="deficiencia" value=""> Deficiência Multipla
+                                    </label>
+                                </li>
+                                <li>
+                                    <label for="">
+                                        <input type="checkbox" name="deficiencia" value=""> Surdez
+                                    </label>
+                                </li>
+                                <li>
+                                    <label for="">
+                                        <input type="checkbox" name="deficiencia" value=""> Deficiência Física
+                                    </label>
+                                </li>
+                            </ul>
                         </span>
                         <span>
                             <p class="rotulo">Transtorno Global de Desenvolvimento</p>
-                            <label for="">
-                                <input type="checkbox" name="transtorno" value="" id=""> Autismo Infantil
-                            </label>
-                            <label for="">
-                                <input type="checkbox" name="transtorno" value="" id=""> Síndrome de Reth
-                            </label>
-                            <label for="">
-                                <input type="checkbox" name="transtorno" value="" id=""> Síndrome de Asperger
-                            </label>
-                            <label for="">
-                                <input type="checkbox" name="transtorno" value="" id=""> Transtorno Desintegrativo da Infância
-                            </label>
+                            <ul id="list-form-transtorno">
+                                <li>
+                                    <label for="">
+                                        <input type="checkbox" name="transtorno" value="" id=""> Autismo Infantil
+                                    </label>
+                                </li>
+                                <li>
+                                    <label for="">
+                                        <input type="checkbox" name="transtorno" value="" id=""> Síndrome de Reth
+                                    </label>
+                                </li>
+                                <li>
+                                    <label for="">
+                                        <input type="checkbox" name="transtorno" value="" id=""> Síndrome de Asperger
+                                    </label>
+                                </li>
+                                <li>
+                                    <label for="">
+                                        <input type="checkbox" name="transtorno" value="" id=""> Transtorno Desintegrativo da Infância
+                                    </label>
+                                </li>
+                            </ul>
                         </span>
                         <span>
                             <p class="rotulo">Altas Habilidades/Superdotado</p>
-                            <label for="">
-                                <input type="checkbox" name="altas-habilidades" value="" id=""> Altas Habilidades/Superdotado
-                            </label>
+                            <ul>
+                                <li>
+                                    <label for="">
+                                        <input type="checkbox" name="altas-habilidades" value="" id=""> Altas Habilidades/Superdotado
+                                    </label>
+                                </li>
+                            </ul>
                         </span>
                     </div>
                 </div>
 
                 <div id="bloco-assistencialismo">
-                    <p class="rotulo">É atendido(a) pelo BPC(Benefício de Prestação Continuada)?
-                        <label for="bpc-sim">
-                            <input type="radio" name="bpc" id="bpc-sim" value="sim">
-                            SIM
-                        </label>
-                        <label for="bpc-nao">
-                            <input type="radio" name="bpc" id="bpc-nao" value="nao">
-                            NÃO
-                        </label>
-                    </p>
+                    <div>
+                        <p class="rotulo">É atendido(a) pelo BPC(Benefício de Prestação Continuada)?</p>
+                            <label for="bpc-sim">
+                                <input type="radio" name="bpc" id="bpc-sim" value="sim">
+                                SIM
+                            </label>
+                            <label for="bpc-nao">
+                                <input type="radio" name="bpc" id="bpc-nao" value="nao">
+                                NÃO
+                            </label>
+                    </div>
                     
-                    <p class="rotulo">É atendido(a) pelo PBF(Programa Bolsa Família)?
-                        <label for="pbf-sim">
-                            <input type="radio" name="pbf" id="pbf-sim" value="sim">
-                            SIM
-                        </label>
-                        <label for="pbf-nao">
-                            <input type="radio" name="pbf" id="pbf-nao" value="nao">
-                            NÃO
-                        </label>
-                    </p>
+                    <div>
+                        <p class="rotulo">É atendido(a) pelo PBF(Programa Bolsa Família)?</p>
+                            <label for="pbf-sim">
+                                <input type="radio" name="pbf" id="pbf-sim" value="sim">
+                                SIM
+                            </label>
+                            <label for="pbf-nao">
+                                <input type="radio" name="pbf" id="pbf-nao" value="nao">
+                                NÃO
+                            </label>
+                    </div>
                 </div>
                 <div id="bloco-responsaveis">
-                    <label class="rotulo" for="pai">Pai:</label>
-                    <input type="text" name="pai" id="pai" placeholder="Digite o Nome do Pai">
-                    <label class="rotulo" for="mae">Mãe:</label>
-                    <input type="text" name="mae" id="mae" placeholder="Digite o Nome do Mãe">
+                    <div>
+                        <label class="rotulo" for="pai">Pai:</label>
+                        <input type="text" name="pai" id="pai" placeholder="Digite o Nome do Pai">
+                    </div>
+                    <div>
+                        <label class="rotulo" for="mae">Mãe:</label>
+                        <input type="text" name="mae" id="mae" placeholder="Digite o Nome do Mãe">
+                    </div>
                     
-                    <label class="rotulo" for="auxiliar">Responsável:</label>
-                    <input type="text" name="auxiliar" id="auxiliar" placeholder="Digite o nome do responsável pela ficha na escola">
+                    <div>
+                        <label class="rotulo" for="auxiliar">Responsável:</label>
+                        <input type="text" name="auxiliar" id="auxiliar" placeholder="Digite o nome do responsável pela ficha na escola">
+                    </div>
+                </div>
+                <div id="controle">
+                    <button>OK</button>
+                    <button>Cancelar</button>
+                    <button>Limpar</button>
                 </div>
 
             </form>
