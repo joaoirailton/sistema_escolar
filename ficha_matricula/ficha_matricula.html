@@ -25,32 +25,32 @@
                     <img src="TIMBRE SEMED.png" alt="Timbre da Secretaria Municipal de ÓBIDOS">
                 </div>
             </section>
-            <section id="main">
+            <section id="main"> 
                 <div id="infor_pessoais">
                     <h1>FICHA DE MATRÍCULA</h1>
-                    <p class="bloco01" id="escola">Unidade Escolar: ESC. MUN. DE EDU. INF. E ENS. FUN. MESTRE PACÍFICO</p>
-                    <p class="bloco01" id="nome_aluno">Nome do Aluno: JOÃO IRAILTON DE JESUS RAMOS JÚNIOR</p>
+                    <p class="bloco01" id="escola">Unidade Escolar: __________________________________________</p>
+                    <p class="bloco01" id="nome_aluno">Nome do Aluno: ________________________________________________________</p>
                     <p class="bloco01" id="sexo_aluno">Sexo: Masc.:( ) Fem.:( ) Cor: __________________ Data de Nascimento: ______/________/_________ Nacionalidade: ______________________________</p>
                     <p class="bloco01" id="naturalidade">Naturalidade: Localidade: ______________________________________________ Município/Cidade: ______________________________________ Estado:______________________________</p>
                     <p class="bloco01" id="end">Endereço:_________________________________________________ Nº: __________ Bairro: ______________________________</p>
-                    <p class="bloco01">Telefone: __________________________ NIS: __________________________</p>
+                    <p class="bloco01" id="tel">Telefone: __________________________ NIS: __________________________</p>
                 </div>
                 <div id="deficiência">
-                    <p>Necessita de Atendimento Especializado(Apoio pedagógico)? SIM ( ) NÃO ( ) <br>
-                        O aluno possui laudo médico? SIM ( ) NÃO ( ) <br>
-                        Aluno com deficiência? SIM ( ) NÃO ( )</p>
+                    <p id="apoio_pedagogico">Necessita de Atendimento Especializado(Apoio pedagógico)? SIM ( ) NÃO ( )</p>
+                    <p id="laudo">O aluno possui laudo médico? SIM ( ) NÃO ( )</p>
+                    <p id="aluno_deficiente">Aluno com deficiência? SIM ( ) NÃO ( )</p>
                     <div class="list_deficiencias">
                         <span>
                             <h4>Deficiência</h4>
                             <ul class="ul-deficiencia">
-                                <li>( )Cegueira</li>
-                                <li>( )Deficiência Auditiva</li>
-                                <li>( )Deficiência Intelectual</li>
-                                <li>( )Baixa Visão</li>
-                                <li>( )Surdocegueira</li>
-                                <li>( )Deficiência Multipla</li>
-                                <li>( )Surdez</li>
-                                <li>( )Deficiência Física</li>
+                                <li id="cegueira">( )Cegueira</li>
+                                <li id="auditiva">( )Deficiência Auditiva</li>
+                                <li id="intelectual">( )Deficiência Intelectual</li>
+                                <li id="baixa_visao">( )Baixa Visão</li>
+                                <li id="surdocegueira">( )Surdocegueira</li>
+                                <li id="multipla">( )Deficiência Multipla</li>
+                                <li id="surdez">( )Surdez</li>
+                                <li id="fisica">( )Deficiência Física</li>
                             </ul>
                         </span>
                         <span>
@@ -69,11 +69,11 @@
                             </ul>
                         </span>
                     </div>
-                    <p>É atendido(a) pelo BPC(Benefício de Prestação Continuada)? SIM ( ) NÃO ( ) <br>
-                        É atendido(a) pelo PBF(Programa Bolsa Família)? SIM ( ) NÃO ( )</p>
+                    <p id="bpc">É atendido(a) pelo BPC(Benefício de Prestação Continuada)? SIM ( ) NÃO ( ) </p>
+                    <p id="pbf">É atendido(a) pelo PBF(Programa Bolsa Família)? SIM ( ) NÃO ( )</p>
                 </div>
                 <div id="responsaveis">
-                    <p>Nome do Pai:     _____________________________________________________________________________________________________________________________ <br>
+                    <p id="pai_mae_aluno">Nome do Pai:     _____________________________________________________________________________________________________________________________ <br>
                         Nome da Mãe:     _____________________________________________________________________________________________________________________________ <br>
                         Nome do Responsável:_____________________________________________________________________________________________________________________________</p>
                 </div>
@@ -515,7 +515,7 @@
                         </div>
                         <div>
                             <label class="rotulo" for="telefone">Telefone:</label>
-                            <input type="number" id="telefone" name="telefone" placeholder="(93) 99999-0000">
+                            <input type="text" id="telefone" name="telefone" placeholder="(93) 99999-0000">
                         </div>
                         <div>
                             <label class="rotulo" for="nis">NIS:</label>
@@ -560,42 +560,42 @@
                                 <ul id="list-form-deficiencia">
                                     <li>
                                         <label for="">
-                                            <input type="checkbox" name="deficiencia" value=""> Cegueira
+                                            <input type="checkbox" name="deficiencia" value="cegueira"> Cegueira
                                         </label>
                                     </li>
                                     <li>
                                         <label for="">
-                                            <input type="checkbox" name="deficiencia" value=""> Deficiência Auditiva
+                                            <input type="checkbox" name="deficiencia" value="deficiencia auditiva"> Deficiência Auditiva
                                         </label>
                                     </li>
                                     <li>
                                         <label for="">
-                                            <input type="checkbox" name="deficiencia" value=""> Deficiência Intelectual
+                                            <input type="checkbox" name="deficiencia" value="deficiencia intelectual"> Deficiência Intelectual
                                         </label>
                                     </li>
                                     <li>
                                         <label for="">
-                                            <input type="checkbox" name="deficiencia" value=""> Baixa Visão
+                                            <input type="checkbox" name="deficiencia" value="baixa visao"> Baixa Visão
                                         </label>
                                     </li>
                                     <li>
                                         <label for="">
-                                            <input type="checkbox" name="deficiencia" value=""> Surdocegueira
+                                            <input type="checkbox" name="deficiencia" value="surdocegueira"> Surdocegueira
                                         </label>
                                     </li>
                                     <li>
                                         <label for="">
-                                            <input type="checkbox" name="deficiencia" value=""> Deficiência Multipla
+                                            <input type="checkbox" name="deficiencia" value="deficiencia multipla"> Deficiência Multipla
                                         </label>
                                     </li>
                                     <li>
                                         <label for="">
-                                            <input type="checkbox" name="deficiencia" value=""> Surdez
+                                            <input type="checkbox" name="deficiencia" value="surdez"> Surdez
                                         </label>
                                     </li>
                                     <li>
                                         <label for="">
-                                            <input type="checkbox" name="deficiencia" value=""> Deficiência Física
+                                            <input type="checkbox" name="deficiencia" value="deficiencia fisica"> Deficiência Física
                                         </label>
                                     </li>
                                 </ul>
@@ -605,22 +605,22 @@
                                 <ul id="list-form-transtorno">
                                     <li>
                                         <label for="">
-                                            <input type="checkbox" name="transtorno" value="" id=""> Autismo Infantil
+                                            <input type="checkbox" name="transtorno" value="autismo" id=""> Autismo Infantil
                                         </label>
                                     </li>
                                     <li>
                                         <label for="">
-                                            <input type="checkbox" name="transtorno" value="" id=""> Síndrome de Reth
+                                            <input type="checkbox" name="transtorno" value="sindrome de reth" id=""> Síndrome de Reth
                                         </label>
                                     </li>
                                     <li>
                                         <label for="">
-                                            <input type="checkbox" name="transtorno" value="" id=""> Síndrome de Asperger
+                                            <input type="checkbox" name="transtorno" value="sindrome de asperger" id=""> Síndrome de Asperger
                                         </label>
                                     </li>
                                     <li>
                                         <label for="">
-                                            <input type="checkbox" name="transtorno" value="" id=""> Transtorno Desintegrativo da Infância
+                                            <input type="checkbox" name="transtorno" value="transtorno desintegrativo da infancia" id=""> Transtorno Desintegrativo da Infância
                                         </label>
                                     </li>
                                 </ul>
@@ -630,7 +630,7 @@
                                 <ul>
                                     <li>
                                         <label for="">
-                                            <input type="checkbox" name="altas-habilidades" value="" id=""> Altas Habilidades/Superdotado
+                                            <input type="checkbox" name="altas-habilidades" value="altas habilidades" id=""> Altas Habilidades/Superdotado
                                         </label>
                                     </li>
                                 </ul>
