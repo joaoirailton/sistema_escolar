@@ -32,6 +32,11 @@ botao_ok.addEventListener("click", function(){
     const def_multipla = document.querySelector("#multipla");
     const def_surdez = document.querySelector("#surdez");
     const def_fisica = document.querySelector("#fisica");
+    const autismo = document.querySelector("#autismo");
+    const reth = document.querySelector("#reth");
+    const asperger = document.querySelector("#asperger");
+    const desintegrativo = document.querySelector("#desintegrativo");
+    const altas_habilidades = document.querySelector("#alt_hab");
     const bpc = document.querySelector("#bpc");
     const pbf = document.querySelector("#pbf");
 
@@ -66,9 +71,6 @@ botao_ok.addEventListener("click", function(){
     }else if(inputs[11].checked === true){
         //atendimento especializado marcado em NÃO
         apoio_pedagogico.innerHTML = `Necessita de Atendimento Especializado(Apoio pedagógico)? SIM ( ) NÃO (<span class="res">X</span>)`;
-    }else{
-        //nenhuma das opções marcadas
-        alert("Indique se o aluno tem necessidade de atendimento especializado")
     }
 
     //campo de informação de laudo médico
@@ -76,8 +78,6 @@ botao_ok.addEventListener("click", function(){
         laudo.innerHTML = `O aluno possui laudo médico? SIM (<span class="res">X</span>) NÃO ( )`
     }else if(inputs[13].checked === true){
         laudo.innerHTML = `O aluno possui laudo médico? SIM ( ) NÃO (<span class="res">X</span>)`
-    }else{
-        alert("Informe se o aluno tem laudo médico")
     }
 
     //campo de informar se o aluno tem deficiencia
@@ -120,11 +120,26 @@ botao_ok.addEventListener("click", function(){
     ? def_fisica.innerHTML = `(<span class="res">X</span>)Deficiência Física`
     : def_fisica.innerHTML = `( )Deficiência Física`
 
+//:::::::TRANSTORNOS::::::::::::::::::::::::::::::::::::::::::::::
+    inputs[24].checked
+    ? autismo.innerHTML = `(<span class="res">X</span>)Autismo Infantil`
+    : autismo.innerHTML = `( )Autismo Infantil`
 
-    
+    inputs[25].checked
+    ? reth.innerHTML = `(<span class="res">X</span>)Síndrome de Reth`
+    : reth.innerHTML = `( )Síndrome de Reth`
 
+    inputs[26].checked
+    ? asperger.innerHTML = `(<span class="res">X</span>)Síndrome de Asperger`
+    : asperger.innerHTML = `( )Síndrome de Asperger`
 
+    inputs[27].checked
+    ? desintegrativo.innerHTML = `(<span class="res">X</span>)Transtorno Desintegrativo da Infância`
+    : desintegrativo.innerHTML = `( )Transtorno Desintegrativo da Infância`
 
+    inputs[28].checked
+    ? altas_habilidades.innerHTML = `(<span class="res">X</span>)Altas Habilidades/Superdotado`
+    : altas_habilidades.innerHTML = `( )Altas Habilidades/Superdotado`
 
 
 /*inputs.forEach(function(input, i){
