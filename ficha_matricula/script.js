@@ -142,9 +142,9 @@ botao_ok.addEventListener("click", function(){
     : altas_habilidades.innerHTML = `( )Altas Habilidades/Superdotado`
 
 
-/*inputs.forEach(function(input, i){
+inputs.forEach(function(input, i){
     alert(`índice: ${i}, campo:${input.name}, valor: ${input.value}`)
-})*/
+})
 //::::::BENEFÍCIO SOCIAL::::::::::::::::::::::::::::::::::::::::::::
     if(inputs[29].checked === true){
         bpc.innerHTML = `É atendido(a) pelo BPC(Benefício de Prestação Continuada)? SIM (<span class="res">X</span>) NÃO ( )`;
@@ -181,4 +181,8 @@ fundo_form.addEventListener("click", function(){
 })
 form.addEventListener("click", function(){
     event.stopPropagation();
+})
+
+inputs[0].addEventListener("blur", function(){
+    inputs[0].value = inputs[0].value.toUpperCase();
 })
