@@ -142,6 +142,19 @@ th, td{
     font-size: 16px;
     text-decoration-line: underline;
 }
+#infor_pessoais{
+    position: relative;
+}
+#infor_pessoais::before{
+    content: "";
+    top: -15px;
+    right: 20px;
+    position: absolute;
+    width: 110px;
+    height: 130px;
+    border: 1px solid black;
+}
+
 
 
 
