@@ -5,8 +5,9 @@ background: #f4f6f9;
 position: relative;
 background-image: url(imagens/images.png);
 background-repeat: no-repeat;
-background-size: cover;
 background-position: center;
+background-size: cover;
+
 transition: background-image 0.5s ease;
 }
 body:has(#mestre:hover){

@@ -130,7 +130,7 @@ margin:14px 0;
 font-size:18px;
 }
 
-table.doc-table{width:100%; border-collapse:collapse; margin-bottom:14px; font-size:17px}
+table.doc-table{width:100%; border-collapse:collapse; margin-bottom:14px; font-size:15px}
 table.doc-table th{
 background:var(--azul-suave);
 color:#fff;
@@ -227,6 +227,7 @@ body {
 /* Página 2 começa após o elemento acima */
 #pagina2 {
     page-break-before: always;
+    margin-top: 50px;
 }
 
 /* Remover botões na impressão */
