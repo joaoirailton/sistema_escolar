@@ -7,6 +7,17 @@ background-image: url(imagens/images.png);
 background-repeat: no-repeat;
 background-size: cover;
 background-position: center;
+transition: background-image 0.5s ease;
+}
+body:has(#mestre:hover){
+    background-image: url(imagens/mestre_pacifico.jpg);
+    background-color: rgb(150, 0, 0);
+    background-attachment: fixed;
+}
+body:has(#joao:hover){
+    background-image: url(imagens/joao_fernandes.jpeg);
+    background-color: rgb(150, 0, 0);
+    background-attachment: fixed;
 }
 
 /* Sidebar recolhível */

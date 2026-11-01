@@ -2,7 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}
+} 
 :root{
     --cor01:#266AA6;
     --cor02:#1A90D9;
@@ -185,6 +185,9 @@ th, td{
     box-shadow: 5px 5px 20px 4px rgba(0, 0, 0, 0.234);
     padding: 30px;
     color: black;
+}
+input{
+    padding-left: 4px;
 }
 input, select{
     height: 28px;

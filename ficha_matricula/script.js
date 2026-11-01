@@ -61,7 +61,23 @@ botao_ok.addEventListener("click", function(){
     endereco.innerHTML = `Endereço:_<span class="res">${inputs[6].value}</span>______________________ Nº: _____ Bairro: __<span class="res">${inputs[7].value}</span>______________`
 
 //:::::TELEFONE E NIS:::::::::::::::::::::::::::::::::::::::::::::::
-    telefone.innerHTML = `Telefone: __<span class="res">${inputs[8].value}</span>_______ NIS: __<span class="res">${inputs[9].value}</span>______`
+    telefone.addEventListener("blur", () => {
+        let numero = telefone.value;
+
+        numero = numero.replace(/\D/g, "");
+        if(numero.length === 11){
+            numero = numero.replace(/(\d{2})(\d{5})(\d{4})$/, "($1) $2-$3");
+        }else if(numero.length === 10){
+            numero = numero.replace(/(\d{2})(\d{4})(\d{4})$/, "($1) $2-$3")
+        }
+
+        
+
+        telefone.value = numero;
+    })    
+
+
+    telefone.innerHTML = `Telefone: __<span class="res">${numero.value}</span>_______ NIS: __<span class="res">${inputs[9].value}</span>______`
 
 //:::::DEFICIÊNCIA:::::::::::::::::::::::::::::::::::::::::::::::::
 //campo de atendimento especializado
@@ -141,10 +157,6 @@ botao_ok.addEventListener("click", function(){
     ? altas_habilidades.innerHTML = `(<span class="res">X</span>)Altas Habilidades/Superdotado`
     : altas_habilidades.innerHTML = `( )Altas Habilidades/Superdotado`
 
-
-inputs.forEach(function(input, i){
-    alert(`índice: ${i}, campo:${input.name}, valor: ${input.value}`)
-})
 //::::::BENEFÍCIO SOCIAL::::::::::::::::::::::::::::::::::::::::::::
     if(inputs[29].checked === true){
         bpc.innerHTML = `É atendido(a) pelo BPC(Benefício de Prestação Continuada)? SIM (<span class="res">X</span>) NÃO ( )`;

@@ -6,7 +6,7 @@
     <title>Ficha de Matrícula - Polo 05 Igarapé-Açú</title>
     <link rel="stylesheet" href="estilo01.css">
 </head>
-<body> 
+<body>
 
     <main>
         <!--PÁGINA 01-->
@@ -449,7 +449,7 @@
                         </div>
                         <div>
                             <label class="rotulo" for="aluno">Nome do Aluno:</label>
-                            <input id="aluno" type="text">
+                            <input id="aluno" type="text" maxlength="60">
                         </div>
                         <div id="sexo">
                             <p class="rotulo">Sexo:</p>
@@ -478,11 +478,12 @@
                         </div>
                         <div>
                             <label class="rotulo" for="nacionalidade">Nacionalidade:</label>
-                            <input type="text" name="nacionalidade" id="nacionalidade" value="BRASILEIRA">
+                            <input type="text" name="nacionalidade" id="nacionalidade" value="BRASILEIRA"
+                            maxlength="17">
                         </div>
                         <div>
                             <label class="rotulo" for="natural-localidade">Naturalidade:Localidade:</label>
-                            <input type="text" id="natural-localidade">
+                            <input type="text" id="natural-localidade" maxlength="17">
                         </div>
                         <div>
                             <label class="rotulo" for="cidade">Município/Cidade:</label>
@@ -507,19 +508,19 @@
                         </div>
                         <div>
                             <label class="rotulo" for="endereco">Endereço:</label>
-                            <input type="text" id="endereco" placeholder="Rua São Francisco, S/N">
+                            <input type="text" id="endereco" placeholder="Rua São Francisco, S/N" maxlength="60">
                         </div>
                         <div>
                             <label class="rotulo" for="bairro">Bairro:</label>
-                            <input type="text" id="bairro" name="endereco">
+                            <input type="text" id="bairro" name="endereco" maxlength="30">
                         </div>
                         <div>
                             <label class="rotulo" for="telefone">Telefone:</label>
-                            <input type="text" id="telefone" name="telefone" placeholder="(93) 99999-0000">
+                            <input type="text" id="telefone" name="telefone" placeholder="(93) 99999-0000" maxlength="11">
                         </div>
                         <div>
                             <label class="rotulo" for="nis">NIS:</label>
-                            <input type="text" id="nis" name="nis">
+                            <input type="text" id="nis" name="nis" max="13">
                         </div>
                     </div>
                     <div id="bloco-especial">
@@ -665,16 +666,16 @@
                     <div id="bloco-responsaveis">
                         <div>
                             <label class="rotulo" for="pai">Pai:</label>
-                            <input type="text" name="pai" id="pai" placeholder="Digite o Nome do Pai">
+                            <input type="text" name="pai" id="pai" placeholder="Digite o Nome do Pai" maxlength="60">
                         </div>
                         <div>
                             <label class="rotulo" for="mae">Mãe:</label>
-                            <input type="text" name="mae" id="mae" placeholder="Digite o Nome do Mãe">
+                            <input type="text" name="mae" id="mae" placeholder="Digite o Nome do Mãe" maxlength="60">
                         </div>
             
                         <div>
                             <label class="rotulo" for="auxiliar">Responsável:</label>
-                            <input type="text" name="auxiliar" id="auxiliar" placeholder="Digite o nome do responsável pela ficha na escola">
+                            <input type="text" name="auxiliar" id="auxiliar" placeholder="Digite o nome do responsável pela ficha na escola" maxlength="60">
                         </div>
                     </div>
                     <div id="controle">
