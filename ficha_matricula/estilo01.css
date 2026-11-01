@@ -146,13 +146,19 @@ th, td{
     position: relative;
 }
 #infor_pessoais::before{
-    content: "";
+    content: "foto";
     top: -15px;
     right: 20px;
     position: absolute;
     width: 110px;
     height: 130px;
     border: 1px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    
+
 }
 
 

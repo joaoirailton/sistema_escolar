@@ -10,6 +10,23 @@ const form = document.querySelector("#formulario");
 let escola = document.querySelector("#unidade");
 let nome_aluno = document.querySelector("#aluno");
 
+//FORMATAÇÃO DO INPUT TELEFONE::::::::::
+    const fone = document.querySelector(".fone");
+    fone.addEventListener("focusout", () => {
+        let numero = fone.value;
+
+        numero = numero.replace(/\D/g, "");
+        if(numero.length === 11){
+            numero = numero.replace(/(\d{2})(\d{5})(\d{4})$/, "($1) $2-$3");
+        }else if(numero.length === 10){
+            numero = numero.replace(/(\d{2})(\d{4})(\d{4})$/, "($1) $2-$3")
+        }
+
+        
+
+        fone.value = numero;
+    }) 
+
 /*:::::::::::::::BOTÃO OK:::::::::::::::::::::::::::::::::::::::::*/
 botao_ok.addEventListener("click", function(){
     const inputs = document.querySelectorAll("#formulario input");
@@ -44,6 +61,7 @@ botao_ok.addEventListener("click", function(){
     const partes = inputs[3].value.split("-");
     const data_nasci = ` ${partes[2]} / ${partes[1]} / ${partes[0]}   `
 
+
 //::::::::::::PREENCHE NOME, SEXO, COR, NASCIMENTO E NACIONALIDADE::
 
     escola.innerHTML = `Unidade Escolar: <span class="res">${selects[0].value}</span>`
@@ -61,23 +79,7 @@ botao_ok.addEventListener("click", function(){
     endereco.innerHTML = `Endereço:_<span class="res">${inputs[6].value}</span>______________________ Nº: _____ Bairro: __<span class="res">${inputs[7].value}</span>______________`
 
 //:::::TELEFONE E NIS:::::::::::::::::::::::::::::::::::::::::::::::
-    telefone.addEventListener("blur", () => {
-        let numero = telefone.value;
-
-        numero = numero.replace(/\D/g, "");
-        if(numero.length === 11){
-            numero = numero.replace(/(\d{2})(\d{5})(\d{4})$/, "($1) $2-$3");
-        }else if(numero.length === 10){
-            numero = numero.replace(/(\d{2})(\d{4})(\d{4})$/, "($1) $2-$3")
-        }
-
-        
-
-        telefone.value = numero;
-    })    
-
-
-    telefone.innerHTML = `Telefone: __<span class="res">${numero.value}</span>_______ NIS: __<span class="res">${inputs[9].value}</span>______`
+    telefone.innerHTML = `Telefone: __<span class="res">${fone.value}</span>_______ NIS: __<span class="res">${inputs[9].value}</span>______`
 
 //:::::DEFICIÊNCIA:::::::::::::::::::::::::::::::::::::::::::::::::
 //campo de atendimento especializado
