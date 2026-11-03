@@ -145,7 +145,8 @@ th, td{
 #infor_pessoais{
     position: relative;
 }
-#infor_pessoais::before{
+
+#foto{
     content: "foto";
     top: -15px;
     right: 20px;
@@ -157,7 +158,13 @@ th, td{
     align-items: center;
     justify-content: center;
     font-weight: bold;
+    cursor: pointer;
+    background-image: url();
 }
+#foto:hover{
+    background-color: rgb(201, 201, 201);
+}
+
 
 
 

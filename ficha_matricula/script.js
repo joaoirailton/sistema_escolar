@@ -5,6 +5,7 @@ const botao_limpar = document.querySelector("#btn-limpar");
 const botao_preencher = document.querySelector("#btn_preencher");
 const fundo_form = document.querySelector("#fundo_form");
 const form = document.querySelector("#formulario");
+const 
 
 
 let escola = document.querySelector("#unidade");
