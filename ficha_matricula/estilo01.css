@@ -4,14 +4,21 @@
     box-sizing: border-box;
 } 
 :root{
+
+    --cor01: #c18e24;
+    --cor02: #e1cb9f;
+    --cor03: #04274a;
+    --cor04: #aec2cc;
+    --cor05: #947c5c;
+/*
     --cor01:#266AA6;
     --cor02:#1A90D9;
     --cor03:#0CB1F2;
     --cor04:#05C7F2;
-    --cor05:#F2F2F2;
+    --cor05:#F2F2F2;*/
 }
 body{
-    background-color: var(--cor04);
+    background-color: var(--cor03);
     position: relative;
     font-family: Arial, Helvetica, sans-serif;
 }
@@ -121,6 +128,7 @@ table{
 th, td{
     border: 1px solid black;
     height: 23px;
+    text-align: center;
 }
 .ano-letivo{
     width: 70px;
@@ -159,7 +167,6 @@ th, td{
     justify-content: center;
     font-weight: bold;
     cursor: pointer;
-    background-image: url();
 }
 #foto:hover{
     background-color: rgb(201, 201, 201);
@@ -223,12 +230,12 @@ input, select{
 }
 #bloco-especial{
     margin-top: 20px;
-    border-top: 1px solid var(--cor01);
+    border-top: 1px solid var(--cor03);
     padding-top: 8px;
 }
 #bloco-assistencialismo{
     margin-top: 20px;
-    border-bottom: 1px solid var(--cor01);
+    border-bottom: 1px solid var(--cor03);
 }
 select[name="cor"]{
     width: 100px;
@@ -368,6 +375,11 @@ input[name="bpc"],[name="pbf"] {
         break-after: auto;
     }
     button{
-        visibility: hidden;
+        visibility: hidden; 
+    }
+    #foto{
+        visibility: visible;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
     }
 }

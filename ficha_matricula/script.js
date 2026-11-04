@@ -5,7 +5,17 @@ const botao_limpar = document.querySelector("#btn-limpar");
 const botao_preencher = document.querySelector("#btn_preencher");
 const fundo_form = document.querySelector("#fundo_form");
 const form = document.querySelector("#formulario");
-const 
+const btn_foto = document.getElementById("foto");
+const tabela = document.getElementById("table");
+
+//::::::DATA DO ARQUIVO:::::::::::::::::::::::::::::::::::::::::::::
+const data_footer = document.querySelectorAll(".data");
+
+data_footer.forEach((data)=>{
+    data.textContent = new Date().toLocaleDateString("pt-BR")
+})
+
+tabela.contentEditable = true
 
 
 let escola = document.querySelector("#unidade");
@@ -27,6 +37,24 @@ let nome_aluno = document.querySelector("#aluno");
 
         fone.value = numero;
     }) 
+
+//::::::::BOTÃO DE FOTO :::::::::::::::::::::::::::::::::::::::
+btn_foto.addEventListener("click", ()=>{
+    const seletor = document.createElement("input");
+    seletor.type = "file";
+    seletor.accept = "image/*";
+
+    seletor.onchange = ()=>{
+    const arquivo = seletor.files[0];
+    
+    btn_foto.style.backgroundImage = `Url(${URL.createObjectURL(arquivo)})`
+    btn_foto.style.backgroundSize = "cover";
+    btn_foto.style.backgroundPosition = "center";
+    btn_foto.textContent = "";
+    }
+    seletor.click();
+})
+
 
 /*:::::::::::::::BOTÃO OK:::::::::::::::::::::::::::::::::::::::::*/
 botao_ok.addEventListener("click", function(){
@@ -201,3 +229,4 @@ form.addEventListener("click", function(){
 inputs[0].addEventListener("blur", function(){
     inputs[0].value = inputs[0].value.toUpperCase();
 })
+
