@@ -15,7 +15,7 @@ data_footer.forEach((data)=>{
     data.textContent = new Date().toLocaleDateString("pt-BR")
 })
 
-tabela.contentEditable = true
+tabela.contentEditable = true //PERMITE A EDIÇÃO DO CONTEÚDO DA TABELA DA PÁGINA 02
 
 
 let escola = document.querySelector("#unidade");
@@ -92,7 +92,11 @@ botao_ok.addEventListener("click", function(){
 
 
 //::::::::::::PREENCHE NOME, SEXO, COR, NASCIMENTO E NACIONALIDADE::
-
+    inputs[0].value = inputs[0].value.toUpperCase();
+    inputs[33].value = inputs[33].value.toUpperCase();
+    inputs[34].value = inputs[34].value.toUpperCase();
+    inputs[35].value = inputs[35].value.toUpperCase();
+    
     escola.innerHTML = `Unidade Escolar: <span class="res">${selects[0].value}</span>`
     nome_aluno.innerHTML = `Nome do Aluno: <span class="res">${inputs[0].value}</span>`;
     if(inputs[1].checked === true){
