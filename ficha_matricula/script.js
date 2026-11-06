@@ -217,6 +217,9 @@ botao_ok.addEventListener("click", function(){
 /*:::::::::::::BOTÃO PREENCHER FORMULÁRIO:::::::::::::::::::::::::*/
 botao_preencher.addEventListener("click", function(){
     fundo_form.style.display = "block";
+    const pag = document.querySelector("section");
+    
+    
 })
 
 //:::::::::::::BOTÃO CANCELAR:::::::::::::::::::::::::::::::::::::::
