@@ -212,6 +212,7 @@ botao_ok.addEventListener("click", function(){
     
 //-------FECHA FORMULÁRIO DE PREENCHIMENTO----------------------------
 fundo_form.style.display = 'none';
+window.scrollTo (0,0);
     
 })
 
