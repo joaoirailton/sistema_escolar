@@ -20,6 +20,11 @@ body:has(#joao:hover){
     background-color: rgb(150, 0, 0);
     background-attachment: fixed;
 }
+body:has(#marilda:hover){
+    background-image: url(imagens/marilda_carvalho.jpeg);
+    background-color: rgb(150, 0, 0);
+    background-attachment: fixed;
+}
 
 /* Sidebar recolhível */
 .sidebar {
