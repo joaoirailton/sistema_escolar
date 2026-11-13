@@ -86,12 +86,12 @@ botao_ok.addEventListener("click", function(){
     const bpc = document.querySelector("#bpc");
     const pbf = document.querySelector("#pbf");
 
-    //:::::::FORMATA DATA DE NASCIMENTO:::::::::::::::::::::::::
+    //------FORMATA DATA DE NA-----------------------------------------
     const partes = inputs[3].value.split("-");
     const data_nasci = ` ${partes[2]} / ${partes[1]} / ${partes[0]}   `
 
 
-//::::::::::::PREENCHE NOME, SEXO, COR, NASCIMENTO E NACIONALIDADE::
+//-----PREENCHE NOME, SEXO, COR, NASCIMENTO E NACIONALIDADE-------
     inputs[0].value = inputs[0].value.toUpperCase();
     inputs[33].value = inputs[33].value.toUpperCase();
     inputs[34].value = inputs[34].value.toUpperCase();
@@ -105,16 +105,16 @@ botao_ok.addEventListener("click", function(){
         sexo_aluno.innerHTML=`Sexo: Masc.:( ) Fem.:(<span class="res">X</span>) Cor: _<span class="res">${selects[1].value}</span>____________ Data de Nascimento:  <span class="res">${data_nasci}</span> Nacionalidade: _____<span class="res">${inputs[4].value}</span>_________________________`;
     }
 
-//:::::NATURALIDADE, CIDADE E ESTADO::::::::::::::::::::::::::::::::
+//----NATURALIDADE, CIDADE E ESTADO-------------------------------------
     naturalidade.innerHTML = `Naturalidade: Localidade: __<span class="res">${inputs[5].value}</span>_____________________ Município/Cidade: __<span class="res">${selects[2].value}</span>______________________ Estado:__<span class="res">${selects[3].value}</span>__________________`
 
-//:::::ENDEREÇO, NÚMERO E BAIRRO:::::::::::::::::::::::::::::::::::::
+//----ENDEREÇO, NÚMERO E BAIRRO-------------------------------------
     endereco.innerHTML = `Endereço:_<span class="res">${inputs[6].value}</span>______________________ Nº: _____ Bairro: __<span class="res">${inputs[7].value}</span>______________`
 
-//:::::TELEFONE E NIS:::::::::::::::::::::::::::::::::::::::::::::::
+//----TELEFONE E NIS-------------------------------------
     telefone.innerHTML = `Telefone: __<span class="res">${fone.value}</span>_______ NIS: __<span class="res">${inputs[9].value}</span>______`
 
-//:::::DEFICIÊNCIA:::::::::::::::::::::::::::::::::::::::::::::::::
+//----DEFICIÊNCIA-------------------------------------
 //campo de atendimento especializado
     if(inputs[10].checked === true){
         //atendimento especializado marcado em SIM
@@ -138,7 +138,7 @@ botao_ok.addEventListener("click", function(){
         aluno_deficiente.innerHTML = `Aluno com deficiência? SIM ( ) NÃO (<span class="res">X</span>)`
     }
 
-//::::::DEFICIÊNCIA DO ALUNO::::::::::::::::::::::::::::::::::::::::::
+//----DEFICIÊNCIA DO ALUNO-------------------------------------
     inputs[16].checked
     ? def_cegueira.innerHTML = `(<span class="res">X</span>)Cegueira`
     : def_cegueira.innerHTML = `( )Cegueira`
@@ -171,7 +171,7 @@ botao_ok.addEventListener("click", function(){
     ? def_fisica.innerHTML = `(<span class="res">X</span>)Deficiência Física`
     : def_fisica.innerHTML = `( )Deficiência Física`
 
-//:::::::TRANSTORNOS::::::::::::::::::::::::::::::::::::::::::::::
+//----TRANSTORNOS-------------------------------------
     inputs[24].checked
     ? autismo.innerHTML = `(<span class="res">X</span>)Autismo Infantil`
     : autismo.innerHTML = `( )Autismo Infantil`
@@ -192,7 +192,7 @@ botao_ok.addEventListener("click", function(){
     ? altas_habilidades.innerHTML = `(<span class="res">X</span>)Altas Habilidades/Superdotado`
     : altas_habilidades.innerHTML = `( )Altas Habilidades/Superdotado`
 
-//::::::BENEFÍCIO SOCIAL::::::::::::::::::::::::::::::::::::::::::::
+//----BENEFÍCIO SOCIAL-------------------------------------
     if(inputs[29].checked === true){
         bpc.innerHTML = `É atendido(a) pelo BPC(Benefício de Prestação Continuada)? SIM (<span class="res">X</span>) NÃO ( )`;
     }else if(inputs[30].checked === true){
@@ -205,12 +205,13 @@ botao_ok.addEventListener("click", function(){
         pbf.innerHTML = `É atendido(a) pelo PBF(Programa Bolsa Família)? SIM ( ) NÃO (<span class="res">X</span>)`;
     }
 
-//::::::PAI, MÃE E RESPONSÁVEIS:::::::::::::::::::::::::::::::::::::
+//----PAI, MÃE E RESPONSÁVEIS-------------------------------------
     responsaveis.innerHTML = `Nome do Pai: __<span class="res">${inputs[33].value}</span>___________________________________________________________________________________ <br>
     Nome da Mãe:     ___<span class="res">${inputs[34].value}</span>_____________________________________________________________________________ <br>
     Nome do Responsável:___<span class="res">${inputs[35].value}</span>______________________________________________________________________________`
     
-
+//-------FECHA FORMULÁRIO DE PREENCHIMENTO----------------------------
+fundo_form.style.display = 'none';
     
 })
 
